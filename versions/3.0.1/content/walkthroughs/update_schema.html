@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Updating the schema </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Updating the schema ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="updating-the-schema">Updating the schema</h1>
+
+<p>This section describes an example of the process to update the schema of a deployment in a Docker environment. To update the schema in a deployment, you need to update the Information Store database and restart the application server.</p>
+<p>Updating the schema includes the following high-level steps:</p>
+<ul>
+<li>Removing the Liberty containers</li>
+<li>Modifying the schema file</li>
+<li>Generating the database scripts to update the Information Store database</li>
+<li>Running the generated scripts against your Information Store database</li>
+<li>Running the Liberty containers<ul>
+<li>When you start Liberty, the schema that it caches from the database is updated</li>
+</ul>
+</li>
+<li>Validating database consistency</li>
+</ul>
+<p>The <code>examples/pre-prod/walkthroughs/change-management/updateSchemaWalkthrough.sh</code> script is a worked example that demonstrates how to update the schema in a containerized environment.</p>
+<blockquote><p>Note: Before you complete this walkthrough, reset your environment to the base configuration. For more information, see <a href="reset_walkthroughs.html">Resetting your environment</a>.</p>
+</blockquote>
+<h2 id="removing-the-liberty-containers">Removing the Liberty containers</h2>
+<p>Before you update the schema in the Information Store, you remove the Liberty containers. To remove the containers, run the following docker commands:</p>
+<pre><code class="lang-bash">docker stop liberty1 liberty2
+docker rm liberty1 liberty2
+</code></pre><p>See the <code>Removing the Liberty containers</code> section of the walkthrough script.</p>
+<h2 id="modifying-your-schema">Modifying your schema</h2>
+<p>In the <code>updateSchemaWalkthrough.sh</code> script, a modified <code>schema.xml</code> from the <code>walkthroughs/change-management/configuration-changes</code> directory is copied to the <code>configuration/fragments/common/WEB-INF/classes/</code> directory.
+After you modify the configuration, build a new configured liberty image with the updated configuration.
+The <code>build_liberty_configured_image_for_pre_prod</code> server function builds the configured Liberty image.  For more information, see <a href="../images-and-containers/liberty.html#building-a-configured-liberty-image">Building a configured Liberty image</a>.
+See the <code>Modifying the schema</code> section of the walkthrough script.</p>
+<p>To modify your schema, use i2 Analyze Schema Designer. For more information on installing Schema Designer please see: <a href="https://docs.i2group.com/analyze/4.4.4/ar_tools_welcome.html">i2 Analyze Schema Designer</a>.</p>
+<h2 id="validating-your-schema">Validating your schema</h2>
+<p>After you modify the schema, you can use the <code>validateSchemaAndSecuritySchema.sh</code> tool to validate it. If the schema is invalid, errors are reported.
+See the <code>Validating the schema</code> section of the walkthrough script.</p>
+<p>The <code>run_i2_analyze_tool</code> client function is used to run the <code>validateSchemaAndSecuritySchema.sh</code> tool.  </p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="../tools-and-functions/i2analyze_tools.html#schema-validation-tool">validateSchemaAndSecuritySchema</a></li>
+</ul>
+<h2 id="generating-the-database-scripts">Generating the database scripts</h2>
+<p>After you modify and validate the schema, generate the database scripts that are used to update the Information Store database to reflect the change.
+See the <code>Generating update schema scripts</code> section of the walkthrough script.</p>
+<p>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateUpdateSchemaScripts.sh</code> tool.  </p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="../tools-and-functions/i2analyze_tools.html#schema-update-tool">generateUpdateSchemaScripts</a></li>
+</ul>
+<h2 id="running-the-generated-scripts">Running the generated scripts</h2>
+<p>After you generate the scripts, run them against the Information Store database to update the database objects to represent the changes to the schema.
+See the <code>Running the generated scripts</code> section of the walkthrough script.</p>
+<p>The <code>run_sql_server_command_as_dba</code> client function is used to run the <code>runDatabaseScripts.sh</code> tool.  </p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-sql-server-command-as-dba">run_sql_server_command_as_dba</a></li>
+<li><a href="../tools-and-functions/i2analyze_tools.html#run-database-scripts-tool">runDatabaseScripts</a></li>
+</ul>
+<p>After the database scripts are run, the Information Store database is updated with any changes to the schema.</p>
+<h2 id="running-the-liberty-containers">Running the Liberty containers</h2>
+<p>The <code>run_liberty</code> server function runs a Liberty container. For more information about running a Liberty container, see <a href="../images-and-containers/liberty.html">Liberty</a>.<br>See the <code>Running the Liberty containers</code> section of the walkthrough script.</p>
+<blockquote><p>Note: You must run both Liberty containers.</p>
+</blockquote>
+<p>The <code>wait_for_i2_analyze_service_to_be_live</code> common function ensures that Liberty is running.</p>
+<h2 id="validating-database-consistency">Validating database consistency</h2>
+<p>After the system has started, the <code>dbConsistencyCheckScript.sh</code> tool is used to check the state of the database after the Information Store tables are modified.
+See the <code>Validating database consistency</code> section of the walkthrough script.</p>
+<p>The <code>run_i2_analyze_tool</code> client function is used to run the <code>dbConsistencyCheckScript.sh</code> tool.  </p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="../tools-and-functions/i2analyze_tools.html#information-store-database-consistency-tool">dbConsistencyCheckScript</a></li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

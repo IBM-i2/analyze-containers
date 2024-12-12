@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>SQL Server database role permissions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="SQL Server database role permissions ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="sql-server-database-role-permissions">SQL Server database role permissions</h1>
+
+<p>Each database role requires a specific set of permissions to complete the actions attributed to them.</p>
+<h2 id="dbarole">DBA_Role</h2>
+<p>The <code>DBA_Role</code> requires permissions to:</p>
+<ul>
+<li>Set up and maintain the database management system and Information Store database.</li>
+<li>Create and modify the database management system objects. For example, bufferpools, tablespoons, and filegroups.</li>
+<li>Create and modify database objects. For example, tables, views, indexes, sequences.</li>
+<li>Troubleshoot performance or other issues. For example, has all privileges on all tables. This can be restricted in some environments.</li>
+<li>Configure high availability.</li>
+<li>Manage recovery activities.</li>
+</ul>
+<p>Additionally, the role requires access to two roles in the <code>msdb</code> database:</p>
+<ul>
+<li><code>SQLAgentUserRole</code> - for more information, see <a href="https://docs.microsoft.com/en-us/sql/ssms/agent/sql-server-agent-fixed-database-roles?view=sql-server-ver15#sqlagentuserrole-permissions">SQLAgentUserRole Permissions</a></li>
+<li><code>db_datareader</code> - for more information, see <a href="https://docs.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver15#fixed-database-roles">Fixed-Database Roles</a></li>
+</ul>
+<p>These roles are required for database creation, to initialize the deletion-by-rule objects, and to create the SQL Server Agent jobs for the deletion rules.
+Note: The <code>configure_dba_roles_and_permissions.sh</code> script is run during deploy to grant the correct permissions.</p>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All</td>
+<td>CREATE TABLE, CREATE VIEW, CREATE SYNONYM</td>
+<td>Required to create the database objects.</td>
+</tr>
+<tr>
+<td>All</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE, REFERENCES</td>
+<td>Required to make changes for maintaining the database.</td>
+</tr>
+<tr>
+<td>IS_Core</td>
+<td>EXECUTE</td>
+<td>Required for deletion-by-rule and database configuration.</td>
+</tr>
+<tr>
+<td>IS_Public</td>
+<td>EXECUTE</td>
+<td>Required to run the stored procedures for deletion-by-rule.</td>
+</tr>
+</tbody>
+</table>
+<p>The following table provides an overview of the permissions required on the schemas in the <code>msdb</code> database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dbo</td>
+<td>SQLAgentUserRole</td>
+<td>Required to create the deletion jobs during deployment, and to manage the deletion job schedule.</td>
+</tr>
+<tr>
+<td>dbo</td>
+<td>db_datareader</td>
+<td>Required to create the deletion job schedule.</td>
+</tr>
+</tbody>
+</table>
+<p>The following table provides an overview of the permissions required on the schemas in the <code>master</code> database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All</td>
+<td>VIEW SERVER STATE</td>
+<td>Required for deletion-by-rule automated jobs via the SQL Server Agent.</td>
+</tr>
+<tr>
+<td>sys</td>
+<td>EXECUTE ON fn_hadr_is_primary_replica</td>
+<td>Required for deletion-by-rule automated jobs.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>configure_dba_roles_and_permissions.sh</code> script is used to configure the DBA user with all the required role memberships and permissions.</p>
+<h2 id="externaletlrole">External_ETL_Role</h2>
+<p>The <code>External_ETL_Role</code> requires permissions to move data from external systems into the Information Store staging tables.</p>
+<p>For example, it can be used by an ETL tool - such as DataStage or Informatica - to move and transform data that results in populated staging tables in the Information Store staging schema.</p>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IS_Staging</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required to populate the staging tables with date to be ingested or deleted.</td>
+</tr>
+</tbody>
+</table>
+<p>In addition to these permissions, in an environment running SQL server in a Linux container, users with this role must also be a member of the <code>sysadmin</code> group in order to perform BULK INSERT into the external staging tables.</p>
+<p>The <code>add_etl_user_to_sys_admin_role.sh</code> script is used to make the <code>etl</code> user a member of the <code>sysadmin</code> fixed-server role.</p>
+<h2 id="i2etlrole">i2_ETL_Role</h2>
+<p>The <code>i2_ETL_Role</code> requires permissions to use the i2 Analyze ingestion tools to ingest data from the staging tables into the Information Store.</p>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IS_Staging</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required by the ingestion tools to create and modify objects during the ingestion process.</td>
+</tr>
+<tr>
+<td>IS_Stg</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required by the ingestion tools to create and modify objects during the ingestion process.</td>
+</tr>
+<tr>
+<td>IS_Meta</td>
+<td>SELECT, UPDATE, INSERT</td>
+<td>UPDATE and INSERT are required to update the ingestion history table. SELECT is required to read the schema meta data.</td>
+</tr>
+<tr>
+<td>IS_Data</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE</td>
+<td>ALTER is required to drop and create indexes and update statistics as part of the ingestion process.</td>
+</tr>
+<tr>
+<td>IS_Public</td>
+<td>ALTER, SELECT</td>
+<td>ALTER is required to delete and create synonyms when enabling merged property views.</td>
+</tr>
+<tr>
+<td>IS_Core</td>
+<td>SELECT, EXECUTE</td>
+<td>Required to check configuration of the database.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="i2analyzerole">i2analyze_Role</h2>
+<p>The <code>i2analyze_Role</code> requires permissions to complete actions required by the Liberty application. These actions include:</p>
+<ul>
+<li>Visual Query, Find Path, Expand, Add to chart, Upload, and Online upgrade.</li>
+</ul>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IS_Staging</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required to run deletion-by-rule jobs.</td>
+</tr>
+<tr>
+<td>IS_Stg</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required to upload and delete records via Analyst&#39;s Notebook and to run deletion-by-rule jobs.</td>
+</tr>
+<tr>
+<td>IS_Meta</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>DELETE is required to process the ingestion history queue.</td>
+</tr>
+<tr>
+<td>IS_Data</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>UPDATE, INSERT, and DELETE are required by deletion-by-rule and to upload and delete records via Analyst&#39;s Notebook.</td>
+</tr>
+<tr>
+<td>IS_Core</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required for online upgrade.</td>
+</tr>
+<tr>
+<td>IS_VQ</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required to complete Visual Queries.</td>
+</tr>
+<tr>
+<td>IS_FP</td>
+<td>SELECT, INSERT, EXEC</td>
+<td>Required to complete Find Path operations.</td>
+</tr>
+<tr>
+<td>IS_WC</td>
+<td>SELECT, UPDATE, INSERT, DELETE</td>
+<td>Required to work with Web Charts.</td>
+</tr>
+<tr>
+<td>IS_PUBLIC</td>
+<td>EXEC</td>
+<td>Grants execute permission to stored procedures in the IS_PUBLIC schema. Required to create and send Alerts.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deletionbyrule">Deletion_By_Rule</h2>
+<p>The <code>Deletion_By_Rule</code> requires permissions to access/execute objects in the Information Store public schema.</p>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IS_Public</td>
+<td>SELECT, EXEC</td>
+<td>Require to run deletion-by-rule jobs.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>add_user_to_db_role.sh</code> script is used to make the <code>i2etl</code> user a member of the <code>Deletion_By_Rule</code> database role.</p>
+<h2 id="i2publicrole">i2_Public_Role</h2>
+<p>The <code>i2_Public_Role</code> requires permissions to access/update objects in the Information Store public schema.</p>
+<p>The following table provides an overview of the permissions required on the schemas in the Information Store database:</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Permissions</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IS_Public</td>
+<td>ALTER, SELECT, UPDATE, INSERT, DELETE, EXEC</td>
+<td>Required to complete actions that require access, modification, and execution permissions to objects in the IS_Public schema. For example, to use custom task scheduling.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>add_user_to_db_role.sh</code> script is used to make the <code>i2analyze</code> user a member of the <code>i2_Public_Role</code> database role.</p>
+<h2 id="the-database-backup-operator-role">The database backup operator role</h2>
+<p>The example also demonstrates how to perform a database backup. The <code>dbb</code> user will perform this action and is a member of the SQL Server built-in role, <code>db_backupoperator</code>. This gives this user the correct permissions for performing a backup and nothing else.</p>
+<p>For more information, see <a href="https://docs.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-ver15#fixed-database-roles">Fixed-Database Roles</a> for more details.</p>
+<h2 id="database-users-and-logins">Database users and logins</h2>
+<p>In the example, a user is created for each role described previously. These users are then used throughout the deployment and administration steps to provide a reference for when each role is required.</p>
+<p>The following users and logins are used in the example:</p>
+<table>
+<thead>
+<tr>
+<th>User and login</th>
+<th>Description</th>
+<th>Secrets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sa</code></td>
+<td>The system administrator user. The <code>sa</code> user has full permissions on the database instance. This user creates the Information Store database, roles, users, and logins.</td>
+<td>The password is in the <code>sa_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+<tr>
+<td><code>i2analyze</code></td>
+<td>The <code>i2analyze</code> user is a member of the <code>i2analyze_Role</code> and <code>i2_Public_Role</code>.</td>
+<td>The password is in the <code>i2analyze_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+<tr>
+<td><code>etl</code></td>
+<td>The <code>etl</code> user is a member of <code>External_ETL_Role</code>.</td>
+<td>The password is in the <code>etl_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+<tr>
+<td><code>i2etl</code></td>
+<td>The <code>i2etl</code> user is a member of <code>i2_ETL_Role</code> and <code>Deletion_By_Rule</code></td>
+<td>The password is in the <code>i2etl_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+<tr>
+<td><code>dba</code></td>
+<td>The <code>dba</code> user is a member of <code>DBA_Role</code>.</td>
+<td>The password is in the <code>dba_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+<tr>
+<td><code>dbb</code></td>
+<td>The <code>dbb</code> user is the database backup user, it is a member of the SQL Server built in role: <code>db_backupoperator</code>.</td>
+<td>The password is in the <code>dbb_PASSWORD</code> file in the <code>environment-secrets/generated-secrets/sqlserver</code> directory.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>sa</code> user and login exists on the base SQL Server image. The <code>sa</code> user is used to create the following artifacts:  </p>
+<ul>
+<li>Database: <code>ISTORE</code></li>
+<li>Roles: <code>i2analyze_Role</code>, <code>External_ETL_Role,</code>, <code>i2_ETL_Role</code>, <code>DBA_Role</code>, <code>Deletion_By_Rule</code> and <code>i2_Public_Role</code></li>
+<li>Logins: <code>i2analyze</code>, <code>etl</code>, <code>i2etl</code>, <code>dba</code>, and <code>dbb</code></li>
+<li>Users: <code>i2analyze</code>, <code>etl</code>, <code>i2etl</code>, <code>dba</code>, and <code>dbb</code></li>
+</ul>
+<p>The roles and users must be created after the Information Store database is created.</p>
+<h2 id="creating-the-roles">Creating the roles</h2>
+<p>The <code>sa</code> user is used to run the <code>create_db_roles.sh</code> client function that creates the <code>i2Analyze_Role</code>, <code>External_ETL_Role</code>, <code>i2_ETL_Role</code>, <code>i2_Public_Role</code> and <code>DBA_Role</code> roles.</p>
+<p>To create the roles, the <code>create_db_roles.sh</code> script is run using the <code>run_sql_server_command_as_sa</code> client function, and the <code>grant_permissions_to_roles.sh</code> scripts is used to give the correct permissions. This function uses an ephemeral SQL Server client container to create the database roles. For more information about the client function, see: <a href="../tools-and-functions/client_functions.md#run-sql-server-command-as-sa">run_sql_server_command_as_sa</a></p>
+<p>In the example, the <code>create_db_roles.sh</code> script is called in <code>deploy</code>.</p>
+<p>Note: All the secrets required at runtime by the client container can be made available by providing a file path to the secret which is converted to an environment variable by the docker container.</p>
+<p>For example, to provide the <code>SA_USERNAME</code> environment variable to the client container, a file containing the secret is declared in the docker run command:</p>
+<pre><code class="lang-sh">-e &quot;SA_USERNAME_FILE=/run/secrets/SA_USERNAME_FILE&quot;
+</code></pre><p>The file name can be anything, but the environment variable is fixed. For more information see, <a href="security.html">managing container security</a></p>
+<h2 id="create-the-login-and-user">Create the login and user</h2>
+<p>Use the <code>sa</code> user to create the login and the user on the <code>ISTORE</code>, and make the user a member of the role.</p>
+<p>You can use an ephemeral SQL Client container to create the login and the user.</p>
+<p>The <code>create_db_login_and_user.sh</code> script is built into the sql client image in <code>/opt/db-scripts</code> location and is used to create the login and user. The script is called from the <code>deploy</code> commands.</p>
+<h3 id="the-createdbloginanduser-function">The <code>create_db_login_and_user</code> function</h3>
+<p>The <code>create_db_login_and_user</code> function uses an ephemeral SQL Client container to create the database administrator login and user. The login and user are created by the <code>sa</code> user.</p>
+<p>For more information about running a SQL Client container and the environment variables required for the container, see <a href="../images-and-containers/sql_client.html">SQL Client</a>.</p>
+<p>The <code>create_db_login_and_user.sh</code> script is used to create the login and user.</p>
+<p>The function requires the following environment variables to run:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SA_USERNAME</code></td>
+<td>The sa username.</td>
+</tr>
+<tr>
+<td><code>SA_PASSWORD</code></td>
+<td>The sa user password.</td>
+</tr>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The database user name.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The database user password.</td>
+</tr>
+<tr>
+<td><code>DB_SSL_CONNECTION</code></td>
+<td>Whether to use SSL for connection.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE</code></td>
+<td>The path to the CA certificate.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>DB_NAME</code></td>
+<td>The name of the Information Store database.</td>
+</tr>
+<tr>
+<td><code>DB_ROLE</code></td>
+<td>The name of the role that user will be added to. It has to be one of the roles from <a href="db_users.html#database-roles">this list</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="changing-sa-password">Changing SA password</h2>
+<p>In a Docker environment, you must start the SQL Server as the existing <code>sa</code> user before you can modify the password.</p>
+<h3 id="the-changesapassword-function">The <code>change_sa_password</code> function</h3>
+<p>The <code>change_sa_password</code> function uses an ephemeral SQL Client to change the <code>sa</code> user password.</p>
+<p>For more information about running a SQL Client container and the environment variables required for the container, see <a href="../images-and-containers/sql_client.html">SQL Client</a>.</p>
+<p>The <code>change_sa_password.sh</code> script is used to change the password.</p>
+<p>The function requires the following environment variables to run:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SA_USERNAME</code></td>
+<td>The sa username</td>
+</tr>
+<tr>
+<td><code>SA_OLD_PASSWORD</code></td>
+<td>The current sa password.</td>
+</tr>
+<tr>
+<td><code>SA_NEW_PASSWORD</code></td>
+<td>The new sa password.</td>
+</tr>
+<tr>
+<td><code>DB_SSL_CONNECTION</code></td>
+<td>Whether to use SSL for connection.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE</code></td>
+<td>The path to the CA certificate.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

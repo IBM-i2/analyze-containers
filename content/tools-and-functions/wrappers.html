@@ -90,13 +90,13 @@
 <p>The <code>install-wrappers</code> command installs the wrapper scripts in the location that you provide for the <code>-p</code> argument.</p>
 <p>In your terminal (WSL on Windows), run the following commands to set the <code>ANALYZE_CONTAINERS_ROOT_DIR</code> to the location of your analyze-deployment-tooling installation and install the wrapper scripts to the specified directory.</p>
 <p>For example:</p>
-<pre><code class="lang-sh">cd /home/&lt;user-name&gt;/analyze-deployment-tooling/scripts
+<pre><code class="lang-sh">cd /home/&lt;user-name&gt;/analyze-deployment-tooling
 export ANALYZE_CONTAINERS_ROOT_DIR=&quot;/home/&lt;user-name&gt;/analyze-deployment-tooling&quot;
-./install-wrappers -p /home/&lt;user-name&gt;/wrappers
+./run-util-script install-wrappers -p /home/&lt;user-name&gt;/wrappers
 </code></pre><h2 id="using-the-wrapper-scripts">Using the wrapper scripts</h2>
 <p>To use the wrapper scripts, call the scripts from where you installed them.</p>
 <p>For example, to deploy a config named <code>config-development</code> run:</p>
-<pre><code class="lang-sh">./home/&lt;user-name&gt;/wrappers/scripts/deploy.sh -c config-development
+<pre><code class="lang-sh">/home/&lt;user-name&gt;/wrappers/scripts/deploy -c config-development
 </code></pre></article>
           </div>
           

@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Deploying a gateway schema </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Deploying a gateway schema ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="deploying-a-gateway-schema">Deploying a gateway schema</h1>
+
+<p>You can develop the gateway schema and associated charting schemes by following the instructions in <a href="develop_schemas.html">Developing schemas in your configuration development environment</a>.</p>
+<p><strong>Note:</strong> If your deployment does not contain an Information or Chart Store, you must still provide a <code>schema.xml</code> file in the configuration. This can be an empty schema when you provide a gateway schema for any connectors to use.</p>
+<p>After you develop the schemes, complete the following steps to deploy them with your configuration:</p>
+<ol>
+<li>Copy the schema and charting scheme files to the <code>/gateway-schemas</code> directory.<br>To define the short name of the gateway schema, the prefix of the file name is used. The convention is defined as: <code>&lt;short&gt;-&lt;name&gt;-schema.xml</code> and <code>&lt;short&gt;-&lt;name&gt;-schema-charting-scheme.xml</code>.<br>For example, files with the names <code>law-enforcement-schema.xml</code> and <code>law-enforcement-charting-schemes.xml</code> have the short name <code>law-enforcement</code>.</li>
+<li><p>Add the short name of your schema to the <code>configs/&lt;config_name&gt;/configuration/connector-references.json</code> file in the <code>gatewaySchemas</code> array.<br> For example, to add a gateway schema with the short name <code>law-enforcement</code>, the file contains the following <code>gatewaySchemas</code> array:</p>
+<pre><code class="lang-json">{
+    ...
+    ],
+    &quot;gatewaySchemas&quot;: [
+        {
+            &quot;shortName&quot;: &quot;law-enforcement&quot;
+        }
+    ]
+}
+</code></pre><p> <strong>Note:</strong> If you are not using any gateway schemas, do not remove the <code>gatewaySchemas</code> key from the file.</p>
+</li>
+<li><p>Set the short name of your schema in the <code>&lt;connector_name&gt;/connector-definition.json</code> as the value for the <code>gatewaySchema</code> key of the connector that will use the gateway schema.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

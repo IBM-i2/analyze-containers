@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Grafana </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Grafana ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="grafana">Grafana</h1>
+
+<p>In a containerized deployment, Grafana is configured and run from a Grafana image.</p>
+<h2 id="configuring-grafana">Configuring Grafana</h2>
+<p>Grafana is configured by environment variables used in the docker run command.</p>
+<p>For more information about the configuration, see
+<a href="https://grafana.com/docs/grafana/latest/administration/configure-docker/?pg=oss-graf&amp;plcmt=resources#configure-a-grafana-docker-image">Configure a Grafana Docker image</a>.</p>
+<h2 id="running-a-grafana-container">Running a Grafana container</h2>
+<p>A Grafana container uses a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-grafana">Grafana image</a> maintained
+by i2 Group on Docker Hub. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to Grafana on
+the container. The environment variables are described in <a href="#environment-variables">environment variables</a></p>
+<p>The container will run with a User ID and Group ID of <code>472</code>. All files in mounted directories will be created
+with these IDs. If files are manipulated externally these IDs must be retained or the container will not
+function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs a Grafana container:</p>
+<pre><code class="lang-bash">docker run -d \
+   --name &quot;grafana&quot; \
+   --net &quot;eia&quot; \
+   --net-alias &quot;grafana.eia&quot; \
+    -p &quot;3500:3000&quot; \
+    -v &quot;grafana_data:/var/lib/grafana&quot; \
+    -v &quot;grafana_dashboards:/etc/grafana/dashboards&quot; \
+    -v &quot;grafana_provisioning:/etc/grafana/provisioning&quot; \
+    -v &quot;/environment-secrets/simulated-secret-store/grafana:/run/secrets&quot; \
+    -e GF_SECURITY_ADMIN_USER=&quot;grafana&quot; \
+    -e GF_SECURITY_ADMIN_PASSWORD=&quot;GF_SECURITY_ADMIN_PASSWORD&quot; \
+    -e SSL_ENABLED=&quot;true&quot; \
+    -e SSL_CERTIFICATE_FILE=&quot;/run/secrets/server.cer&quot; \
+    -e SSL_PRIVATE_KEY_FILE=&quot;/run/secrets/server.key&quot; \
+    -e PROMETHEUS_URL=&quot;https://prometheus.eia:9090&quot; \
+    -e PROMETHEUS_USERNAME=&quot;prometheus&quot; \
+    -e PROMETHEUS_PASSWORD=&quot;prometheus&quot; \
+    -e SSL_CA_CERTIFICATE=&quot;SSL_CA_CERTIFICATE&quot; \
+    &quot;i2group/i2eng-grafana:11&quot; 
+</code></pre><p>For an example of the <code>docker run</code> command, see <code>utils/server_functions.sh</code> scripts. The <code>run_grafana</code> function
+does not take any arguments.</p>
+<h3 id="storage">Storage</h3>
+<p>A named volume or a bind mount can be used to persist data and logs that are generated and used in the Grafana container.</p>
+<p>To configure the Grafana container to use the volume, specify the <code>-v</code> option with the name of the volume and
+the path where the directory is mounted in the container. By setting <code>-v</code> option in the docker run command, a
+named volume is created. For Grafana, the directory that must be mounted is <code>/var/lib/grafana</code>.
+For example:</p>
+<pre><code class="lang-sh">-v &quot;grafana_data:/var/lib/grafana&quot; \
+-v &quot;grafana_dashboards:/etc/grafana/dashboards&quot; \
+-v &quot;grafana_provisioning:/etc/grafana/provisioning&quot; \
+-v &quot;/environment-secrets/simulated-secret-store/grafana:/run/secrets&quot; \
+</code></pre><p>For more information, see <a href="https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#use-persistent-storage-recommended">Use persistent storage (recommended)</a>.</p>
+<p><strong>Secrets</strong>:<br>A directory that contains all of the secrets that this tool requires. Specifically this includes credentials to
+access prometheus and certificates used in SSL. The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>GF_SECURITY_ADMIN_USER__FILE</code> to locate
+the secrets. In a production environment, the orchestration environment can provide the secrets to the file
+system or the secrets can be passed in via environment variables. The mechanism that is used here simulates
+the orchestration system providing the secrets as files.</p>
+<h3 id="environment-variables">Environment variables</h3>
+<p>To configure Grafana, you can provide environment variables to the Docker container in the <code>docker run</code> command.</p>
+<h4 id="grafana-environment-variables">Grafana environment variables</h4>
+<p>All the configuration options in Grafana can be overridden by environment variables like <code>GF_&lt;SectionName&gt;_&lt;KeyName&gt;</code>.</p>
+<p>For more information about Grafana environment variables, see
+<a href="https://grafana.com/docs/grafana/latest/administration/configuration/#override-configuration-with-environment-variables">Override configuration with environment variables</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GF_SECURITY_ADMIN_USER</code></td>
+<td>The Grafana administrator user name.</td>
+</tr>
+<tr>
+<td><code>GF_SECURITY_ADMIN_PASSWORD</code></td>
+<td>The Grafana administrator password.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="grafana-ssl">Grafana SSL</h4>
+<p>The following environment variables enable you use SSL with Grafana</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SSL_ENABLED</code></td>
+<td>Can be set to <code>true</code> or <code>false</code>. If set to <code>true</code>, the Grafana server protocol is set to &#39;https&#39;.</td>
+</tr>
+<tr>
+<td><code>SSL_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="prometheus-authentication">Prometheus authentication</h4>
+<p>The following environment variables are used to configure Grafana to connect to Prometheus as a client:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMETHEUS_USERNAME</code></td>
+<td>The Prometheus username.</td>
+</tr>
+<tr>
+<td><code>PROMETHEUS_PASSWORD</code></td>
+<td>The Prometheus password.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

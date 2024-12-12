@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring runtime environments </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring runtime environments ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-runtime-environments">Configuring runtime environments</h1>
+
+<p>The system supports changing the default runtime values, such as the allocated memory or CPUs. This is useful if you want to ingest large amounts of data and improve application performance.</p>
+<p>You can configure the runtime of the following components:</p>
+<ul>
+<li>Database</li>
+<li>Deployment</li>
+<li>Grafana</li>
+<li>HAProxy</li>
+<li>Liberty</li>
+<li>Prometheus</li>
+<li>Solr</li>
+<li>ZooKeeper</li>
+<li>Connector Designer</li>
+</ul>
+<hr>
+<h2 id="creating-environment-runtime-files">Creating environment runtime files</h2>
+<p>The <code>/runtime-environments</code> directory is used to contain the <code>.properties</code> files that define the available runtime environments. The name of the <code>.properties</code> file specifies the name for the runtime environment. The file name is formed as <code>runtime-&lt;environment_name&gt;.properties</code>.</p>
+<p>For example:</p>
+<ul>
+<li><code>runtime-default.properties</code></li>
+<li><code>runtime-dev.properties</code></li>
+<li><code>runtime-large.properties</code></li>
+</ul>
+<p><strong>Important:</strong> If there is a <code>runtime-default.properties</code> file then it is used as the default environment runtime when a config is deployed.</p>
+<h3 id="specifying-the-runtime-values">Specifying the runtime values</h3>
+<p>The allowed settings in the runtime properties files conforms to the following convention:</p>
+<pre><code class="lang-properties">&lt;component&gt;.&lt;option_name&gt;
+</code></pre><p>Where:</p>
+<ul>
+<li><p><code>&lt;component&gt;</code> is the name of one of the components i2 Analyze consists of. For example <code>solr</code>.<br>The available components are:</p>
+<ul>
+<li><code>db</code></li>
+<li><code>deployment</code></li>
+<li><code>grafana</code></li>
+<li><code>haproxy</code></li>
+<li><code>liberty</code></li>
+<li><code>prometheus</code></li>
+<li><code>solr</code></li>
+<li><code>zookeeper</code></li>
+<li><code>connector-designer</code></li>
+</ul>
+</li>
+<li><p><code>&lt;option_name&gt;</code> is the name of the option. This name is passed directly to Docker. The name must match the name of the option as described in the Docker documentation. For example the Docker run option <code>--memory</code> becomes <code>memory</code>. The exception to this rule is for the <code>deployment</code> component, where the options are passed to i2 Analyze directly.</p>
+</li>
+</ul>
+<p>The most common runtime options that you might want to configure include:</p>
+<ul>
+<li><code>memory</code> - The maximum amount of memory the container can use. If you set this option, the minimum allowed value is 6m (6 megabytes). For more information, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">Docker run - memory</a>.</li>
+<li><code>memory-swap</code> - Memory swap limit which equals to memory plus swap or &#39;-1&#39; to enable unlimited swap. For more information, see <a href="https://docs.docker.com/config/containers/resource_constraints/#--memory-swap-details">Docker run - memory swap</a></li>
+<li><code>cpus</code> - Number of CPUs. Number can be a fractional number. 0.000 means no limit. For more information, see <a href="https://docs.docker.com/config/containers/resource_constraints/#cpu">Docker run - cpu</a></li>
+<li><code>display-name-suffix</code> - The deployment display name suffix. The value is appended to the deployment name set in the configuration. For more information about the deployment name, see <a href="https://docs.i2group.com/analyze/4.4.4/setting-deployment-name.html">Setting a deployment name</a></li>
+</ul>
+<p>For example, you might create a <code>runtime-dev.properties</code> file and populate the settings as:</p>
+<pre><code class="lang-properties">solr.memory=6g
+solr.memory-swap=1g
+solr.cpus=4
+
+liberty.memory=4g
+
+zookeeper.memory=2g
+
+db.memory=4g
+
+deployment.display-name-suffix=dev
+</code></pre><hr>
+<h2 id="deploying-a-config-with-a-specific-runtime-environment">Deploying a config with a specific runtime environment</h2>
+<p>To deploy a config with a specific runtime, run:</p>
+<pre><code class="lang-sh">deploy -e &lt;runtime_environment&gt;
+</code></pre><p>Where <code>&lt;runtime_environment&gt;</code> is <code>dev</code> for settings in <code>/runtime-environments/runtime-dev.properties</code> file.<br>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+<hr>
+<h2 id="using-local-variables">Using local variables</h2>
+<p>You can use local variables to override the runtime properties individually. When you run the deploy command with the local variables specified, these values are used instead of the values for the matching options in a runtime environment properties file.</p>
+<p>The naming convention for these variables is:</p>
+<pre><code class="lang-sh">RUNTIME_&lt;component&gt;_&lt;option_name&gt;
+</code></pre><p>The mapping of the <code>&lt;option_name&gt;</code> is similar to the one used in the <code>.properties</code> file where the names used are the same. The only difference is that if <code>&lt;option_name&gt;</code> has a hyphen (<code>-</code>) it must be replaced by an underscore (<code>_</code>).</p>
+<p>To specify the local variables to be used, create a <code>docker.env</code> file in the <code>analyze-deployment-tooling</code> directory.</p>
+<p>To populate the file with the same settings as above, use the following variables and values:</p>
+<pre><code class="lang-sh">RUNTIME_SOLR_MEMORY=&quot;6g&quot;
+RUNTIME_SOLR_MEMORY_SWAP=&quot;1g&quot;
+RUNTIME_SOLR_CPUS=&quot;4&quot;
+
+RUNTIME_LIBERTY_MEMORY=&quot;4g&quot;
+
+RUNTIME_DB_MEMORY=&quot;4g&quot;
+
+RUNTIME_ZOOKEEPER_MEMORY=&quot;4g&quot;
+
+RUNTIME_DEPLOYMENT_DISPLAY_NAME_SUFFIX=&quot;dev&quot;
+</code></pre><p>You can also use a local variable to override the runtime environment properties file that is used. To do this, use the <code>RUNTIME_ENVIRONMENT</code> variable in the <code>docker.env</code> file.</p>
+<p>In the file, use the <code>RUNTIME_ENVIRONMENT</code> variable to reference the name of a runtime environment properties file, for example:</p>
+<pre><code class="lang-sh">RUNTIME_ENVIRONMENT=dev
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

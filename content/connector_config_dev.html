@@ -83,15 +83,14 @@
 <p>Ensure that the <code>DEPLOYMENT_PATTERN</code> variable in the <code>&lt;config_name&gt;/utils/variables.conf</code> file is set to a pattern that includes the i2 Connect gateway.<br>For example:  </p>
 <pre><code class="lang-sh">DEPLOYMENT_PATTERN=&quot;i2c_istore&quot;
 </code></pre><p>For information about developing your own connectors, see <a href="https://i2group.github.io/analyze-connect/index.html">i2 Connect gateway connector development</a>.</p>
-<p>You can use Connector Designer to create simple connectors by using a visual user interface. If you create a connector using Connector Designer, you do not need to follow the rest of the instructions.
-To open Connector Designer, open <code>https://i2analyze.eia:9443/connector-designer/connectors</code>. For more information about using Connector Designer, see <!-- markdown-link-check-disable --><a href="https://docs.i2group.com/ah/ah-connector-designer.html">Connector Designer</a><!-- markdown-link-check-enable -->.</p>
+<p><strong>Note:</strong> You can use Connector Designer to create simple connectors through a graphical user interface. When you use Connector Designer, you do not need to follow the instructions below.
+To open Connector Designer, navigate to <code>https://i2analyze.eia:9443/connector-designer/connectors</code>. For more information about using it, see <!-- markdown-link-check-disable --><a href="https://docs.i2group.com/ah/ah-connector-designer.html">Connector Designer</a><!-- markdown-link-check-enable -->.</p>
 <p>Process overview:</p>
 <ul>
 <li>Create a custom connector image</li>
 <li>Update the configuration to reference connectors</li>
 <li>Build connector images and redeploy</li>
 </ul>
-<hr>
 <h2 id="creating-a-connector-image">Creating a connector image</h2>
 <p>Create a connector image from one of the image templates. You can deploy connectors using the following templates:</p>
 <ul>
@@ -184,7 +183,6 @@ SSL_GATEWAY_CN=&#39;[&quot;gateway.user&quot;,&quot;&lt;cn_of_the_client_cert_us
 <p> Next, <a href="#configuring-a-connector">configure your connector</a>.</p>
 </li>
 </ol>
-<hr>
 <h2 id="configuring-a-connector">Configuring a connector</h2>
 <ol>
 <li><p>Populate the values in the <code>&lt;connector_name&gt;/connector-definition.json</code> file with information about your connector.  </p>
@@ -255,7 +253,7 @@ SSL_GATEWAY_CN=&#39;[&quot;gateway.user&quot;,&quot;&lt;cn_of_the_client_cert_us
     &quot;userManaged&quot;: true,
     &quot;baseUrl&quot;: &quot;https://example-connector:3443&quot; 
 }
-</code></pre><p> <strong>Note:</strong></p>
+</code></pre><p> <strong>Notes:</strong></p>
 <ul>
 <li>If your user managed connector is hosted in a Docker container on a different network to your config development environment, connect the Liberty container to the same network as your user managed connector container. For example, run <code>docker network connect &lt;connector-network-name&gt; liberty1.&lt;config-name&gt;</code>.</li>
 <li>If your connector is running on your host machine&#39;s operating system, use the <code>host.docker.internal</code> as the host in the <code>baseUrl</code> value. For example, &quot;http://<!-- markdown workaround: not make it link -->host.docker.internal:3000&quot;</li>
@@ -275,7 +273,6 @@ SSL_GATEWAY_CN=&#39;[&quot;gateway.user&quot;,&quot;&lt;cn_of_the_client_cert_us
 </code></pre></li>
 </ol>
 <p>For more information about configuring connectors, see <a href="managing_connectors.html">Managing connectors</a>.</p>
-<hr>
 <h2 id="adding-connectors-to-a-config">Adding connectors to a config</h2>
 <ol>
 <li><p>In the configuration you want to deploy your connector with, update the <code>configs/&lt;config_name&gt;/configuration/connector-references.json</code> file and add the directory name for your connector in the <code>connectors</code> array.<br>For example, to add the connector in <code>/connector-images/example-connector</code> the <code>connector-references.json</code> file contains the following <code>connectors</code> array:  </p>
@@ -289,7 +286,6 @@ SSL_GATEWAY_CN=&#39;[&quot;gateway.user&quot;,&quot;&lt;cn_of_the_client_cert_us
 }
 </code></pre></li>
 </ol>
-<hr>
 <h2 id="adding-additional-trust-certificates-for-external-connectors-if-ssl-is-enabled-with-custom-ca">Adding additional trust certificates for external connectors (if SSL is enabled with custom CA)</h2>
 <p>If you have enabled SSL on the external connector and used your own Certificate Authority (CA), you must provide this CA in the configuration.
 To do that, create <code>configs/&lt;config_name&gt;/configuration/secrets/additional-trust-certificates.cer</code> file and copy the CA certificate into it.
@@ -314,7 +310,6 @@ After you develop the schemes, complete the following steps to deploy them with 
 <li><p>Set the short name of your schema in the <code>&lt;connector_name&gt;/connector-definition.json</code> as the value for the <code>gatewaySchema</code> key of the connector that will use the gateway schema.</p>
 </li>
 </ol>
-<hr>
 <h2 id="building-the-connector-images-and-redeploying">Building the connector images and redeploying</h2>
 <ol>
 <li><p>Run the <code>deploy</code> command to generate the secrets for your connectors, build the connector images, and deploy your environment.  </p>

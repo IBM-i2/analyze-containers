@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Developing the rest of the configuration </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Developing the rest of the configuration ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="developing-the-rest-of-the-configuration">Developing the rest of the configuration</h1>
+
+<p>After you enable i2 Analyze to work with your data, you can define how analysts interact with your data. To do this, use the following information to modify the i2 Analyze configuration to meet your requirements.</p>
+<p>Ensure that the <code>DEPLOYMENT_PATTERN</code> variable in the <code>&lt;config_name&gt;/utils/variables.conf</code> file is set to your intended deployment pattern.<br>For example, to deploy with the i2 Connect gateway and the Information Store set the following value:  </p>
+<pre><code class="lang-sh">DEPLOYMENT_PATTERN=&quot;i2c_istore&quot;
+</code></pre><hr>
+<p><strong>Tip:</strong> In the configuration development environment, you can press <strong>Ctrl</strong> + <strong>space</strong> where your cursor is to automatically create valid XML and JSON structures and to provide some allowed values (where the possible values are supported in the <code>.xsd</code> file). For example, you can see a list of the possible values for conditions in a match rule:
+<img src="../images/intellisense.png" alt="Intellisense" title="Intellisense"></p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>In the analyze-deployment-tooling repository, the structure of the configuration directory is modified. The configuration files are in the top level <code>configs/&lt;config_name&gt;/configuration</code> directory.</li>
+<li>You cannot run any toolkit tasks described in the linked documentation in this environment. Instead, after you modify any configuration files, run the <code>deploy</code> command with your config name as you did when you created your deployment.</li>
+</ul>
+<p>The list of things that you can configure includes:</p>
+<ul>
+<li>To configure how analysts search for information, including Quick Search, Visual Query, and Highlight Query, refer to <a href="https://docs.i2group.com/analyze/4.4.4/config_search.html">Configuring search</a></li>
+<li>To configure how analysts can identify matching records, refer to <a href="https://docs.i2group.com/analyze/4.4.4/configuring_match_rules.html">Configuring matching</a></li>
+<li>To configure the geospatial mapping options available to analysts, refer to <a href="https://docs.i2group.com/analyze/4.4.4/configuring_mapping.html">Configuring geospatial mapping</a></li>
+<li>To configure the values that analysts can provide in source references, refer to <a href="https://docs.i2group.com/analyze/4.4.4/implementing_source_references.html">Configuring source references</a></li>
+<li>To configure item type access for analysts, refer to <a href="https://docs.i2group.com/analyze/4.4.4/item-type-security.html">Configuring item type security</a></li>
+<li>To update the Solr index configuration, refer to <a href="develop_solr_config_dev.html">Configuring the Solr index</a></li>
+<li>To add additional web content, refer to <a href="add_web_content.html">Add additional web content</a></li>
+<li>To modify the runtime environment, refer to <a href="runtime_environment.html">Configuring runtime environment</a></li>
+</ul>
+<p>For more information about other configuration changes that you can make, see <a href="https://docs.i2group.com/analyze/4.4.4/analyze_configuring.html">Configuring i2 Analyze</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

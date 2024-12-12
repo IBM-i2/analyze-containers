@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Open Liberty </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Open Liberty ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="open-liberty">Open Liberty</h1>
+
+<p>In a containerized deployment, you configure the i2 Analyze application and Open Liberty in an image that is layered on top of the <code>liberty_ubi_base</code> image. The <code>liberty_ubi_base</code> contains static configuration and application jars that are required by i2 Analyze and should not be changed. The <code>liberty_ubi_base</code> image is built on top a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-liberty">Open Liberty image</a> maintained by i2 Group on Docker Hub.</p>
+<h2 id="building-a-liberty-base-image">Building a Liberty base image</h2>
+<p>The Liberty base image for i2 Analyze is built on top of a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-liberty">Liberty image</a> maintained by i2 Group on Docker Hub.</p>
+<h3 id="docker-build-command">Docker build command</h3>
+<p>The <em>base image</em> is built from the Dockerfile in <code>images/liberty_ubi_base</code>.
+The following <code>docker build</code> command builds the Liberty base image:</p>
+<pre><code class="lang-bash">docker build -t &quot;liberty_ubi_base:4.4.4&quot; images/liberty_ubi_base \
+  --build-arg I2ANALYZE_VERSION=&quot;4.4.4&quot;
+</code></pre><p>For examples of the build commands, see <code>build-images</code> script.</p>
+<h2 id="configuring-the-liberty-server">Configuring the Liberty server</h2>
+<p>Liberty is configured by exception. The runtime environment operates from a set of built-in configuration default settings, and you only need to specify configuration that overrides those default settings. You do this by editing either the <code>server.xml</code> file or another XML file that is included in <code>server.xml</code> at run time.</p>
+<p>In a containerized deployment of i2 Analyze, a <code>server.xml</code> file is provided for you. To provide or modify any values, you specify a number of <a href="#environment-variables">environment variables</a> when you run a Liberty container.</p>
+<p>Additionally, you can extend the <code>server.xml</code> by using the provided <code>server.extensions.xml</code> in the i2 Analyze configuration. Any elements that you add to the extensions file are included in the <code>server.xml</code> when you run a Liberty container.</p>
+<h2 id="configuring-the-i2-analyze-application">Configuring the i2 Analyze application</h2>
+<p>The contents of the <code>configuration</code> directory must be copied into the <code>images/liberty_ubi_combined/classes</code> directory. The contents of the <code>classes</code> directory is added to the configured Liberty image when the image is built. If you make changes to the configuration, you must copy the changes to the <code>classes</code> directory and rebuild the configured image.</p>
+<blockquote><p>Note: The system match rules are configured differently. The application is updated to use the <code>system-match-rules.xml</code> from the Solr client command line. For more information about updating the system match rules, see <a href="../walkthroughs/update_match_rules.html">Updating the system match rules</a>.</p>
+</blockquote>
+<h2 id="building-a-configured-liberty-image">Building a configured Liberty image</h2>
+<p>The <em>configured image</em> is built from the base image. The configured image contains the i2 Analyze application and Liberty configuration that is required to start the i2 Analyze application. When you change the configuration, the configured image must be rebuilt to reflect the changes.</p>
+<h3 id="docker-build-command-1">Docker build command</h3>
+<p>The configured image is built from the Dockerfile in <code>images/liberty_ubi_combined</code>. The following <code>docker build</code> command builds the configured image:</p>
+<pre><code class="lang-bash">docker build -t &quot;liberty_configured_redhat:4.4.4&quot; &quot;images/liberty_ubi_combined&quot; \
+    --build-arg BASE_IMAGE=&quot;liberty_redhat:4.4.4&quot;
+</code></pre><p>An example of providing the configuration to the classes directory and building the image is included in the <code>build_liberty_configured_image</code> function in the <code>server_functions.sh</code> script.</p>
+<h2 id="running-a-liberty-container">Running a Liberty container</h2>
+<p>A Liberty container uses the configured image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to Liberty on the container. The environment variables are described in <a href="#environment-variables">environment variables</a></p>
+<p>The container will run with a User ID and Group ID of <code>1001</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs a Liberty container:</p>
+<pre><code class="lang-bash">docker run -m 1g -d \
+  --name &quot;liberty1&quot; \
+  --network &quot;eia&quot; \
+  --net-alias &quot;liberty1.eia&quot; \
+  -p &quot;9045:9443&quot; \
+  -v &quot;/environment-secrets/simulated-secret-store/liberty1:/run/secrets&quot; \
+  -v &quot;liberty1_data:/data&quot; \
+  -e LICENSE=&quot;accept&quot; \
+  -e FRONT_END_URI=&quot;https://liberty.eia:9045/opal&quot; \
+  -e DB_DIALECT=&quot;sqlserver&quot; \
+  -e DB_SERVER=&quot;sqlserver.eia&quot; \
+  -e DB_PORT=1433 \
+  -e DB_USERNAME=&quot;i2analyze&quot; \
+  -e DB_PASSWORD_FILE=&quot;/run/secrets/DB_PASSWORD&quot; \
+  -e ZK_HOST=&quot;zk1.eia:2281,zk2.eia:2281,zk3.eia:2281&quot; \
+  -e ZOO_DIGEST_USERNAME=&quot;solr&quot; \
+  -e ZOO_DIGEST_PASSWORD_FILE=&quot;/run/secrets/ZK_DIGEST_PASSWORD&quot; \
+  -e SOLR_HTTP_BASIC_AUTH_USER=&quot;liberty&quot; \sp
+  -e SOLR_HTTP_BASIC_AUTH_PASSWORD_FILE=&quot;/run/secrets/SOLR_APPLICATION_DIGEST_PASSWORD&quot; \
+  -e DB_SSL_CONNECTION=true \
+  -e SOLR_ZOO_SSL_CONNECTION=true \
+  -e SERVER_SSL=true \
+  -e SSL_PRIVATE_KEY_FILE=&quot;/run/secrets/server.key&quot; \
+  -e SSL_CERTIFICATE_FILE=&quot;/run/secrets/server.cer&quot; \
+  -e SSL_CA_CERTIFICATE_FILE=&quot;/run/secrets/CA.cer&quot; \
+  -e GATEWAY_SSL_CONNECTION=true \
+  -e SSL_OUTBOUND_PRIVATE_KEY_FILE=&quot;/run/secrets/gateway_user.key&quot; \
+  -e SSL_OUTBOUND_CERTIFICATE_FILE=&quot;/run/secrets/gateway_user.cer&quot; \
+  -e SSL_OUTBOUND_CA_CERTIFICATE_FILE=&quot;/run/secrets/outbound_CA.cer&quot; \
+  -e SSL_ADDITIONAL_TRUST_CERTIFICATES=&quot;/run/secrets/additional_trust_certificates.cer&quot; \
+  -e JWT_CERTIFICATE_FILE=&quot;/run/secrets/jwt_sign.cer&quot; \
+  -e JWT_PRIVATE_KEY_FILE=&quot;/run/secrets/jwt_sign.key&quot; \
+  -e LIBERTY_HADR_MODE=1 \
+  -e LIBERTY_HADR_POLL_INTERVAL=1 \
+  &quot;liberty_configured_redhat&quot;
+</code></pre><p>For an example of the <code>docker run</code> command, see <code>utils/server_functions.sh</code> script. The <code>run_liberty</code> function takes the following arguments to support running multiple Liberty containers:</p>
+<ol>
+<li><code>CONTAINER</code> - The name for the container.</li>
+<li><code>FQDN</code> - The fully qualified domain name for the container and the Solr host.</li>
+<li><code>VOLUME</code> - the name for the named volume of the Liberty container. For more information, see <a href="#storage">Storage</a>.</li>
+<li><code>HOST_PORT</code> - The port number on the host machine that is mapped to the port on the container.</li>
+<li><code>KEY_FOLDER</code> - The folder with keys and certificates for the container. For more information, see <a href="../security-and-users/security.html">Security</a>.</li>
+</ol>
+<p>An example of running Liberty container by using <code>run_liberty</code> function:</p>
+<pre><code class="lang-bash">run_liberty liberty1 liberty1.eia liberty1_data 9045 liberty1
+</code></pre><h3 id="storage">Storage</h3>
+<p>A named volume or a bind mount can be used to persist data, which is generated and used in the Liberty container, outside of the container.</p>
+<p>To configure the Liberty container to use the volume, specify the <code>-v</code> option with the name of the volume and the path where the directory is mounted in the container. By setting <code>-v</code> option in the docker run command, a named volume is created. For Liberty, the directory that is mounted must be <code>/data</code>, this directory folder stores: jobs, record groups and charts.</p>
+<p>For example:</p>
+<pre><code class="lang-sh">-v liberty_data:/data \
+-v /environment-secrets/simulated-secret-store/liberty1:/run/secrets
+</code></pre><p><strong>Secrets</strong>:<br>A directory that contains all of the secrets that this tool requires. Specifically this includes credentials to access ZooKeeper, the database, and the certificates used in SSL.<br>The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>ZOO_DIGEST_USERNAME_FILE</code> to locate the secrets.<br>In a production environment, the orchestration environment can provide the secrets to the file system or the secrets can be passed in via environment variables. The mechanism that is used here simulates the orchestration system providing the secrets as files.</p>
+<h3 id="environment-variables">Environment variables</h3>
+<p>To configure the Liberty server, you provide environment variables to the Docker container in the <code>docker run</code> command.</p>
+<p>The following table describes the supported environment variables that you can use:</p>
+<!-- markdown-link-check-disable -->
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FRONT_END_URI</code></td>
+<td>The URI that clients use to connect to i2 Analyze. For more information, see <a href="https://docs.i2group.com/analyze/4.4.4/t_edge_url.html">Specifying the connection URI</a>.</td>
+</tr>
+<tr>
+<td><code>DB_DIALECT</code></td>
+<td>Specifies which database management system to configure i2 Analyze for. In this release, it can be set to <code>sqlserver</code>. For more information, see <a href="https://www.ibm.com/support/knowledgecenter/SSEQTP_liberty/com.ibm.websphere.liberty.autogen.base.doc/ae/rwlp_config_dataSource.html#properties.microsoft.sqlserver">properties.microsoft.sqlserver</a>.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>Specifies the fully qualified domain name of the database server to connect to. The value populates the <code>serverName</code> attribute in the Liberty server configuration. For more information, see <a href="https://www.ibm.com/support/knowledgecenter/SSEQTP_liberty/com.ibm.websphere.liberty.autogen.base.doc/ae/rwlp_config_dataSource.html#properties.microsoft.sqlserver">properties.microsoft.sqlserver</a>.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number of the SQL Server database to connect to. The value populates the <code>portNumber</code> attribute in the Liberty server configuration. You can specify <code>DB_PORT</code> or <code>DB_INSTANCE</code>. For more information, see <a href="https://www.ibm.com/support/knowledgecenter/SSEQTP_liberty/com.ibm.websphere.liberty.autogen.base.doc/ae/rwlp_config_dataSource.html#properties.microsoft.sqlserver">properties.microsoft.sqlserver</a>.</td>
+</tr>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The database user that is used by Liberty to connect to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The database user password.</td>
+</tr>
+<tr>
+<td><code>ZK_HOST</code></td>
+<td>Specifies the connection string for each ZooKeeper server to connect to. To connect to more than one ZooKeeper server, the values must be in comma separated. The connection string must be in the following format: <code>&lt;hostname&gt;:&lt;port&gt;,&lt;hostname&gt;:&lt;port&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>SOLR_HTTP_BASIC_AUTH_USER</code></td>
+<td>The Solr user that Liberty uses to connect to Solr. This is not an administrator user.</td>
+</tr>
+<tr>
+<td><code>SOLR_HTTP_BASIC_AUTH_PASSWORD</code></td>
+<td>The Solr user password.</td>
+</tr>
+<tr>
+<td><code>ZOO_DIGEST_USERNAME</code></td>
+<td>The ZooKeeper user that is used by Liberty to connect to ZooKeeper.</td>
+</tr>
+<tr>
+<td><code>ZOO_DIGEST_PASSWORD</code></td>
+<td>The ZooKeeper user password.</td>
+</tr>
+<tr>
+<td><code>JWT_CERTIFICATE_FILE</code></td>
+<td>The path to the certificate file used to verify a generated JSON Web Token (JWT).</td>
+</tr>
+<tr>
+<td><code>JWT_PRIVATE_KEY_FILE</code></td>
+<td>The path to the private key file used to sign a generated JSON Web Token (JWT).</td>
+</tr>
+</tbody>
+</table>
+<!-- markdown-link-check-enable -->
+<p>The following environment variables enable you to use SSL:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SOLR_ZOO_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SERVER_SSL</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>GATEWAY_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_ADDITIONAL_TRUST_CERTIFICATES</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="liberty-hadr">Liberty HADR</h3>
+<p>You can run Liberty in an active/active configuration with multiple Liberty containers. In an active/active configuration, multiple instance of the i2 Analyze application run concurrently on multiple Liberty containers. One instance of the i2 Analyze application is determined to be the leader at any given time.</p>
+<p>The following tables describes the environment variables that you can use to configure HADR:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LIBERTY_HADR_MODE</code></td>
+<td>Can be set to 1 or 0. If set to 1, Liberty starts in <code>HADR</code> mode. The default is 0.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_HADR_POLL_INTERVAL</code></td>
+<td>The interval in minutes to poll for liberty leadership status. The default is 5.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_HADR_MAX_ERRORS</code></td>
+<td>The maximum number of errors allowed before Liberty initiates a leadership poll. The time span in which the errors can occur is determined by <code>LIBERTY_HADR_ERROR_TIME_SPAN</code>. The default is 5.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_HADR_ERROR_TIME_SPAN</code></td>
+<td>The time span in seconds for the <code>LIBERTY_HADR_MAX_ERRORS</code> to occur within. The default is 30.</td>
+</tr>
+</tbody>
+</table>
+<!-- markdownlint-configure-file { "MD013": false, "MD024": false } --></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

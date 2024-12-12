@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring claims-based authentication </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring claims-based authentication ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-claims-based-authentication">Configuring claims-based authentication</h1>
+
+<p>Configuring i2 Analyze and analyze-deployment-tooling for SAML and OIDC authentication and authorization.</p>
+<ol>
+<li><p>In the <code>&lt;config-name&gt;/configuration/analyze-settings.properties</code> file, add the following line:</p>
+<pre><code class="lang-properties">UserGroupsProvider=com.i2group.disco.user.ClaimsBasedUserGroupsProvider
+</code></pre></li>
+</ol>
+<p>This page includes information about configuring:</p>
+<ul>
+<li><a href="#configuring-saml-authentication">SAML authentication</a></li>
+<li><a href="#configuring-oidc-authentication">OIDC authentication</a></li>
+</ul>
+<hr>
+<h2 id="securing-the-connection-to-the-authentication-mechanism">Securing the connection to the authentication mechanism</h2>
+<p>If your authentication mechanism requires a secure connection, you must provide the trust certificate to the Liberty server in the analyze-deployment-tooling deployment.</p>
+<ol>
+<li>In your config, create a <code>configuration/secrets</code> directory.</li>
+<li>In the <code>secrets</code> folder, create an <code>additional-trust-certificates.cer</code> file.</li>
+<li>In the <code>additional-trust-certificates.cer</code> file, provide the public certificate that can be used to trust the certificate from your authentication provider.<br>You can provide multiple certificates in this file, one after another.</li>
+</ol>
+<p>For example:</p>
+<pre><code class="lang-txt">-----BEGIN CERTIFICATE-----
+MIIFVzCCAz+gAwIBAgIUc/8wnmDAUE5paROLYCojKoWhf5AwDQYJKoZIhvcNAQEL
+BQAwGDEWMBQGA1UEAwwNaTJBbmFseXplLWVpYTAeFw0yNDAyMjcxMzAwMzhaFw0y
+NTAyMjYxMzAwMzhaMBgxFjAUBgNVBAMMDWkyQW5hbHl6ZS1laWEwggIiMA0GCSqG
+BFJ7rNIcaIzh46GA0qgaHMqyY/fHW3RWEjCSn7rf2bQQEh+uIyUqTwR/sp/mmgbC
+9ZbdLjm/qxd6y4JYLwgYNopmrMaL9ig6s5rEU9V0qHkXgOvHKHtkG9vOuCSQrCqX
+McNCFAB5BK8js6xVGbWHv22U1KyHpdmSoLUHhK15aebm/tYvOgeUekZbeJDLFpjH
+lnfgBABeDSrq0Yx0LYWQOf7WGyCCqb63UPBbxKZBNpfJOQtLlohajb50EpgiLV6L
+w87f/ioQd7Rvj/TVOtoJlvlN4RaIRYqIO5R6OmQyZMVZ3++qFiUkyYthefSjpydH
+jZ/iTxgA/zjke0lnrJie75URI5QApwT1QRe40pO8jq2r+Q6VSmW/yr8agOiqjxn/
+3mub3xE4yleTzS710jXPi+gGWt4V2QytgDa+
+-----END CERTIFICATE-----
+</code></pre><hr>
+<h2 id="configuring-saml-authentication">Configuring SAML authentication</h2>
+<p>To configure SAML authentication, update the Liberty configuration to work with your identity provider and redeploy the system.</p>
+<ol>
+<li><p>Update the <code>&lt;config-name&gt;/configuration/server-extensions.xml</code> file to include the <code>samlWeb-2.0</code> feature:</p>
+<pre><code class="lang-xml">&lt;featureManager&gt;
+  ...
+  &lt;feature&gt;samlWeb-2.0&lt;/feature&gt;
+&lt;/featureManager&gt;
+</code></pre></li>
+<li><p>Redeploy your config by running the following command:</p>
+<pre><code class="lang-sh">deploy
+</code></pre><p> If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+</li>
+<li><p>Navigate to <code>https://i2analyze.eia:9443/ibm/saml20/defaultSP/samlmetadata</code>.</p>
+<p> An <code>spMetadata.xml</code> file is downloaded.</p>
+</li>
+<li><p>Provide the <code>spMetadata.xml</code> file to your identity provider and you will receive an Identity Provider (IdP) metadata file in exchange. You are given a group ID to be used to configure the server.</p>
+</li>
+<li><p>Place the IdP metadata file in the <code>&lt;config-name&gt;/configuration/liberty/resources/security</code> directory.<br>By default, Liberty expects the file to be named <code>idpMetadata.xml</code>.</p>
+</li>
+<li><p>Update the <code>server-extensions.xml</code> file to include the <code>samlWebSso20</code> element with the <code>groupIdentifier</code> attribute. To retrieve the <code>groupIdentifier</code> value, in the IdP metadata file locate the URI for the &quot;Groups&quot; claim type.</p>
+<p> For example:</p>
+<pre><code class="lang-xml">&lt;samlWebSso20 id=&quot;defaultSP&quot; groupIdentifier=&quot;http://schemas.microsoft.com/ws/2008/06/identity/claims/groups&quot;/&gt;
+</code></pre><p> If your IdP metadata file is not called <code>idpMetadata.xml</code>, you can use the <code>idpMetadata</code> attribute to specify the name of your file.</p>
+<p> For more information about all of the configuration options available for configuring SAML in Liberty, see <a href="https://openliberty.io/docs/latest/reference/feature/samlWeb-2.0.html">SAML Web Single Sign-On 2.0</a>.</p>
+</li>
+<li><p>Ensure that the group names that the system receives from the identity provider align with the groups referenced in your security schema and command access control files.</p>
+</li>
+<li><p>Redeploy your config by running the following command:</p>
+<pre><code class="lang-bash">deploy
+</code></pre><p> If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+</li>
+</ol>
+<p>Connect to the system and log in as a user that is authenticated by your identity provider.</p>
+<hr>
+<h2 id="configuring-oidc-authentication">Configuring OIDC authentication</h2>
+<p>To configure OIDC authentication, update the Liberty configuration to work with your identity provider and redeploy the system.</p>
+<ol>
+<li><p>Update the <code>&lt;config-name&gt;/configuration/server-extensions.xml</code> file to configure OIDC:</p>
+<ol>
+<li><p>Add the <code>openidConnectClient-1.0</code> feature element:</p>
+<pre><code class="lang-xml">&lt;featureManager&gt;
+  ...
+  &lt;feature&gt;openidConnectClient-1.0&lt;/feature&gt;
+&lt;/featureManager&gt;
+</code></pre></li>
+<li><p>Add the <code>&lt;openidConnectClient&gt;</code> element and populate the attributes according to the values from your identity provider.</p>
+<p> The following attributes are used in this example configuration:</p>
+<ul>
+<li><code>id</code> - an ID for this OIDC client defined in Liberty. This value is used in the redirect URI of the client in the provider.</li>
+<li><code>clientId</code> - the ID of the client for i2 Analyze defined in the provider.</li>
+<li><code>clientSecret</code> - if your provider is configured for client authentication, this is the secret used to authenticate the client with the provider.</li>
+<li><code>discoveryEndpointUrl</code> - the URL for the OpenID Endpoint configuration from the provider.</li>
+<li><code>signatureAlgorithm</code> - the algorithm used to encrypt tokens.</li>
+<li><p><code>groupIdentifier</code> - the name of the claim in the token that contains a user&#39;s group information.</p>
+<pre><code class="lang-xml">&lt;openidConnectClient 
+id=&quot;client01&quot;
+clientId=&quot;oidc-example&quot;
+clientSecret=&quot;${CLIENT_SECRET}&quot;
+discoveryEndpointUrl=&quot;https://keycloak.eia:8443/realms/oidc-example/.well-known/openid-configuration&quot;
+signatureAlgorithm=&quot;RS256&quot;
+groupIdentifier=&quot;groups&quot;
+/&gt;
+</code></pre></li>
+<li><p>To provide the value for the <code>clientSecret</code> you can use the <a href="security-and-users/security.html#application-secrets">Application Secrets</a> mechanism as demonstrated in the example, or provide the value directly.</p>
+</li>
+<li>For more information about all of the configuration options available for configuring OIDC in Liberty, see <a href="https://openliberty.io/docs/latest/reference/feature/openidConnectClient-1.0.html">OpenID Connect Client 1.0</a>.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Ensure that the group names that the system receives from the identity provider align with the groups referenced in your security schema and command access control files.</p>
+</li>
+<li><p>Redeploy your config by running the following command:</p>
+<pre><code class="lang-bash">deploy
+</code></pre><p> If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

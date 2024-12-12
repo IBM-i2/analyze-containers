@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating the environment </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating the environment ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-the-environment">Creating the environment</h1>
+
+<p>Before you can deploy i2 Analyze in a containerized environment, the local environment must be created. The local environment requires the prerequisites to be in the correct locations, and copies some artifacts and tools from the i2 Analyze toolkit.</p>
+<p>You can create the local environment by running the <code>create-environment</code> script.</p>
+<p>The following descriptions explain what the <code>create-environment</code> script does in more detail.</p>
+<h2 id="extracts-the-i2-analyze-minimal-toolkit">Extracts the i2 Analyze minimal toolkit</h2>
+<p>The script extracts the toolkit <code>tar.gz</code> located in the <code>pre-reqs</code> directory into the the <code>pre-reqs/i2Analyze</code> directory.</p>
+<h2 id="populate-image-clients">Populate image clients</h2>
+<p>The <code>create-environment</code> script creates populate client images with the contents of the <code>i2-tools</code> &amp; <code>scripts</code> folder of the toolkit.</p>
+<h2 id="etl-toolkit">ETL toolkit</h2>
+<p>The <code>create-environment</code> script creates the ETL toolkit that is built into the etl toolkit image. The etl toolkit is created in <code>images/etl_client/etltoolkit</code>.</p>
+<h2 id="example-connector-application">Example connector application</h2>
+<p>The <code>create-environment</code> script creates the example connector that is built into the connector image. More information about the example connector can be found <a href="https://github.com/i2group/analyze-connect-node-sdk/tree/main/samples/example-connector">here</a>. The connector application is created in <code>images/example_connector/app</code>.</p>
+<h2 id="liberty-application">Liberty application</h2>
+<p>The <code>create-environment</code> script creates the i2 Analyze liberty application that is built into the Liberty base image. The application consists of files that do not change based on the configuration. After the application is created, you do not need to modify it. The application is created in <code>images/liberty_ubi_base/application</code>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

@@ -79,111 +79,119 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="getting-started-with-the-analyze-deployment-tooling-repository">Getting started with the analyze-deployment-tooling repository</h1>
 
+<p>You can run the code in the analyze-deployment-tooling repository on Windows with Windows Subsystem for Linux, and on macOS.</p>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>You can run the code in the analyze-deployment-tooling repository on Windows with Windows Subsystem for Linux and MacOS.
-The system requires being connected to the internet to download required repositories.<br>If you are running the project
-from an environment without an internet connection, you must first install in an online environment with the following instructions before moving to an offline system. For more information, see <a href="reference-architecture/external_dependencies.html">External dependencies</a>.</p>
+<p>The repository code requires an internet connection in order to download other requirements. To use the repository from a location without an internet connection, you must download the requirements before you move to an offline system. For more information, see <a href="reference-architecture/external_dependencies.html">External dependencies</a>.</p>
 <h3 id="windows-subsystem-for-linux-wsl">Windows Subsystem for Linux (WSL)</h3>
-<p>If you are on <strong>Windows</strong>, you must use WSL 2 as the backend for Docker and to run the shell scripts in this repository.</p>
+<p>If you are on <em>Windows</em>, you must use WSL 2 as the backend for Docker and to run the shell scripts in this repository.</p>
 <ol>
-<li><p>In an administrator Command Prompt, run the following command:</p>
+<li><p>In an Administrator command prompt, run the following command:</p>
 <pre><code class="lang-cmd">wsl --install
 </code></pre></li>
-<li><p>Restart your machine to complete the installation.</p>
+<li><p>Restart your workstation to complete the installation.</p>
 </li>
-<li>After you restart, open the distribution. Press <strong>Start -&gt; wsl</strong></li>
-<li>You will be asked to create a User Name and Password for your Linux distribution.<br> For more information, see <a href="https://docs.microsoft.com/en-gb/windows/wsl/setup/environment#set-up-your-linux-username-and-password">Set up your Linux username and password</a>.</li>
-<li>Ensure you can access the WSL filesystem from Windows explorer. In the address bar you can use <code>\\wsl.localhost\Ubuntu</code>. Additionally it is displayed in the Quick Access Toolbar, for example:<br> <img src="../images/filesystem.png" alt="Windows Quick Access Toolbar"></li>
+<li>After you restart, open the distribution. Click <strong>Start &gt; WSL</strong>.</li>
+<li>You will be asked to create a username and password for the Linux distribution.<br>For more information, see <a href="https://docs.microsoft.com/en-gb/windows/wsl/setup/environment#set-up-your-linux-username-and-password">Set up your Linux username and password</a>.</li>
+<li><p>Verify that you can access the WSL file system from Windows Explorer. In the address bar, you can use <code>\\wsl.localhost\Ubuntu</code>. Additionally, the file system appears in the Quick Access Toolbar. For example:  </p>
+<p><img src="../images/filesystem.png" alt="Windows Quick Access Toolbar"></p>
+</li>
 </ol>
 <h3 id="docker">Docker</h3>
+<p>The containerized environment requires Docker to run the containers. The following steps describe how to install Docker Desktop on your operating system:</p>
 <ol>
 <li><p>Install Docker Desktop for your operating system. For more information about installing Docker Desktop, see <a href="https://docs.docker.com/engine/install/#desktop">https://docs.docker.com/engine/install/#desktop</a>.</p>
 <ul>
-<li><em>Windows</em> : <a href="https://docs.docker.com/desktop/wsl/">Docker Desktop WSL 2 backend on Windows</a></li>
-<li><em>Mac OS</em> : <a href="https://docs.docker.com/desktop/install/mac-install/">Install Docker Desktop on Mac</a></li>
+<li>Windows: <a href="https://docs.docker.com/desktop/wsl/">Docker Desktop WSL 2 backend on Windows</a></li>
+<li>macOS: <a href="https://docs.docker.com/desktop/install/mac-install/">Install Docker Desktop on Mac</a></li>
 </ul>
 </li>
 <li><p>After you install Docker, allocate at least 5GB of memory to Docker to run the containers in the example deployment.</p>
-<p> On Windows, Docker is automatically allocated 8GB or 50% of available memory whichever is less.</p>
-<p> For more information about modifying the resources allocated to Docker, see:</p>
+<p>On Windows, Docker is automatically allocated 8GB or 50% of available memory (whichever is less).</p>
+<p>For more information about modifying the resources allocated to Docker, see:</p>
 <ul>
 <li><a href="https://learn.microsoft.com/en-us/windows/wsl/wsl-config#example-wslconfig-file">Editing the wslconfig file on Windows</a></li>
-<li><p><a href="https://docs.docker.com/desktop/settings/mac/#resources">Docker Desktop for Mac</a></p>
-<p><strong>NOTE:</strong> You may want to enable <a href="https://docs.docker.com/desktop/use-desktop/resource-saver">Resource Saver</a> in Docker Desktop settings to reduce CPU and memory utilization. Additionally, to reduce memory utilization on WSL, it is recommended to use WSL&#39;s <code>autoMemoryReclaim</code> feature.</p>
-</li>
+<li><a href="https://docs.docker.com/desktop/settings/mac/#resources">Docker Desktop for Mac</a></li>
 </ul>
+<p><strong>Note:</strong> Consider enabling <a href="https://docs.docker.com/desktop/use-desktop/resource-saver">Resource Saver</a> in Docker Desktop settings to reduce CPU and memory use. Additionally, to reduce memory use in WSL, i2 recommends using WSL&#39;s <code>autoMemoryReclaim</code> feature.</p>
 </li>
 </ol>
-<p>Keep your Docker Desktop up-to-date as you use your system to ensure you receive stability, feature, and security updates.</p>
+<p>Keep Docker Desktop up to date as you use your system, to ensure that you receive stability, feature, and security updates.</p>
 <h3 id="code">Code</h3>
+<p>You need to download and extract the code in the analyze-deployment-tooling repository:</p>
 <ol>
-<li>Download the <code>tar.gz</code> from <a href="https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.1">https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.1</a>.</li>
-<li><p>Extract the <code>tar.gz</code> file by using the following steps:</p>
+<li><p>Download the <code>.tar.gz</code> file from <a href="https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2">https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2</a>.</p>
+</li>
+<li><p>Extract the <code>.tar.gz</code> file:</p>
 <ol>
-<li>On Windows, copy the <code>analyze-deployment-tooling-3.0.1.tar.gz</code> file to your WSL filesystem. For example: <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;</code></li>
-<li><p>Extract the <code>tar.gz</code> file (On Windows, run the commands from a WSL terminal. <strong>Start</strong> &gt; <strong>wsl</strong>):</p>
+<li>On Windows, copy the <code>analyze-deployment-tooling-3.0.2.tar.gz</code> file to your WSL filesystem. For example: <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;</code>.</li>
+<li><p>Extract the <code>tar.gz</code> file (On Windows, run these commands from a WSL terminal. <strong>Start &gt; WSL</strong>):</p>
 <pre><code class="lang-sh">cd /home/&lt;user&gt;
-</code></pre><pre><code class="lang-sh">tar -xzf analyze-deployment-tooling-3.0.1.tar.gz
-</code></pre><pre><code class="lang-sh">mv analyze-deployment-tooling-3.0.1/ analyze-deployment-tooling
+</code></pre><pre><code class="lang-sh">tar -xzf analyze-deployment-tooling-3.0.2.tar.gz
+</code></pre><pre><code class="lang-sh">mv analyze-deployment-tooling-3.0.2/ analyze-deployment-tooling
 </code></pre></li>
 </ol>
 </li>
 </ol>
 <h3 id="i2-analyze-minimal-toolkit">i2 Analyze minimal toolkit</h3>
+<p>To download the i2 Analyze minimal toolkit, you must request it from the i2 support team:</p>
 <ol>
-<li>Download the i2 Analyze V4.4.4 Minimal for Linux.<ul>
-<li>To download i2 Analyze, follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
-<li>Populate the subject of the form with <code>Request for i2 Analyze 4.4.4 minimal toolkit for Linux</code>.</li>
+<li>Download the i2 Analyze 4.4.4 minimal toolkit for Linux.<ul>
+<li>Follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
+<li>Populate the subject of the form with <strong>Request for i2 Analyze 4.4.4 minimal toolkit for Linux</strong>.</li>
 </ul>
 </li>
-<li>Rename the <code>i2analyzeMinimal_444.tar.gz</code> file to <code>i2analyzeMinimal.tar.gz</code>, then copy it to the <code>analyze-deployment-tooling/pre-reqs</code> directory.</li>
+<li>When you have the minimal toolkit, rename the <code>i2analyzeMinimal_444.tar.gz</code> file to <code>i2analyzeMinimal.tar.gz</code>, and then copy it to the <code>analyze-deployment-tooling/pre-reqs</code> directory.</li>
 </ol>
-<p><strong>Note:</strong></p>
+<p><strong>Notes:</strong></p>
 <ul>
 <li>If you used the <code>analyze-deployment-tooling</code> repository with a previous version of i2 Analyze, overwrite the existing minimal toolkit.</li>
 <li>To deploy a fix pack, download the minimal toolkit version of the fix pack and complete Step 2 above.</li>
 </ul>
 <h3 id="analysts-notebook">Analyst&#39;s Notebook</h3>
+<!-- Explain why this is necessary -->
 <ol>
-<li><p>Download <em>i2 Analyst&#39;s Notebook</em> version 10.</p>
+<li><p>Download i2 Analyst&#39;s Notebook version 10.</p>
 <ul>
-<li>To download i2 Analyst&#39;s Notebook, follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
-<li>Populate the subject of the form with <code>Request for i2 Analyst&#39;s Notebook 10</code>.</li>
+<li>Follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
+<li>Populate the subject of the form with <strong>Request for i2 Analyst&#39;s Notebook 10</strong>.</li>
 </ul>
 </li>
-<li><p>Install i2 Analyst&#39;s Notebook on a Windows machine.
-<strong>Note</strong>: Ensure that you choose to install <code>i2 Analyze Schema Designer</code> as part of the installation process.</p>
-<blockquote><p>Note: If you are running Docker on MacOS, you can install Analyst&#39;s Notebook on a Windows virtual machine.</p>
-</blockquote>
-<p> For more information, see <a href="https://docs.i2group.com/anb/installing_anb.html">Installing i2 Analyst&#39;s Notebook</a>.</p>
+<li><p>Install i2 Analyst&#39;s Notebook on a Windows workstation.</p>
 </li>
 </ol>
-<h2 id="development-environment-prerequisites">Development environment prerequisites</h2>
-<p>To deploy and develop an i2 Analyze configuration, you need to set up the development environment. Visual Studio Code is used as the IDE and you must modify your hosts file to connect to a deployment.</p>
-<p>On Windows you can run the <code>install-pre-reqs.bat</code> script to install Visual Studio Code and modify the hosts file. If you are on MacOS manually set up the development environment.</p>
+<p><strong>Notes:</strong></p>
 <ul>
-<li><a href="#windows-pre-requisites-installation">Windows script</a>.</li>
-<li><a href="#macos-pre-requisites-installation">MacOS</a>.</li>
+<li>Ensure that you choose to install <strong>i2 Analyze Schema Designer</strong> as part of the installation process.</li>
+<li>If you are running Docker on macOS, you can install Analyst&#39;s Notebook on a Windows virtual machine.</li>
 </ul>
-<h3 id="windows-pre-requisites-installation">Windows pre-requisites installation</h3>
+<p>For more information, see <a href="https://docs.i2group.com/anb/installing_anb.html">Installing i2 Analyst&#39;s Notebook</a>.</p>
+<h2 id="development-environment-prerequisites">Development environment prerequisites</h2>
+<p>To develop and deploy an i2 Analyze configuration, you need to set up the development environment. Visual Studio Code is used as the IDE, and you must modify your hosts file to connect to a deployment.</p>
+<p>On Windows, you can run the <code>install-pre-reqs.bat</code> script to install Visual Studio Code and modify the hosts file. If you are using macOS, you must set up the development environment manually.</p>
+<ul>
+<li><a href="#windows-prerequisites-installation">Windows script</a></li>
+<li><a href="#macos-prerequisites-installation">macOS</a></li>
+</ul>
+<h3 id="windows-prerequisites-installation">Windows prerequisites installation</h3>
 <p>The process for installing pre-requisites on Windows includes two stages:</p>
 <ol>
 <li><a href="#manual-visual-studio-code-installation">Manual Visual Studio Code installation</a></li>
-<li><a href="#scripted-pre-requisites-installation">Scripted pre-requisites installation</a></li>
+<li><a href="#scripted-prerequisites-installation">Scripted pre-requisites installation</a></li>
 </ol>
 <h4 id="manual-visual-studio-code-installation">Manual Visual Studio Code installation</h4>
 <p>Download and install <a href="https://code.visualstudio.com/download">Visual Studio Code</a>.</p>
-<h4 id="scripted-pre-requisites-installation">Scripted pre-requisites installation</h4>
+<h4 id="scripted-prerequisites-installation">Scripted prerequisites installation</h4>
 <p>The <code>install-pre-reqs.bat</code> script installs the required extensions and updates your hosts file. The script checks if you already have the prerequisites installed and does not overwrite them.</p>
 <ol>
 <li>Open Windows Explorer.</li>
-<li>Navigate to the <code>analyze-deployment-tooling</code> directory. For example, <code>`\\wsl.localhost\Ubuntu\home\&lt;user&gt;\analyze-deployment-tooling</code>.</li>
-<li>Right-click on the <code>install-pre-reqs.bat</code> file.</li>
-<li>Click <code>Run as administrator</code>.</li>
+<li>Navigate to the <code>analyze-deployment-tooling</code> directory. For example, <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;\analyze-deployment-tooling</code>.</li>
+<li>Right-click the <code>install-pre-reqs.bat</code> file.</li>
+<li>Click <strong>Run as administrator</strong>.</li>
 <li>Ensure that the script ran successfully by checking the output in the command prompt window.</li>
 <li>Press any key to close the window.</li>
 </ol>
-<h3 id="macos-pre-requisites-installation">MacOS pre-requisites installation</h3>
+<h3 id="macos-prerequisites-installation">macOS prerequisites installation</h3>
+<p>On macOS, you must install Visual Studio Code and modify the hosts files yourself.</p>
 <h4 id="install-visual-studio-code">Install Visual Studio Code</h4>
 <ol>
 <li><p>Download and install <a href="https://code.visualstudio.com/download">Visual Studio Code</a></p>
@@ -191,17 +199,15 @@ from an environment without an internet connection, you must first install in an
 <li>After you install Visual Studio Code, add it to your PATH. For more information, see <a href="https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line">Launching from the command line</a>.</li>
 </ul>
 </li>
-<li><p>Install the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">Dev Containers extension</a></p>
+<li><p>Install the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">Dev Containers extension</a>.</p>
 </li>
 </ol>
-<h4 id="modify-the-hosts-file">Modify the hosts file</h4>
+<h4 id="modify-the-macos-hosts-file">Modify the macOS hosts file</h4>
 <p>To enable you to connect to a deployment, the Solr Web UI, the database, and the Prometheus Web UI, update your hosts file to include entries for the containers.</p>
 <ol>
-<li><p>Run the following commands to update the <code>hosts</code> file for your operating system:</p>
-<ul>
-<li>run <code>sudo vi /etc/hosts</code> to edit the hosts.</li>
-</ul>
-</li>
+<li><p>Run the following command to open the macOS <code>hosts</code> file:</p>
+<pre><code class="lang-sh">sudo vi /etc/hosts
+</code></pre></li>
 <li><p>Add the following lines to your <code>hosts</code> file:</p>
 <pre><code class="lang-sh">127.0.0.1 i2analyze.eia
 127.0.0.1 postgres.eia
@@ -210,39 +216,38 @@ from an environment without an internet connection, you must first install in an
 127.0.0.1 sqlserver.eia
 </code></pre></li>
 </ol>
-<p>For your for your virtual machine to connect to i2 Analyze, complete the following:</p>
+<h4 id="modify-the-windows-hosts-file">Modify the Windows hosts file</h4>
+<p>For your Windows virtual machine to connect to i2 Analyze, complete the following:</p>
 <ol>
-<li><p>On your MacOS, go to <strong>Settings</strong> &gt; <strong>General</strong> &gt; <strong>Sharing</strong>. Click the <code>i</code> information next to <strong>File Sharing</strong>. Turn on File Sharing and copy the IP address displayed. For example, <code>172.16.100.1</code>.</p>
+<li><p>In macOS, go to <strong>Settings &gt; General &gt; Sharing</strong>. Click the <code>i</code> button next to <strong>File Sharing</strong>. Turn on File Sharing and copy the IP address displayed. For example, <code>172.16.100.1</code>.</p>
 </li>
-<li><p>Then, on your Windows virtual machine add the same lines above to the file with the identified IP address.  To edit the hosts file, open an Administrator Command Prompt and run <code>Notepad.exe C:\Windows\System32\drivers\etc\hosts</code>.<br>For example <code>172.16.100.1 i2analyze.eia</code>.</p>
+<li><p>On your Windows virtual machine, open an Administrator Command Prompt and run <code>Notepad.exe C:\Windows\System32\drivers\etc\hosts</code>.</p>
 </li>
-<li>To ensure that your hosts file is configured correctly, open a command prompt in your virtual machine and run: <code>ping i2analyze.eia</code>.<br>If you get a successful response, your virtual machine is configured correctly.</li>
+<li><p>Add the same lines as above to the <code>hosts</code> file, but with the identified IP address. For example, <code>172.16.100.1 i2analyze.eia</code>.</p>
+</li>
+<li><p>To ensure that your hosts file is configured correctly, open a command prompt in your virtual machine and run: <code>ping i2analyze.eia</code>. If you get a successful response, your virtual machine is configured correctly.</p>
+</li>
 </ol>
 <h2 id="using-visual-studio-code">Using Visual Studio Code</h2>
+<p>On Windows, use the following instructions to use WSL.</p>
 <ol>
-<li><p>On Windows, use the following instructions to use WSL.</p>
-<ol>
-<li>Press <strong>F1</strong> and type <code>WSL: Connect to WSL</code> and select it.</li>
-</ol>
+<li><p>Press <strong>F1</strong> and type <code>WSL: Connect to WSL</code> and select it.</p>
 </li>
-<li><p>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS) and type <code>Dev Containers: Open Folder in Container...</code> and select it. In the file explorer, navigate to your <code>analyze-deployment-tooling</code> directory. For example: <code>/home/&lt;user-name&gt;/analyze-deployment-tooling</code>.<br>If you are prompted, click <strong>Trust Folder &amp; Continue</strong>.</p>
+<li><p>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in macOS) and type <code>Dev Containers: Open Folder in Container...</code> and select it. In the file explorer, navigate to your <code>analyze-deployment-tooling</code> directory. For example: <code>/home/&lt;user-name&gt;/analyze-deployment-tooling</code>.<br>If you are prompted, click <strong>Trust Folder &amp; Continue</strong>.</p>
 </li>
-<li>After the dev container starts, if you are prompted, click <strong>Install</strong> in the pop-up that is displayed that prompts you to install the recommended VS Code extensions.</li>
-</ol>
+<li><p>After the dev container starts, if you are prompted, click <strong>Install</strong> in the pop-up that is displayed that prompts you to install the recommended VS Code extensions.</p>
 <p>Your config dev environment is correctly opened when the following is displayed in the bottom left-hand corner of the VS Code window:<br><img src="../images/vscode_green.png" alt="Dev Container: Analyze Containers Dev" title="VS Code status"><br>For more information about VS Code dev containers, see <a href="https://code.visualstudio.com/docs/remote/containers">Developing in a container</a>.</p>
-<ol>
-<li>To run the scripts in the analyze-deployment-tooling repository, use the VS Code integrated terminal. To open the integrated terminal, click <strong>Terminal</strong> &gt; <strong>New Terminal</strong>.  </li>
+</li>
+<li><p>To run the scripts in the analyze-deployment-tooling repository, use the VS Code integrated terminal. To open the integrated terminal, click <strong>Terminal</strong> &gt; <strong>New Terminal</strong>.  </p>
+</li>
 </ol>
 <h2 id="install-analyze-deployment-tooling">Install analyze-deployment-tooling</h2>
 <p>To download all the required images and configure your environment, run:</p>
-<pre><code class="lang-sh">  ./bootstrap
+<pre><code class="lang-sh">./bootstrap
 </code></pre><p>This command can take a while to run depending on your internet connection and the speed of your machine.</p>
-<hr>
 <h2 id="what-to-do-next">What to do next</h2>
-<ul>
-<li>Create and use a development environment to develop an i2 Analyze configuration. For more information, see <a href="deploy_config_dev.html">Configuration development environment</a>.</li>
-<li>Create an example pre-production deployment that is used to demonstrate how i2 Analyze can be deployed in a distributed cloud environment. For more information, see <a href="reference-architecture/deploy_pre_prod.html">Pre-production example environment</a>.</li>
-</ul>
+<p>Create and use a development environment to develop an i2 Analyze configuration. For more information, see <a href="deploy_config_dev.html">Configuration development environment</a>.</p>
+<p>Create an example pre-production deployment that is used to demonstrate how i2 Analyze can be deployed in a distributed cloud environment. For more information, see <a href="reference-architecture/deploy_pre_prod.html">Pre-production example environment</a>.</p>
 <p>To understand how the containerized environment is created, you can review the documentation that explains the images, containers, tools, and functions:</p>
 <ul>
 <li><a href="images-and-containers/images.html">Images and containers</a></li>

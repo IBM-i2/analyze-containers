@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Connector Designer </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Connector Designer ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="connector-designer">Connector Designer</h1>
+
+<p>A Connector Designer container is used to host the Connector Designer server that is used to create connectors from a user interface.</p>
+<h2 id="running-a-connector-designer-container">Running a Connector Designer container</h2>
+<p>The following <code>docker run</code> command runs a Connector Designer container:</p>
+<pre><code class="lang-bash">  docker run -d \
+    --name=&quot;connector_designer&quot; \
+    --net &quot;eia&quot; \
+    --net-alias &quot;connector_designer.eia&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling:/home/&lt;user-name&gt;/analyze-deployment-tooling&quot; \
+    -v &quot;configs/&lt;config-name&gt;/configuration/connector_designer/data:/data&quot; \
+    -v &quot;configs/&lt;config-name&gt;/configuration/connector_designer/custom-functions:/custom-functions&quot; \
+    -v &quot;/environment-secrets/simulated-secret-store/connectordesigner:/run/secrets&quot; \
+    -e &quot;ANALYZE_CONTAINERS_ROOT_DIR=/home/&lt;user-name&gt;/analyze-deployment-tooling&quot; \
+    -e &quot;TTY=false&quot; \
+    -e CONFIG_NAME=&quot;&lt;config-name&gt;&quot; \
+    -v &quot;/var/run/docker.sock:/var/run/docker-host.sock&quot; \
+    -e &quot;USER_ID=$(id -u)&quot; -e &quot;GROUP_ID=$(id -g)&quot; \
+    -e I2ANALYZE_SERVER_URL=&quot;https://i2analyze.eia:9046&quot; \
+    -e CONNECTORS_CONFIG_URI=&quot;https://i2analyze.eia:9046/connector-designer&quot; \
+    -e CONTEXT_ROOT=&quot;opal&quot; \
+    -e JWT_ISSUER=&quot;https://i2analyze.eia:9046&quot; \
+    -e CONNECTORS_CONFIG_URI=&quot;https://i2analyze.eia:9046&quot; \
+    -e CONNECTOR_DESIGNER_CONTEXT_ROOT=&quot;connector-designer&quot; \
+    -e CONNECTORS_CONTEXT_ROOT=&quot;connectors&quot; \
+    -e ACCEPT_EULA=&quot;Y&quot; \
+    -e DOCKER_BUILDKIT=1 \
+    -e SSL_ENABLED=true \
+    -e SSL_CERTIFICATE_FILE=&quot;/run/secrets/server.cer&quot; \
+    -e SSL_PRIVATE_KEY_FILE=&quot;/run/secrets/server.key&quot; \
+    -e SSL_CA_CERTIFICATE_FILE=&quot;/run/secrets/CA.cer&quot; \
+    -e SSL_ADDITIONAL_TRUST_CERTIFICATES=&quot;/run/secrets/additional_trust_certificates.cer&quot; \
+    -e JWT_CERTIFICATE_FILE=&quot;/run/secrets/jwt_sign.cer&quot; \
+    &quot;i2group/i2eng-connector-designer:1&quot;
+</code></pre><h3 id="bind-mounts">Bind mounts</h3>
+<p>A bind mount can be used to persist data and custom functions that is generated and used in the Connector Designer container. To configure the Connector Designer container to use these bind mounts, specify the <code>-v</code> option with the path to the directory that is mounted in the container.</p>
+<p>To enable Connector Designer to deploy connectors, the <code>/var/run/docker.sock</code> and <code>analyze-deployment-tooling</code> root directories must be mounted to the container.</p>
+<ul>
+<li><strong>Secrets</strong>:
+A directory that contains all of the secrets that this tool requires. Specifically, this includes credentials to access the database and certificates used in SSL. The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>SSL_CA_CERTIFICATE_FILE</code> to locate the secrets.</li>
+</ul>
+<p>The <code>SSL_ADDITIONAL_TRUST_CERTIFICATES</code> environment variable is used to specify the location of the additional trust certificates. The certificates are used to enable trust between the connectors created in Connector Designer and any secured resources the connector is connecting to. For example a REST endpoint that requires SSL.</p>
+<p>In a production environment, the orchestration environment can provide the secrets to the file system or the secrets can be passed in via environment variables. The mechanism that is used here simulates the orchestration system providing the secrets as files. This is achieved by using a bind mount. In production this would not be required.</p>
+<h3 id="environment-variables">Environment variables</h3>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ANALYZE_CONTAINERS_ROOT_DIR</code></td>
+<td>The root directory of analyze-deployment-tooling.</td>
+</tr>
+<tr>
+<td><code>TTY</code></td>
+<td>The terminal type.</td>
+</tr>
+<tr>
+<td><code>CONFIG_NAME</code></td>
+<td>The name of the configuration.</td>
+</tr>
+<tr>
+<td><code>I2ANALYZE_SERVER_URL</code></td>
+<td>The URL of the i2 Analyze server (internal to the docker network).</td>
+</tr>
+<tr>
+<td><code>CONNECTORS_CONFIG_URI</code></td>
+<td>The URL of the connectors configuration (internal to the docker network).</td>
+</tr>
+<tr>
+<td><code>ACCEPT_EULA</code></td>
+<td>Accept the End User License Agreement.</td>
+</tr>
+<tr>
+<td><code>CONTEXT_ROOT</code></td>
+<td>The context root of the application. Defaults to <code>opal</code></td>
+</tr>
+<tr>
+<td><code>JWT_ISSUER</code></td>
+<td>The issuer of the JWT.</td>
+</tr>
+<tr>
+<td><code>CONNECTOR_DESIGNER_CONTEXT_ROOT</code></td>
+<td>The context root of the Connector Designer application.</td>
+</tr>
+<tr>
+<td><code>CONNECTORS_CONTEXT_ROOT</code></td>
+<td>The context root of the connectors created by connector designer.</td>
+</tr>
+<tr>
+<td><code>USER_ID</code></td>
+<td>The id of the current user.</td>
+</tr>
+<tr>
+<td><code>GROUP_ID</code></td>
+<td>The id of the current user&#39;s group.</td>
+</tr>
+<tr>
+<td><code>DOCKER_BUILDKIT</code></td>
+<td>Enable Docker BuildKit.</td>
+</tr>
+<tr>
+<td><code>JWT_CERTIFICATE_FILE</code></td>
+<td>The location of the JWT certificate file.</td>
+</tr>
+</tbody>
+</table>
+<p>The following environment variables enable you to use SSL:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SSL_ENABLED</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_ADDITIONAL_TRUST_CERTIFICATES</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

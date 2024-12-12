@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring web content </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring web content ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-web-content">Configuring web content</h1>
+
+<p>The system supports serving web content including HTML, JavaScript, and images from the <code>/configs/&lt;config_name&gt;/configuration/web-dir-extensions</code> directory. Any referenced files must also be in the directory.</p>
+<p>The web content that you can configure includes:</p>
+<ul>
+<li>A prompt to users that they must accept before they can connect to i2 Analyze.<ul>
+<li>To configure the contents of this prompt, provide or update the <code>privacyagreement.html</code> file in the <code>web-dir-extensions</code> directory.</li>
+<li>To enable the prompt, add <code>EnablePrivacyPrompt=true</code> to the <code>analyze-settings.properties</code> file.<br>For more information about the contents of the prompt and any associated i2 Analyze settings, see <a href="https://docs.i2group.com/analyze/4.4.4/enable_prompt.html">Configuring a privacy prompt</a>.</li>
+</ul>
+</li>
+<li>A welcome page that introduces your deployment of i2 Analyze to users when they log in from Analyst&#39;s Notebook.<ul>
+<li>To configure the contents of this page, provide or update the <code>welcomepage.html</code> file in the <code>web-dir-extensions</code> directory.</li>
+<li>To enable the welcome page, add <code>EnableWelcomePage=true</code> to the <code>analyze-settings.properties</code> file.<br>For more information about the contents of the welcome page and any associated i2 Analyze settings, see <a href="https://docs.i2group.com/analyze/4.4.4/displaying-welcome-page.html">Displaying a welcome page in Analyst&#39;s Notebook</a>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Note:</strong> Example <code>privacyagreement.html</code> and <code>welcomepage.html</code> files are provided in the <code>web-dir-extensions</code> directory.</p>
+<h2 id="updating-the-deployment-with-new-web-content">Updating the deployment with new web content</h2>
+<p>After you change the contents of the <code>web-dir-extensions</code> directory, re-deploy the config:</p>
+<pre><code class="lang-bash">deploy
+</code></pre><p>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+<p>Your deployment is running with the updated web files.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

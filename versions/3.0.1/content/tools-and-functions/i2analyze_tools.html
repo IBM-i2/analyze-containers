@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>i2 Analyze tools </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="i2 Analyze tools ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="i2-analyze-tools">i2 Analyze tools</h1>
+
+<p>The i2 Analyze deployment toolkit includes a number of tools that enable you to deploy and administer i2 Analyze.</p>
+<blockquote><p>Note the <code>TOOLKIT_DIR</code> environment variable is set by the i2Tools image and does not need to be passed to the container at runtime.</p>
+</blockquote>
+<h2 id="generate-information-store-scripts">Generate Information Store scripts</h2>
+<p>The <code>generateInfoStoreToolScripts.sh</code> script is used to generate Information Store scripts from templates in <code>i2-tools/scripts/database-template</code> directory located inside the i2Tools image.
+The generated scripts end up in in the <code>GENERATED_DIR</code>.
+The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The root location where any generated scripts are created.</td>
+</tr>
+<tr>
+<td><code>DB_TRUSTSTORE_LOCATION</code></td>
+<td>The location of the <code>truststore.jks</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="schema-update-tool">Schema update tool</h2>
+<p>The <code>generateUpdateSchemaScripts.sh</code> script is used to update the i2 Analyze schema in the Information Store. To update the schema, the tool generates a number of SQL scripts that must be run against the Information Store database.</p>
+<p>When you run the tool, it compares the schema file in the configuration directory against the schema that is stored in the <code>IS_META.I2_SCHEMAS</code> table in Information Store database. If they are different, the schema in the database is updated with the one from the configuration.</p>
+<p>Then, the <code>IS_DATA</code> table structure is compared with the schema <code>IS_META.I2_SCHEMAS</code>. If the <code>IS_DATA</code> objects are different, the scripts to update the objects are generated.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The root location where any generated scripts are created. <code>/update</code> is appended to the specified path.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>toolkit/i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+<li><code>./database/{dialect}/InfoStore/generated/update</code></li>
+</ul>
+<p>You can run the generated scripts against the database manually, or you can use the <a href="#run-database-scripts-tool">Run database scripts tool</a>.</p>
+<h2 id="security-schema-update-tool">Security schema update tool</h2>
+<p>The <code>updateSecuritySchema.sh</code> script is used to update the security schema in a deployment of i2 Analyze. When you run the script, the security schema file in the configuration directory is compared against the security schema that is stored in the <code>IS_META.I2_SCHEMAS</code> table in Information Store database. If they are different, the security schema in the database is updated with the one from the configuration.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>toolkit/i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+</ul>
+<h2 id="run-database-scripts-tool">Run database scripts tool</h2>
+<p>You can run any generated scripts against the database manually, or you can use the <code>runDatabaseScripts.sh</code> script. This tool can be found in the <code>GENERATED_DIR</code> that was generated by the <code>generateInfoStoreToolScripts.sh</code> script.
+The script requires the following environment variables to be set:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="manage-solr-indexes-tool">Manage Solr indexes tool</h2>
+<p>By using the <code>runIndexCommand.sh</code> script, you can pause and resume indexing on any index, upload system match rules, and switch a standby index to be the live index.</p>
+<blockquote><p>Note: Switching from a standby index to live is possible for the following index types: chart, match, and main.</p>
+</blockquote>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZOO_USERNAME</code></td>
+<td>The name of the administrator user for performing administration tasks.</td>
+</tr>
+<tr>
+<td><code>ZOO_PASSWORD</code></td>
+<td>The password for the administrator user.</td>
+</tr>
+<tr>
+<td><code>ZK_HOST</code></td>
+<td>The connection string for each ZooKeeper server to connect to.</td>
+</tr>
+<tr>
+<td><code>ZOO_SSL_TRUST_STORE_LOCATION</code></td>
+<td>The location of the <code>truststore.jks</code> file to be used for SSL connections to ZooKeeper.</td>
+</tr>
+<tr>
+<td><code>ZOO_SSL_TRUST_STORE_PASSWORD</code></td>
+<td>The password for the truststore.</td>
+</tr>
+<tr>
+<td><code>ZOO_SSL_KEY_STORE_LOCATION</code></td>
+<td>The location of the <code>keystore.jks</code> file to be used for SSL connections to ZooKeeper.</td>
+</tr>
+<tr>
+<td><code>ZOO_SSL_KEY_STORE_PASSWORD</code></td>
+<td>The password for the keystore.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of your configuration. This is used to locate the <code>system-match-rules.xml</code>.</td>
+</tr>
+<tr>
+<td><code>TASK</code></td>
+<td>The index control task to perform.</td>
+</tr>
+</tbody>
+</table>
+<p>You can specify the following values for <code>TASK</code>:</p>
+<ul>
+<li><code>UPDATE_MATCH_RULES</code></li>
+<li><code>SWITCH_STANDBY_MATCH_INDEX_TO_LIVE</code></li>
+<li><code>CLEAR_STANDBY_MATCH_INDEX</code></li>
+<li><code>REBUILD_STANDBY_MAIN_INDEX</code></li>
+<li><code>SWITCH_STANDBY_MAIN_INDEX_TO_LIVE</code></li>
+<li><code>CLEAR_STANDBY_MAIN_INDEX</code></li>
+<li><code>REBUILD_STANDBY_CHART_STORE_INDEX</code></li>
+<li><code>SWITCH_STANDBY_CHART_STORE_INDEX_TO_LIVE</code></li>
+<li><code>CLEAR_STANDBY_CHART_STORE_INDEX</code></li>
+<li><code>PAUSE_INDEX_POPULATION</code></li>
+<li><code>RESUME_INDEX_POPULATION</code></li>
+</ul>
+<p>For more information about the index control tasks, see <a href="https://docs.i2group.com/analyze/4.4.4/toolkit_commands.html">Index control toolkit tasks</a>.</p>
+<h2 id="information-store-database-consistency-tool">Information Store database consistency tool</h2>
+<p>The <code>dbConsistencyCheckScript.sh</code> script checks that the database objects in the <code>IS_DATA</code> database schema are consistent with the information in <code>IS_META</code>.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>toolkit/i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+</ul>
+<p>If the database is a consistent state with the schema, the following message will be returned in the console</p>
+<pre><code class="lang-bash">The Database is in a consistent state.
+</code></pre><p>If the database is an inconsistent state with the schema, errors will be reported in the console where the tool was run.
+For example:</p>
+<pre><code class="lang-bash">The following changes to the Information Store database tables and/or views have been detected:
+MODIFIED ITEM TYPES
+        Item type: Arrest
+                ADDED PROPERTY TYPES
+                        Property type: Voided
+        Item type: Arrest
+The following changes to the Information Store database tables and/or views have been detected:
+ADDED ITEM TYPES
+        Item type: Vehicle
+&gt; ERROR [DatabaseConsistencyCheckCLI] - Information Store database is inconsistent with the schema stored in the database
+</code></pre><h2 id="schema-validation-tool">Schema validation tool</h2>
+<p>The <code>validateSchemaAndSecuritySchema.sh</code> script checks that the database objects in the <code>IS_META</code> database schema are consistent with the i2 Analyze schema and the security schema in the <code>IS_META.I2_SCHEMAS</code>.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>toolkit/i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+</ul>
+<p>If the schemas are valid no errors will be reported. However, if the schemas are the same as the version of the database this information will be returned to the console.</p>
+<p>If the schemas contain validation errors will be reported to the console where the tool was run.</p>
+<p>For example:</p>
+<pre><code class="lang-log">VALIDATION ERROR: Schema contains duplicate type EntityType with ID &#39;ET5&#39;.
+</code></pre><h2 id="generate-static-database-scripts-tool">Generate static database scripts tool</h2>
+<p>The <code>generateStaticInfoStoreCreationScripts.sh</code> script injects values from your configuration into the static database scripts.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The root location where any generated scripts are created. <code>/static</code> is appended to the specified path.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>toolkit/i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+<li><code>../scripts/database/{dialect}/InfoStore/generated/static</code></li>
+</ul>
+<p>The script creates the <code>.sql</code> files in the location of the <code>GENERATED_DIR</code>  that was supplied to the container.</p>
+<h3 id="run-static-database-scripts-tool">Run static database scripts tool</h3>
+<p>The <code>runStaticScripts.sh</code> script runs the static scripts that create the Information Store database. This tool can be found in the <code>GENERATED_DIR</code> that was generated by the <code>generateInfoStoreToolScripts.sh</code> script.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The location of the folder that contains the static scripts to be run. <code>/static</code> is appended to the specified path.</td>
+</tr>
+<tr>
+<td><code>CA_CERT_FILE</code></td>
+<td>The location of the certificate file on the docker container.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GENERATED_DIR</code> environment variable must be present and is not defaulted.</p>
+<h2 id="generate-dynamic-information-store-creation-scripts-tool">Generate dynamic Information Store creation scripts tool</h2>
+<p>The <code>generateDynamicInfoStoreCreationScripts.sh</code> script creates the <code>.sql</code> scripts that are required to create the database objects that align to your schema in the configuration.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The location where any generated scripts are created. <code>/dynamic</code> is appended to the specified path.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+<li><code>../scripts/database/{dialect}/InfoStore/generated/dynamic</code></li>
+</ul>
+<p>The script creates the <code>.sql</code> files in the location of the <code>GENERATED_DIR</code>  that was supplied to the container.</p>
+<h2 id="generate-database-upgrade-scripts-tool">Generate database upgrade scripts tool</h2>
+<p>The <code>generateDatabaseUpgradeScripts.sh</code> script creates the <code>.sql</code> scripts that are required to upgrade the database to the latest version.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TOOLKIT_DIR</code></td>
+<td>The location of the root of the deployment toolkit.</td>
+</tr>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The location where any generated scripts are created. <code>/upgrade</code> is appended to the specified path.</td>
+</tr>
+</tbody>
+</table>
+<p>If these environment variables are not present, the script uses the following relative paths from the <code>i2-tools/scripts</code> directory:</p>
+<ul>
+<li><code>../../toolkit</code></li>
+<li><code>../configuration</code></li>
+<li><code>../scripts/database/{dialect}/InfoStore/generated/upgrade</code></li>
+</ul>
+<p>The script creates the <code>.sql</code> files in the location of the <code>GENERATED_DIR</code>  that was supplied to the container.</p>
+<h3 id="run-dynamic-information-store-creation-scripts-tool">Run dynamic Information Store creation scripts tool</h3>
+<p>The <code>runDynamicScripts.sh</code> script runs the dynamic scripts that create the Information Store database. This tool can be found in the <code>GENERATED_DIR</code> that was generated by the <code>generateInfoStoreToolScripts.sh</code> script.</p>
+<p>The <code>run_sql_server_command_as_dba</code> client function is used to run the <code>runDynamicScripts.sh</code> script that create the Information store and schemas.</p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-sql-server-command-as-dba">run_sql_server_command_as_dba</a></li>
+</ul>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user (Note: you can set DB_PASSWORD_FILE with the location of the file containing the password).</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The location of the folder that contains the scripts to be run. <code>/dynamic</code> is appended to the specified path.</td>
+</tr>
+<tr>
+<td><code>CA_CERT_FILE</code></td>
+<td>The location of the certificate file on the docker container.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GENERATED_DIR</code> environment variable must be present and is not defaulted.</p>
+<h3 id="run-database-creation-scripts-tool">Run database creation scripts tool</h3>
+<p>The <code>runDatabaseCreationScripts.sh</code> script runs the <code>create-database-storage.sql</code> &amp; <code>0001-create-schemas.sql</code> database creation scripts. These scripts create the Information Store database and schemas. This tool can be found in the <code>GENERATED_DIR</code> that was generated by the <code>generateInfoStoreToolScripts.sh</code> script.</p>
+<p>The script requires connection property values to be loaded from environment variables or from the <code>Connection.properties</code> file in the configuration. For more information about the connection properties, see  <a href="#connection-properties">Loading connection properties</a>.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user (Note: you can set DB_PASSWORD_FILE with the location of the file containing the password).</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The location of the folder that contains the scripts to be run. <code>/dynamic</code> is appended to the specified path.</td>
+</tr>
+<tr>
+<td><code>CA_CERT_FILE</code></td>
+<td>The location of the certificate file on the docker container.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GENERATED_DIR</code> environment variable must be present and is not defaulted.</p>
+<h2 id="remove-data-from-the-information-store-tool">Remove data from the Information Store tool</h2>
+<p>The <code>runClearInfoStoreData.sh</code> script removes all the data from the Information Store database.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The path to the root of the directory that contains the generated static scripts. <code>/static</code> is appended to the value of <code>GENERATED_DIR</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GENERATED_DIR</code> environment variable must be present and is not defaulted.</p>
+<p>For more information about clearing data from the Information Store, see <a href="https://docs.i2group.com/analyze/4.4.4/t_clearing_data.html">Clearing Data</a></p>
+<h2 id="generate-solr-config">Generate Solr Config</h2>
+<p>The <code>generateSolrSchemas.sh</code>generates Solr Config by taking the template <code>schema-template-definition.xml</code> file from the <code>configuration/solr</code> and generating solr config per index.
+For each index, the tool will generate <code>solrconfig.xml</code>, <code>managed_schema</code> and <code>synonyms-&lt;LOCALE&gt;.txt</code> file.
+<strong>NOTE:</strong> To change the Solr locale, uncomment the relevant section from the <code>schema-template-definition.xml</code> file before you deploy.</p>
+<p>The script requires the following environment variables to be present:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CONFIG_DIR</code></td>
+<td>The location of the root of the configuration directory.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="connection-properties">Connection properties</h2>
+<p>Some of the tools require database connection properties such as database username, database truststore location, and password. For example, in order to communicate with the database so that the tool can run. These properties can be loaded from a file called <code>Connection.properties</code> that is located in your configuration in the following directory <code>configuration/fragments/common/WEB-INF/classes/</code>.</p>
+<p>For example:</p>
+<pre><code class="lang-properties">DBName=ISTORE
+DBDialect=sqlserver
+DBServer=sqlserver.eia
+DBPort=1433
+DBOsType=UNIX
+DBSecureConnection=true
+DBCreateDatabase=false
+db.installation.dir=/opt/mssql-tools
+db.database.location.dir=/opt/mssql
+</code></pre><p>In the docker environment, these properties can be alternatively loaded via environment variables passed into the container.</p>
+<p>The following environment variables are supported for supplying connection properties:</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_USERNAME</code></td>
+<td>The name of the user that has the write access to the database.</td>
+</tr>
+<tr>
+<td><code>DB_PASSWORD</code></td>
+<td>The password for the user (Note: you can set DB_PASSWORD_FILE with the location of the file containing the password).</td>
+</tr>
+<tr>
+<td><code>DB_DIALECT</code></td>
+<td>The dialect for the database. Can be <code>sqlserver</code>.</td>
+</tr>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>DB_NAME</code></td>
+<td>The name of the Information Store database.</td>
+</tr>
+<tr>
+<td><code>DB_OS_TYPE</code></td>
+<td>The Operating System that the database is on. Can be <code>UNIX</code>, <code>WIN</code>, or <code>AIX</code>.</td>
+</tr>
+<tr>
+<td><code>DB_INSTALL_DIR</code></td>
+<td>Specifies the database CMD location.</td>
+</tr>
+<tr>
+<td><code>DB_LOCATION_DIR</code></td>
+<td>Specifies the location of the database.</td>
+</tr>
+<tr>
+<td><code>DB_TRUSTSTORE_LOCATION</code></td>
+<td>The location of the <code>truststore.jks</code>. *</td>
+</tr>
+<tr>
+<td><code>DB_TRUSTSTORE_PASSWORD</code></td>
+<td>The password for the truststore. *</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The security settings are only required if your database is configured to use a secure connection.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

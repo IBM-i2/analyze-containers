@@ -79,37 +79,41 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="i2-analyze-containerized-deployment">i2 Analyze containerized deployment</h1>
 
-<p>The analyze-deployment-tooling repository provides a containerized configuration development environment that you can use to develop i2 Analyze configurations, and a reference architecture to demonstrate how to build Docker images and enable you to deploy, configure, and run i2 Analyze on Docker containers.</p>
-<p>The repository is designed to be used with the i2 Analyze minimal toolkit. The minimal toolkit is similar to the standard i2 Analyze deployment toolkit, except that it only includes the minimum amount of application and configuration files.</p>
+<p>The analyze-deployment-tooling repository provides a containerized configuration development environment that you can use to develop i2 Analyze configurations; and a reference architecture to demonstrate how to build Docker images and deploy, configure, and run i2 Analyze on Docker containers.</p>
+<p>The repository is designed to be used with the i2 Analyze minimal toolkit. The minimal toolkit is similar to the standard i2 Analyze deployment toolkit, except that it includes only the minimal subset of application and configuration files.</p>
 <p>If you are already using the analyze-deployment-tooling environment and want to upgrade to the latest versions, follow the instructions in <a href="content/managing_upgrade_env.html">Upgrading</a>.</p>
 <h2 id="configuration-development-environment">Configuration development environment</h2>
-<p>The process to deploy i2 Analyze in production is iterative, and includes a number of phases and environments. The containerized configuration development is designed so that it is easy to move between these stages.</p>
-<p>Because the environment is containerized, the provided scripts manage the creation of any containers that are required by the environment. For example, the database management system container is added to your environment when you specify a deployment pattern that includes it. You do not need to manually create it first.</p>
-<p>The following features of containerized configuration development environment are designed to enable you to develop i2 Analyze configurations:</p>
+<p>The process of deploying i2 Analyze in production is iterative, and includes a number of phases and environments. The containerized configuration development environment is designed so that it is easy to move between these stages.</p>
+<p>In the containerized environment, the provided scripts manage the creation of any containers that your configuration requires. For example, a database management system container is added to the environment when you specify a deployment pattern that includes it. You do not need to create the container manually.</p>
+<p>The following features of the containerized configuration development environment are designed to enable you to develop i2 Analyze configurations:</p>
 <ul>
-<li>Simplified configuration directory<ul>
+<li><p>Simplified configuration directory</p>
+<ul>
 <li>The configuration directory structure is flattened to make it easier to locate files</li>
-<li>The directory includes placeholder configuration files so that you can add to existing files</li>
-<li>The XSD files are included to provide intellisense in VS Code</li>
+<li>The directory includes placeholder configuration files that you can customize</li>
+<li>The XSD files are included to provide IntelliSense in the Visual Studio Code IDE</li>
 </ul>
 </li>
-<li>Simplified deployment<ul>
-<li>You can switch between i2 Analyze deployment patterns by changing a single setting.</li>
+<li><p>Simplified deployment pattern selection</p>
+<ul>
+<li>You can switch between i2 Analyze deployment patterns by changing a single setting</li>
 <li>Use a single <code>deploy</code> command to deploy and update a deployment regardless of the deployment pattern used or any changes to the configuration</li>
 </ul>
 </li>
-<li>Manage multiple configurations<ul>
+<li><p>Manage multiple configurations</p>
+<ul>
 <li>Develop and store multiple configurations</li>
 <li>Switch between configurations by using the <code>deploy</code> command</li>
-<li>Backup the database associated with a configuration</li>
+<li>Back up the database associated with a configuration</li>
 </ul>
 </li>
-<li>Add connectors to the environment<ul>
+<li><p>Add connectors to the environment</p>
+<ul>
 <li>The environment can build images and run containers for your connectors</li>
 </ul>
 </li>
 </ul>
-<p>To start developing configurations, see <a href="content/deploy_config_dev.html">Creating your configuration development environment</a>.</p>
+<p>To start developing configurations, see <a href="content/getting_started.html">Getting started</a>, and then <a href="content/deploy_config_dev.html">Creating the configuration development environment</a>.</p>
 <h2 id="containerized-deployment-reference-architecture">Containerized deployment reference architecture</h2>
 <p>The repository includes Dockerfiles and example scripts that provide a reference architecture for creating a containerized deployment of i2 Analyze. The scripts demonstrate how to build Docker images and enable you to deploy, configure, and run i2 Analyze on Docker containers.</p>
 <p>You can run the scripts to create a local example containerized deployment. For more information about the reference architecture, see <a href="content/reference-architecture/understanding.html">Understanding the reference architecture</a>.</p>
