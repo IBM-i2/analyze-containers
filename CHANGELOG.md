@@ -11,7 +11,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * `Fixed` for any bug fixes.
 * `Security` in case of vulnerabilities.
 
-## 3.0.1 - 08/15/2024
+## 3.0.3 - 17/12/2024
+
+### Fixed
+
+* Missing changelog entry for 3.0.2.
+* Additional trust certificates types support in SQL Server.
+* Error when running bootstrap script in an already installed environment.
+
+[3.0.3]\: <!-- markdown-link-check-disable --><https://github.com/i2group/analyze-deployment-tooling/tree/v3.0.3><!-- markdown-link-check-enable -->
+
+## 3.0.2 - 12/12/2024
+
+### Changed
+
+* Improved support for external CA certificates.
+
+### Fixed
+
+* Broken duplicate configuration task for shared configurations.
+* Wrapper script installation issues.
+
+[3.0.2]\: <https://github.com/i2group/analyze-deployment-tooling/tree/v3.0.2>
+
+## 3.0.1 - 15/08/2024
 
 ### Added
 
@@ -23,7 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * Renew secrets in a deployment pattern without database.
 * ProvisioningCompatibilityMode and UserIdentityCompatibilityMode not set to true after upgrading.
 
-[3.0.1]\: <!-- markdown-link-check-disable --><https://github.com/i2group/analyze-deployment-tooling/tree/v3.0.1><!-- markdown-link-check-enable -->
+[3.0.1]\: <https://github.com/i2group/analyze-deployment-tooling/tree/v3.0.1>
 
 ## 3.0.0 - 08/08/2024
 
@@ -31,7 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 * Updated for compatibility with i2 Analyze 4.4.4.
 * Connector Designer support for Config Dev Environment.
-* Support for Connector Designer installation with separate deployment. See: <!-- markdown-link-check-disable -->[Adding Connector Designer to your deployment](https://docs.i2group.com/analyze/4.4.4/deploy_connector_designer.html).<!-- markdown-link-check-enable -->
+* Support for Connector Designer installation with separate deployment. See: [Adding Connector Designer to your deployment](https://docs.i2group.com/analyze/4.4.4/deploy_connector_designer.html).
 * Load balancer support for Config Dev Environment.
 * Documentation for different authentication mechanisms.
 * Documentation for secret and certificate management.
