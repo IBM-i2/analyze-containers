@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Deploying the AWS reference architecture </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Deploying the AWS reference architecture ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="deploying-the-aws-reference-architecture">Deploying the AWS reference architecture</h1>
+
+<p>When you follow the instructions to deploy the AWS reference architecture, the scripts launch, configure, and run the AWS compute, network, storage, and other services for the i2 Analyze on AWS. The reference architecture includes AWS CloudFormation templates that automate the deployment and a deployment guide that describes the architecture.</p>
+<p>The deployment is running on AWS and you are charged by AWS for the infrastructure that is used. Consult the AWS pricing information before you run the scripts: ...</p>
+<p>By default, the AWS reference architecture is deployed on the following instances. For information about modifying these values before you deploy the reference architecture, see XXX. (TODO: populate resources and identify steps to modify the reference architecture).</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before you can deploy the AWS reference architecture, you need to have installed and configured the following pre-requisites:</p>
+<ul>
+<li>Have an AWS account</li>
+<li>Install the AWS CLI v2<ul>
+<li>For more, see <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">Installing, updating, and uninstalling the AWS CLI version 2</a></li>
+</ul>
+</li>
+<li>Configure the analyze-deployment-tooling repository<ul>
+<li>For more information, see <a href="../getting_started.html">Getting started with the analyze-deployment-tooling repository</a>.</li>
+</ul>
+</li>
+<li>In your terminal, navigate to the <code>examples/aws</code> directory.</li>
+</ul>
+<h3 id="accepting-the-licenses">Accepting the licenses</h3>
+<ol>
+<li><p>Before you can use i2 Analyze and the tools, you must read the license agreement and copyright notices. The license file is in the <code>pre-reqs/i2analyze/license</code> directory.  </p>
+<ol>
+<li><p>To accept the license agreement, change the value of the <code>LIC_AGREEMENT</code> variable to <code>ACCEPT</code>. The variable is in the <code>licenses.conf</code> file.
+ For example:</p>
+<pre><code class="lang-sh">LIC_AGREEMENT=ACCEPT
+</code></pre></li>
+</ol>
+</li>
+<li><p>Before you can use Microsoft SQL Server, you must accept the license agreement and the EULA. For more information about using the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables, see <a href="https://docs.microsoft.com/sql/linux/sql-server-linux-configure-environment-variables?view=sql-server-ver15#environment-variables">Configure SQL Server settings with environment variables on Linux</a>  </p>
+<ol>
+<li><p>To accept the license in this environment, change the value of the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables. The variables are in the <code>licenses.conf</code> file.</p>
+<p> For example:</p>
+<pre><code class="lang-sh">MSSQL_PID=Developer
+ACCEPT_EULA=Y
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h3 id="setting-up-aws-variables">Setting up AWS Variables</h3>
+<ol>
+<li><p>Before you can deploy the AWS reference architecture, you must provide your AWS account information in the <code>examples/aws/utils/simulated-external-variables.sh</code> script.</p>
+<ol>
+<li>To set up the system to communicate with your AWS account, set the value of the <code>ECR_BASE_NAME</code> environment variable to your default private registry URL. For more information, see <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html">Amazon ECR private registries</a>.</li>
+<li><p>Set the value of the <code>AWS_REGION</code> environment variable to the region name you want to deploy the architecture in.</p>
+<p>For example:</p>
+<pre><code class="lang-sh">ECR_BASE_NAME=&quot;#####.dkr.ecr.eu-west-2.amazonaws.com&quot;
+AWS_REGION=&quot;eu-west-2&quot;
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<h2 id="creating-and-uploading-resources-to-aws">Creating and uploading resources to AWS</h2>
+<p>The <code>create-and-upload-aws-resources.sh</code> script creates the configuration, database scripts, secrets, images, and runbooks then uploads them to AWS. For more information about what is created, see <a href="../tools-and-functions/aws_tools.html#create-and-upload-aws-resourcessh-script">create-and-upload-aws-resources.sh</a>.</p>
+<p>Run <code>create-and-upload-aws-resources.sh</code>:</p>
+<pre><code class="lang-bash">./create-and-upload-aws-resources.sh
+</code></pre><h2 id="deploying-the-i2-analyze-on-aws">Deploying the i2 Analyze on AWS</h2>
+<p>The <code>deploy-aws.sh</code> script deploys i2 Analyze on AWS. For more information about what is deployed, see <a href="../tools-and-functions/aws_tools.html#deploy-awssh-script">deploy-aws.sh</a>.</p>
+<p>Run <code>deploy-aws.sh</code>:</p>
+<pre><code class="lang-bash">./deploy-aws.sh
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

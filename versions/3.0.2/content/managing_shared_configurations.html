@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Managing shared configurations </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Managing shared configurations ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="managing-shared-configurations">Managing shared configurations</h1>
+
+<p>The analyze-deployment-tooling repository enables you to share a configuration or deploy a configuration that has been shared with you.  </p>
+<p>The shared configurations are recommended to be stored in a source control system such as Git. When you clone the shared configurations to your machine, they are cloned to a directory outside of the analyze-deployment-tooling project and then referenced.</p>
+<p>To use a shared configuration in your environment, you provide the file path to the directory outside of the analyze-deployment-tooling project. Then, you choose which configs or assets to link to your environment.</p>
+<p>When you use a source control system to manage the shared configurations, use VS Code to manage the repositories that they are contained in.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before you create or use a shared configuration, you must configure the analyze-deployment-tooling repository and create the dev environment:  </p>
+<ul>
+<li><a href="getting_started.html">Getting started with the analyze-deployment-tooling repository</a></li>
+<li><a href="deploy_config_dev.html">Configuration development environment</a><ul>
+<li>You do not need to create a config.</li>
+</ul>
+</li>
+</ul>
+<h2 id="configuring-your-shared-repositories-location">Configuring your shared repositories location</h2>
+<ol>
+<li><p>Open a terminal on your host machine.</p>
+<ul>
+<li>On Windows, use a WSL terminal. Press <strong>Start -&gt; wsl</strong></li>
+</ul>
+</li>
+<li><p>Navigate to the <code>analyze-deployment-tooling/scripts</code> directory.</p>
+</li>
+<li><p>Run the <code>configure-paths</code> script with the <code>shared</code> task.<br> For example:</p>
+<pre><code class="lang-sh">configure-paths -t shared
+</code></pre><p> By default the script creates a folder named <code>my-configurations</code> in your home directory For example <code>/home/&lt;user&gt;/my-configurations</code>. To specify a different path, use <code>-p &lt;path&gt;</code> with your path when you run the command.</p>
+</li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild Container</code> and select it.</p>
+</li>
+</ol>
+<p>After you have run the script, you can open the shared configurations folder in VS Code. In the same terminal as step 1, navigate to your shared configuration folder and open VS Code.</p>
+<ol>
+<li><p>For example, navigate to the directory:</p>
+<pre><code class="lang-sh">cd ~/my-configurations
+</code></pre></li>
+<li><p>Open VS Code:</p>
+<pre><code class="lang-sh">code .
+</code></pre><p> This VS Code window is now referred to as the <code>shared configurations VS Code window</code>.</p>
+</li>
+</ol>
+<h2 id="sharing-a-configuration">Sharing a configuration</h2>
+<p>You can share a configuration that you have already developed locally, or you can start developing a shared configuration from a new template.</p>
+<ol>
+<li>From the analyze-deployment-tooling VS Code window right-click the <code>shared-repository</code> template and copy it to the shared configurations VS Code window. Rename the folder to provide a name for your shared configuration.  <ul>
+<li>On MacOS copy the template using the Finder app.</li>
+</ul>
+</li>
+<li>You can share an existing config or asset, or create a new one to share.<ol>
+<li>If you have local configs or assets that you want to start sharing, move the configs or assets from the analyze-deployment-tooling window into the new shared configurations window in the new <code>shared-repository</code> folder.</li>
+<li>If you are creating a new config, complete the instructions in <a href="deploy_config_dev.html">Configuration development environment</a> to create your config. When you copy the <code>config-development</code> template, copy it to the <code>shared-repository</code> your shared configurations VS Code window.</li>
+</ol>
+</li>
+<li>To link your shared configuration into your analyze-deployment-tooling project, complete the steps in <a href="#linking-shared-configurations">link configurations</a>.</li>
+</ol>
+<p><strong>Note:</strong> We recommend to share your configurations through Git and the template configuration contains the files required to work with Git. To initialize the Git repository, run <code>git init</code> from the terminal the shared configuration folder. For example <code>/home/&lt;user&gt;/my-configurations/shared-repository</code>. For more information about how to use Git, see <a href="https://git-scm.com/docs">Git Reference Documentation</a>.</p>
+<h2 id="linking-shared-configurations">Linking shared configurations</h2>
+<p>Link a shared configuration to your local environment.</p>
+<ol>
+<li><p>The configurations that can be linked must be contained within the path specified in <code>rootDirectory</code>.
+If your configuration is located in a git repository, you can clone it to the shared configurations path.<br>For example, <code>/home/&lt;user&gt;/my-configurations/shared-connectors</code>.<br>For information on how to clone a repository in VSCode, see <a href="https://code.visualstudio.com/docs/editor/github#_setting-up-a-repository">Setting up a repository</a>.</p>
+</li>
+<li><p>Update the <code>path-configuration.json</code> file to reference the configuration to link:</p>
+<ol>
+<li><p>Add the paths for your repositories in the <code>repositories</code> array. The value for <code>path</code> is relative to the <code>rootDirectory</code> path.</p>
+<p>For example, to add the repository <code>/home/&lt;user&gt;/my-configurations/shared-connectors</code> the <code>path-configuration.json</code> file contains the following:  </p>
+<pre><code class="lang-json">{
+   &quot;sharedConfigurations&quot;: {
+       &quot;rootDirectory&quot;: &quot;/home/&lt;user&gt;/my-configurations&quot;,
+       &quot;repositories&quot;: [
+           {
+               &quot;path&quot;: &quot;shared-connectors&quot;
+           }
+       ]
+   }
+}
+</code></pre></li>
+</ol>
+</li>
+<li><p>In the terminal, run:</p>
+<pre><code class="lang-sh">manage-environment -t link
+</code></pre></li>
+</ol>
+<p><strong>Important:</strong> The repositories in the <code>path-configuration.json</code> are updated after you run the <code>manage-environment -t link</code> or the <code>deploy</code> commands.</p>
+<h3 id="linking-specific-configs-or-assets">Linking specific configs or assets</h3>
+<p>You can link to specific configs or assets from a shared configuration.</p>
+<ul>
+<li>Use the <code>configs</code> key to specify an array of config names.
+<strong>Note:</strong> The backups associated with the config are also linked.</li>
+<li>Use the <code>connectors</code> key to specify an array of connector names.</li>
+<li>Use the <code>additionalResources</code> key to specify a list of additional resources.</li>
+<li>Use the <code>gatewaySchemas</code> key to specify an array of gateway schema short names.</li>
+<li>Use the <code>extensions</code> key to specify an array of extension names.</li>
+<li>Use the <code>plugins</code> key to specify an array of i2 Notebook plugin names.</li>
+<li>Use the <code>dataSets</code> key to specify an array of data set names.</li>
+</ul>
+<p>For example to add the following:  </p>
+<ul>
+<li><code>law-enforcement</code> config and backup from the <code>shared-config</code> repository</li>
+<li><code>example-connector</code> and <code>example-connector2</code> connectors from the <code>shared-connectors</code> repository</li>
+</ul>
+<p>The <code>path-configuration.json</code> file contains the following:  </p>
+<pre><code class="lang-json">{
+  &quot;sharedConfigurations&quot;: {
+  &quot;rootDirectory&quot;: &quot;/home/&lt;user&gt;/my-configurations&quot;,
+  &quot;repositories&quot;: [{
+    &quot;path&quot;: &quot;shared-configuration&quot;,
+    &quot;configs&quot;: [
+      &quot;law-enforcement&quot;
+    ]
+  },
+  {
+    &quot;path&quot;: &quot;shared-connectors&quot;,
+    &quot;connectors&quot;: [
+      &quot;example-connector&quot;,
+      &quot;example-connector2&quot;
+    ]
+  }]
+  }
+}
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ZooKeeper </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="ZooKeeper ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="zookeeper">ZooKeeper</h1>
+
+<p>In a containerized deployment, ZooKeeper is configured and run from a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-zookeeper">ZooKeeper image</a> maintained by i2 Group on Docker Hub.</p>
+<h2 id="running-a-zookeeper-container">Running a ZooKeeper container</h2>
+<p>A ZooKeeper container uses the ZooKeeper image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to ZooKeeper on the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
+<p>The container will run with a User ID and Group ID of <code>1000</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command starts a ZooKeeper container:</p>
+<pre><code class="lang-bash">docker run --restart always -d \
+   --name &quot;zk1&quot; \
+   --net &quot;eia&quot; \
+   --net-alias &quot;zk1.eia&quot; \
+   -p &quot;8080:8080&quot; \
+   -p &quot;2181:2181&quot; \
+   -p &quot;2281:2281&quot; \
+   -p &quot;3888:3888&quot; \
+   -p &quot;2888:2888&quot; \
+   -v &quot;zk1_data:/data&quot; \
+   -v &quot;zk1_datalog:/datalog&quot; \
+   -v &quot;zk1_logs:/logs&quot; \
+   -v &quot;/environment-secrets/simulated-secret-store/zk1:/run/secrets&quot; \
+   -e &quot;ZOO_SERVERS=server.1=zk1.eia:2888:3888 server.2=zk2.eia:2888:3888 server.3=zk3.eia:2888:3888&quot; \
+   -e &quot;ZOO_MY_ID=1&quot; \
+   -e &quot;ZOO_SECURE_CLIENT_PORT=2281&quot; \
+   -e &quot;ZOO_CLIENT_PORT=2181&quot; \
+   -e &quot;ZOO_4LW_COMMANDS_WHITELIST=ruok, mntr, conf&quot; \
+   -e &quot;SERVER_SSL=true&quot; \
+   -e &quot;SSL_PRIVATE_KEY_FILE=/run/secrets/server.key&quot; \
+   -e &quot;SSL_CERTIFICATE_FILE=/run/secrets/server.cer&quot; \
+   -e &quot;SSL_CA_CERTIFICATE_FILE=/run/secrets/CA.cer&quot; \
+   &quot;i2eng/i2eng-zookeeper:3.9&quot;
+</code></pre><p><em>Note:</em> <code>SERVER_SSL</code> variable is set based on the <code>SOLR_ZOO_SSL_CONNECTION</code> switch, see <a href="#environment-variables">Environment variables</a>.</p>
+<h3 id="zookeeper-service-ports">ZooKeeper Service Ports</h3>
+<p>Default ports used by ZooKeeper are:</p>
+<ul>
+<li><code>8080</code> - By default, the server is started on port 8080, and commands are issued by going to the URL &quot;/commands/[command name]&quot;, e.g., <code>http://localhost:8080/commands/stat</code>.</li>
+<li><code>2181</code> - The port at which the clients will connect (non-secure). This is defined by setting <code>ZOO_CLIENT_PORT</code>.</li>
+<li><code>2281</code> - The port at which the clients will connect (secure). This is defined by setting <code>ZOO_SECURE_CLIENT_PORT</code>.</li>
+<li><code>3888</code> - Port used by ZooKeeper peers to talk to each other.</li>
+<li><code>2888</code> - Port used by ZooKeeper peers to talk to each other.</li>
+</ul>
+<p>For more information, see <a href="https://docs.cloudera.com/HDPDocuments/HDP2/HDP-2.6.0/bk_reference/content/zookeeper-ports.html">ZooKeeper Service Ports</a>.</p>
+<p>For an example of the <code>docker run</code> command, see <code>utils/server_functions.sh</code> script. The <code>run_zk</code> function takes the following arguments to support running multiple ZooKeeper containers:</p>
+<ol>
+<li><code>CONTAINER</code> - The name for the container.</li>
+<li><code>FQDN</code> - The fully qualified domain name for the container.</li>
+<li><code>DATA_VOLUME</code> - The name for the <code>data</code> named volume. For more information, see <a href="#storage">Storage</a>.</li>
+<li><code>DATALOG_VOLUME</code> - The name for the <code>datalog</code> named volume. For more information, see <a href="#storage">Storage</a>.</li>
+<li><code>LOG_VOLUME</code> - The name for the <code>log</code> named volume. For more information, see <a href="#storage">Storage</a>.</li>
+<li><code>HOST_PORT</code> - The port number on the host machine that is mapped to the port on the container.</li>
+<li><code>ZOO_ID</code> - An identifier for the ZooKeeper server. For more information, see <a href="#environment-variables">Environment variables</a>.</li>
+</ol>
+<p>An example of running Zookeeper container using <code>run_zk</code> function:</p>
+<pre><code class="lang-bash">run_zk zk1 zk1.eia zk1_data zk1_datalog zk1_logs 8080 1
+</code></pre><h3 id="storage">Storage</h3>
+<p>A named volume or a bind mount can be used to persist data and logs that are generated and used in the ZooKeeper container, outside of the container.</p>
+<p>For more information, see <a href="https://hub.docker.com/_/zookeeper">Where to store data</a>.</p>
+<p>To configure the ZooKeeper container to use these volumes, specify the <code>-v</code> option with the name of the volume and the path where the directory is mounted in the container. By setting <code>-v</code> option in the docker run command, a named volume is created. For ZooKeeper, the directories that must be mounted are <code>/data</code>, <code>/datalog</code>, <code>/logs</code>.
+For example:</p>
+<pre><code class="lang-sh">-v zk1_data:/data \
+-v zk1_datalog:/datalog \
+-v zk1_log:/logs \
+-v /environment-secrets/simulated-secret-store/zk1:/run/secrets
+</code></pre><p>A unique volume name or bind mount must be used for each ZooKeeper container.</p>
+<p><strong>Secrets</strong>:<br>A directory that contains all of the secrets that this tool requires. Specifically this includes credentials to access zookeeper and certificates used in SSL.<br>The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>SSL_PRIVATE_KEY_FILE</code> to locate the secrets.
+In a production environment, the orchestration environment can provide the secrets to the file system or the secrets can be passed in via environment variables. The mechanism that is used here simulates the orchestration system providing the secrets as files.</p>
+<h3 id="environment-variables">Environment variables</h3>
+<p>To configure ZooKeeper, you can provide environment variables to the Docker container in the <code>docker run</code> command. The <code>zoo.cfg</code> configuration file for ZooKeeper is generated from the environment variables passed to the container.</p>
+<p>The following table describes the mandatory environment variables for running ZooKeeper in replicated mode:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZOO_SERVERS</code></td>
+<td>Specified the list of ZooKeeper servers in the ZooKeeper ensemble. Servers are specified in the following format: <code>server.id=&lt;address1&gt;:&lt;port1&gt;:&lt;port2&gt;;&lt;client port&gt;</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_MY_ID</code></td>
+<td>An identifier for the ZooKeeper server. The identifier must be unique within the ensemble.</td>
+</tr>
+<tr>
+<td><code>ZOO_CLIENT_PORT</code></td>
+<td>Specifies the port number for client connections. Maps to the <code>clientPort</code> configuration parameter.</td>
+</tr>
+<tr>
+<td><code>ZOO_4LW_COMMANDS_WHITELIST</code></td>
+<td>A list of comma separated Four Letter Words commands that user wants to use. A valid Four Letter Words command must be put in this list else ZooKeeper server will not enable the command. By default the whitelist only contains &quot;srvr&quot; command which zkServer.sh uses. The rest of four letter word commands are disabled by default.</td>
+</tr>
+</tbody>
+</table>
+<p>For more information, see <a href="https://hub.docker.com/_/zookeeper/">ZooKeeper Docker hub</a>.</p>
+<p>The following table described the security environment variables:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZOO_SECURE_CLIENT_PORT</code></td>
+<td>Specifies the port number for client connections that use SSL. Maps to the <code>secureClientPort</code> configuration parameter.</td>
+</tr>
+<tr>
+<td><code>SOLR_ZOO_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SERVER_SSL</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>For more information about securing ZooKeeper, see <a href="https://zookeeper.apache.org/doc/r3.6.2/zookeeperAdmin.html#sc_authOptions">Encryption, Authentication, Authorization Options</a>.</p>
+<p>The following table describes the environment variables that are supported:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZOO_TICK_TIME</code></td>
+<td>The length of a single tick, which is the basic time unit used by ZooKeeper, as measured in milliseconds. Maps to the <code>tickTime</code> configuration parameter. The default value is <code>2000</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_INIT_LIMIT</code></td>
+<td>Amount of time, in ticks, to allow followers to connect and sync to a leader. Increase this value as needed, if the amount of data managed by ZooKeeper is large. Maps to the <code>initLimit</code> configuration parameter. The default value is <code>10</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_SYNC_LIMIT</code></td>
+<td>Amount of time, in ticks, to allow followers to sync with ZooKeeper. If followers fall too far behind a leader, they will be dropped. Maps to the <code>syncLimit</code> configuration parameter. The default value is <code>5</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_AUTOPURGE_PURGEINTERVAL</code></td>
+<td>The time interval in hours for which the purge task has to be triggered. Set to a positive integer (1 and above) to enable the auto purging. Maps to the <code>autopurge.purgeInterval</code> configuration parameter. The default value is <code>24</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_AUTOPURGE_SNAPRETAINCOUNT</code></td>
+<td>When auto purge is enabled, ZooKeeper retains the specified number of most recent snapshots and the corresponding transaction logs in the dataDir and dataLogDir respectively and deletes the rest. Maps to the <code>autopurge.snapRetainCount</code> setting. The default value is <code>3</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_MAX_CLIENT_CNXNS</code></td>
+<td>Limits the number of concurrent connections (at the socket level) that a single client, identified by IP address, may make to a single member of the ZooKeeper ensemble. Maps to the <code>maxClientCnxns</code> configuration parameter. The default value is <code>60</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_STANDALONE_ENABLED</code></td>
+<td>When set to <code>true</code>, if ZooKeeper is started with a single server the ensemble will not be allowed to grow, and if started with more than one server it will not be allowed to shrink to contain fewer than two participants. Maps to the <code>standaloneEnabled</code> configuration parameter. The default value is <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_ADMINSERVER_ENABLED</code></td>
+<td>Enables the AdminServer. The AdminServer is an embedded Jetty server that provides an HTTP interface to the four letter word commands. Maps to the <code>admin.enableServer</code> configuration parameter. The default value is <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_DATA_DIR</code></td>
+<td>The location where ZooKeeper stores in-memory database snapshots. Maps to the <code>dataDir</code> configuration parameter. The default value is <code>/data</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_DATA_LOG_DIR</code></td>
+<td>The location where ZooKeeper writes the transaction log. Maps to the <code>dataLogDir</code> configuration parameter. The default value is <code>/datalog</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_CFG_EXTRA</code></td>
+<td>You can add arbitrary configuration parameters, that are not exposed as environment variables in ZooKeeper, to the Zookeeper configuration file using this variable.</td>
+</tr>
+<tr>
+<td><code>ZOO_CONF_DIR</code></td>
+<td>Specifies the location for the ZooKeeper configuration directory. The default value is <code>/conf</code>.</td>
+</tr>
+<tr>
+<td><code>ZOO_LOG_DIR</code></td>
+<td>Specifies the location for the ZooKeeper logs directory. The default value is <code>/logs</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>For more information about configuring ZooKeeper, see:</p>
+<ul>
+<li><a href="https://zookeeper.apache.org/doc/r3.5.5/zookeeperAdmin.html#sc_configuration">Configuration Parameters</a></li>
+<li><a href="https://hub.docker.com/_/zookeeper/">ZooKeeper Docker hub</a>.</li>
+</ul>
+<blockquote><p>Note: Values that are specified in the environment variables override any configuration that is included in the <code>ZOO_CFG_EXTRA</code> block.</p>
+</blockquote>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,393 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ETL Tools </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="ETL Tools ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="etl-tools">ETL Tools</h1>
+
+<p>This topic describes how to perform ETL tasks by using the ETL toolkit in a containerized deployment of i2 Analyze.</p>
+<p>The <code>run_etl_toolkit_tool_as_i2_etl</code> client function is used to run the ETL tools described in this topic as the i2ETL user. For more information about this client function, see <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl">run_etl_toolkit_tool_as_i2_etl</a></p>
+<h2 id="building-an-etl-client-image">Building an ETL Client image</h2>
+<p>The ETL client image is built from the Dockerfile in <code>images/etl_client</code>.</p>
+<p>The following <code>docker build</code> command builds the configured image:</p>
+<pre><code class="lang-bash">docker build -t &quot;etlclient_redhat:4.4.4&quot; &quot;images/etl_client&quot;
+</code></pre><h2 id="add-information-store-ingestion-source">Add Information Store ingestion source</h2>
+<p>The <code>addInformationStoreIngestionSource</code> tool defines an ingestion source in the Information Store. For more information about ingestion sources in the Information Store, see <a href="https://docs.i2group.com/analyze/4.4.4/define_ingestion_source.html">Defining an ingestion source</a>.</p>
+<p>You must provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th>Maximum characters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>n</code></td>
+<td>A unique name for the ingestion source</td>
+<td>30</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>A description of the ingestion source that might appear in the user interface</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/addInformationStoreIngestionSource 
+        -n &lt;&gt; 
+        -d &lt;&gt; &quot;
+</code></pre><h2 id="drop-information-store-error-tables">Drop Information Store error tables</h2>
+<p>The <code>dropInformationStoreErrorTables</code> tool is used to remove the <code>_ERROR</code> and <code>_REJECT</code> tables from the Information Store.</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/dropInformationStoreErrorTables&quot;
+</code></pre><h2 id="clear-information-store-staging-schema">Clear Information Store staging schema</h2>
+<p>The <code>clearInformationStoreStagingSchema</code> tool is used to clear all the tables in the Information Store Staging Schema.</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/clearInformationStoreStagingSchema&quot;
+</code></pre><h2 id="create-information-store-staging-table">Create Information Store staging table</h2>
+<p>The <code>createInformationStoreStagingTable</code> tool creates the staging tables that you can use to ingest data into the Information Store. For more information about creating the tables, see <a href="https://docs.i2group.com/analyze/4.4.4/create_staging_stables.html">Creating the staging tables</a>.</p>
+<p>You must provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stid</code></td>
+<td>The schema type identifier of the item type to create the staging table for</td>
+</tr>
+<tr>
+<td><code>sn</code></td>
+<td>The name of the database schema to create the staging table in</td>
+</tr>
+<tr>
+<td><code>tn</code></td>
+<td>The name of the staging table to create</td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/createInformationStoreStagingTable 
+        -stid &lt;&gt; 
+        -sn &lt;&gt;
+        -tn &lt;&gt; &quot;
+</code></pre><h2 id="ingest-information-store-records">Ingest Information Store records</h2>
+<p>The <code>ingestInformationStoreRecords</code> is used to ingest data into the Information Store. For more information about ingesting data into the Information Store, see <a href="https://docs.i2group.com/analyze/4.4.4/ingestion_command.html">The ingestInformationStoreRecords toolkit task</a></p>
+<p>You can use the following arguments with the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>imf</code></td>
+<td>The full path to the ingestion mapping file.</td>
+</tr>
+<tr>
+<td><code>imid</code></td>
+<td>The ingestion mapping identifier in the ingestion mapping file of the mapping to use</td>
+</tr>
+<tr>
+<td><code>im</code></td>
+<td><strong>Optional:</strong> The import mode to use. Possible values are STANDARD, VALIDATE, BULK, DELETE, BULK_DELETE or DELETE_PREVIEW. The default is STANDARD.</td>
+</tr>
+<tr>
+<td><code>icf</code></td>
+<td><strong>Optional:</strong> The full path to an ingestion settings file</td>
+</tr>
+<tr>
+<td><code>il</code></td>
+<td><strong>Optional:</strong> A label for the ingestion that you can use to refer to it later</td>
+</tr>
+<tr>
+<td><code>lcl</code></td>
+<td><strong>Optional:</strong> Whether (true/false) to log the links that were deleted/affected as a result of deleting entities</td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/ingestInformationStoreRecords 
+    -imf &lt;&gt; 
+    -imid &lt;&gt; 
+    -im &lt;&gt;&quot;
+</code></pre><h2 id="sync-information-store-records">Sync Information Store records</h2>
+<p>The <code>syncInformationStoreCorrelation</code> tool is used after an error during correlation, to synchronize the data in the Information Store with the data in the Solr index so that the data returns to a usable state</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/syncInformationStoreCorrelation&quot;
+</code></pre><h2 id="duplicate-provenance-check">Duplicate provenance check</h2>
+<p>The <code>duplicateProvenanceCheck</code> tool can be used for identifying records in the Information Store with duplicate origin identifiers. Any provenance that has a duplicated origin identifier is added to a staging table in the Information Store.</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">runEtlToolkitTool
+    bash -c &quot;/opt/i2/etltoolkit/syncInformationStoreCorrelation&quot;
+</code></pre><h2 id="duplicate-provenance-delete">Duplicate provenance delete</h2>
+<p>The <code>duplicateProvenanceDelete</code> tool deletes (entity/link) provenance from the Information Store that has duplicated origin identifiers. The provenance to delete is identified in the staging tables created by the <code>duplicateProvenanceCheck</code> tool.</p>
+<p>You can provide the following argument to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stn</code></td>
+<td>The name of the staging table that contains the origin identifiers to delete.</td>
+</tr>
+</tbody>
+</table>
+<p>If no arguments are provided, duplicate origin identifiers are deleted from all staging tables.</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/syncInformationStoreCorrelation&quot;
+</code></pre><h2 id="generate-information-store-index-creation-scripts">Generate Information Store index creation scripts</h2>
+<p>The <code>generateInformationStoreIndexCreationScript</code> tool generates the scripts that create the indexes for each item type in the Information Store. For more information, see <a href="https://docs.i2group.com/analyze/4.4.4/bulk_index_management.html">database index management</a></p>
+<p>You must provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stid</code></td>
+<td>The schema type identifier of the item type to create the index creation scripts for.</td>
+</tr>
+<tr>
+<td><code>op</code></td>
+<td>The location to create the scripts.</td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">runEtlToolkitTask 
+    bash -c &quot;/opt/i2/etltoolkit/generateInformationStoreIndexCreationScript 
+    -op &lt;&gt;
+    -stid &lt;&gt; &quot;
+</code></pre><h2 id="generate-information-store-index-drop-scripts">Generate Information Store index drop scripts</h2>
+<p>The <code>generateInformationStoreIndexDropScript</code> tool generates the scripts that drop the indexes for each item type in the Information Store. For more information, see <a href="https://docs.i2group.com/analyze/4.4.4/bulk_index_management.html">database index management</a></p>
+<p>You must provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stid</code></td>
+<td>The schema type identifier of the item type to create the index drop scripts for.</td>
+</tr>
+<tr>
+<td><code>op</code></td>
+<td>The location to create the scripts.</td>
+</tr>
+</tbody>
+</table>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">runEtlToolkitTask 
+    bash -c &quot;/opt/i2/etltoolkit/generateInformationStoreIndexDropScript 
+    --op &lt;&gt; 
+    -stid &lt;&gt; &quot;
+</code></pre><h2 id="delete-orphaned-database-objects">Delete orphaned database objects</h2>
+<p>The <code>deleteOrphanedDatabaseObjects</code> tool deletes (entity/link) database objects that are not associated with an i2 Analyze record from the Information Store.</p>
+<p>You can provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iti</code></td>
+<td><strong>Optional:</strong> The schema type identifier of the item type to delete orphaned database objects for.</td>
+</tr>
+</tbody>
+</table>
+<p>If no item type id is provided, orphaned objects for all item types are removed</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl"><code>run_etl_toolkit_tool_as_i2_etl</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/deleteOrphanedDatabaseObjects 
+        -iti &lt;&gt; &quot;
+</code></pre><h2 id="disable-merged-property-values">Disable merged property values</h2>
+<p>The <code>disableMergedPropertyValues</code> tool removes the database views used to define the property values of merged i2 Analyze records.</p>
+<p>You can provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>etd</code></td>
+<td>The location of the root of the etl toolkit.</td>
+</tr>
+<tr>
+<td><code>stid</code></td>
+<td>The schema type identifier to disable the views for.</td>
+</tr>
+</tbody>
+</table>
+<p>If no schema type identifier is provided, the views for all of the item types are be removed</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_dba"><code>run_etl_toolkit_tool_as_dba</code></a> client function to run the tool. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/disableMergedPropertyValues 
+        -etd &lt;&gt;
+        -stid &lt;&gt;&quot;
+</code></pre><p>For more information about correlation, see <a href="https://docs.i2group.com/analyze/4.4.4/c_correlation_intro.html">Information Store data correlation</a></p>
+<h2 id="enable-merge-property-values">Enable merge property values</h2>
+<p>The <code>enableMergedPropertyValues</code> tool creates the database views used to define the property values of merged i2 Analyze records.</p>
+<p>You can provide the following arguments to the tool:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>etd</code></td>
+<td>The location of the root of the etl toolkit.</td>
+</tr>
+<tr>
+<td><code>stid</code></td>
+<td>The schema type identifier to create the views for.</td>
+</tr>
+</tbody>
+</table>
+<p>If no schema type identifier is provided, the views for all of the item types are generated. If the views already exist, they are overwritten.</p>
+<p>Use the <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_dba"><code>run_etl_toolkit_tool_as_dba</code></a> client function to run the tool as the database administrator. For example:</p>
+<pre><code class="lang-bash">run_etl_toolkit_tool_as_i2_etl 
+    bash -c &quot;/opt/i2/etltoolkit/enableMergedPropertyValues 
+        -etd &lt;&gt; 
+        -stid &lt;&gt; &quot;
+</code></pre><p>For more information about correlation, see <a href="https://docs.i2group.com/analyze/4.4.4/c_correlation_intro.html">Information Store data correlation</a></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

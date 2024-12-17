@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Backup </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Backup ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="backup">Backup</h1>
+
+<p>This section describes the process to back up the Solr collections and the Information Store database in SQL Server in an i2 Analyze deployment in a containerized environment.</p>
+<p>The <code>examples/pre-prod/walkthroughs/backup-restore/backup.sh</code> script is a worked example that demonstrates how to script the process of backing up Solr collections and the Information Store database.</p>
+<h2 id="understanding-the-back-up-process">Understanding the back up process</h2>
+<p>In a deployment of i2 Analyze, data is stored in the Information Store database and indexed in Solr collections. You must back up these components as a pair to enable you to restore the data in your system after a failure. When you back up the Solr collections, the configuration in ZooKeeper is also backed up.</p>
+<p>To ensure that data can be restored correctly, you must back up the components in the following order:</p>
+<ol>
+<li>Solr collections</li>
+<li>Information Store database</li>
+</ol>
+<p>If data is changed in the database after taking the Solr backup, Solr can update the index to reflect these changes when the collections and database are restored.</p>
+<p>When you create your backups, ensure that you store both backups so that you can identify the pair of backups that you must restore if required.</p>
+<blockquote><p>Note: In the walkthrough, both the database and Solr backups are versioned using the variable <code>backup_version</code>. In the walkthrough the backup version is <code>1</code>. This is used to create a directory where the all of the backup files are stored for this pair. To create another backup pair, increment the <code>backup_version</code> so that the backup files are stored in a different directory.</p>
+</blockquote>
+<h2 id="backing-up-the-solr-collections">Backing up the Solr collections</h2>
+<p>To back up Solr collections, you must have a shared filesystem available that is shared and accessible by all Solr nodes. In a containerized environment, a backup volume is shared between all Solr containers.</p>
+<blockquote><p>Note: In the example, the backup volume is mounted to <code>/backup</code> in the Solr container.</p>
+</blockquote>
+<p>To ensure Solr can write the backup file, you must make sure the Solr process has permission to the backup folder. In order for Solr to write to the folder the user <code>solr</code> and group <code>0</code> must have read and write permission to the backup folder. The following chown command is an example that gives the Solr process permission to write to the backup location:</p>
+<pre><code class="lang-bash">chown -R solr:0 /backup
+</code></pre><p>The <code>run_solr_client_command</code> client function is used to run the <code>BACKUP</code> API request. The backup operation must be performed for each non-transient collection. The non-transient collections are the <code>main_index</code>, <code>match_index</code>, and <code>chart_index</code>. The following curl command is an example that creates a backup of the <code>main_index</code> collection:</p>
+<pre><code class="lang-sh">run_solr_client_command bash -c &quot;curl -u \&quot;\${SOLR_ADMIN_DIGEST_USERNAME}:\${SOLR_ADMIN_DIGEST_PASSWORD}\&quot; --cacert /tmp/i2acerts/CA.cer https://solr1:8983//solr/admin/collections?action=BACKUP&amp;async=main_index_backup&amp;name=main_index_backup&amp;collection=main_index&amp;location=/backup/1/
+&quot;
+</code></pre><p>To perform a backup operation, use the Solr Collections API. For more information about the backup API command, see <a href="https://solr.apache.org/guide/solr/latest/deployment-guide/collection-management.html#backup">BACKUP: Backup Collection</a></p>
+<blockquote><p>Note: The BACKUP API request must be an asynchronous call otherwise the backup procedure will timeout. This is done by adding <code>async</code> flag with a corresponding id to the curl command. In the above example, this is <code>&amp;async=main_index_backup</code>.</p>
+</blockquote>
+<p>See the <code>Backing up Solr</code> section of the walkthrough script.</p>
+<h2 id="determining-status-of-solr-backup">Determining status of Solr backup</h2>
+<p>The <code>Monitoring Solr backup status</code> section of the walkthrough script runs a loop around the <code>get_async_request_status</code> client function that reports the status of the Asynchronous backup request. For more information about the client function, see <a href="../tools-and-functions/client_functions.md#getasyncrequeststatus"><code>get_async_request_status</code></a>.</p>
+<p>See the <code>Monitoring Solr backup status</code> section of the walkthrough script.</p>
+<h2 id="backing-up-the-system-match-rules-file">Backing up the system match rules file</h2>
+<p>The system match rules are stored in the ZooKeeper configuration, and can be backed up by using the Solr ZooKeeper Command Line Interface (zkcli) from the Solr client container.</p>
+<p>The <code>run_solr_client_command</code> client function is used to run the <code>zkcli</code> command. The following command is an example of how to use the <code>getfile</code> command to retrieve the system match rules:</p>
+<pre><code class="lang-bash">run_solr_client_command &quot;/opt/solr/server/scripts/cloud-scripts/zkcli.sh&quot; -zkhost &quot;${ZK_HOST}&quot; -cmd getfile /configs/match_index1/match_index1/app/match-rules.xml /backup/1/system-match-rules.xml
+</code></pre><p>In the example deployment, the match index is <code>match_index1</code>. If you have changed the match rules in a deployment, the match index that you need to back up it the &quot;live&quot; one. The live index might be <code>match_index1</code> or <code>match_index2</code>. To determine which match index is live, you can use the <a href="https://docs.i2group.com/analyze/4.4.4/public-rest-api.html#get-/api/v1/admin/indexes/status">index/statuses REST endpoint</a>.</p>
+<blockquote><p>Note: The system match rules file is backed up to the <code>/backup/1/</code> folder where the Solr backup is located.</p>
+</blockquote>
+<p>For more information about the ZooKeeper command line utilities, see <a href="https://solr.apache.org/guide/solr/latest/deployment-guide/zookeeper-utilities.html#using-solrs-zookeeper-cli">Using Solr’s ZooKeeper CLI</a>.</p>
+<h2 id="backing-up-the-information-store-database">Backing up the Information Store database</h2>
+<p>In the containerized environment, the mounted backup volume is used to store the backup file. Only the Information Store database is backed up. The SQL Server instance and system databases are not included in the backup.</p>
+<p>For more information about the backup volume, see <a href="../images-and-containers/sql_server.html#running-a-sql-server-container">Running a SQL Server</a>.</p>
+<p>The backup is performed by a user that has the built-in <code>db_backupoperator</code> SQL Server role. In this case, that is the <code>dbb</code> user. Use the <code>run_sql_server_command_as_dbb</code> client function to run the following SQL command to create the backup file. For example:</p>
+<pre><code class="lang-sh">run_sql_server_command_as_dbb bash -c &quot;/opt/mssql-tools/bin/sqlcmd -N -b -C -S sqlserver.eia,1433 -U \&quot;\${DB_USERNAME}\&quot; -P \&quot;\${DB_PASSWORD}\&quot; \
+    -Q \&quot;USE ISTORE; 
+        BACKUP DATABASE ISTORE
+        TO DISK = &#39;/backup/1/IStore.bak&#39;
+            WITH FORMAT;\&quot;&quot;
+</code></pre><p><strong>NOTE:</strong> To backup the Postgres database, you must use the <code>postgres</code>user. The <code>run_postgres_command_as_postgres</code> client function is used to run <code>pg_dump</code> command to create the backup file. For example:</p>
+<pre><code class="lang-sh">run_postgres_server_command_as_postgres bash -c &quot;pg_dump -h postgres.eia -U postgres ISTORE &gt; /backup/1/ISTORE.pgb&quot;
+</code></pre><p>For more information about backing up a SQL Server database, see:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/sql/t-sql/statements/backup-transact-sql?view=sql-server-ver15">Backup SQL Documentation</a></li>
+<li><a href="https://docs.microsoft.com/en-us/sql/t-sql/statements/backup-transact-sql?view=sql-server-ver15#permissions">SQL Server Backup Permissions</a></li>
+</ul>
+<p>For more information about the <code>dbb</code> user and it&#39;s role, see:</p>
+<ul>
+<li><a href="../security-and-users/db_users.html#database-users-and-logins">db users</a></li>
+</ul>
+<p>See the <code>Backing up SQL Server</code> section of the walkthrough script.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

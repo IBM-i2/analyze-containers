@@ -85,31 +85,31 @@
 <p>Make a copy of your existing <code>analyze-deployment-tooling</code> directory as a backup.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ol>
-<li>Download the <code>tar.gz</code> from <a href="https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2">https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2</a>.</li>
+<li>Download the <code>tar.gz</code> from <a href="https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.3">https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.3</a>.</li>
 <li><p>Extract the <code>tar.gz</code> file by using the following steps:</p>
 <ol>
-<li>On Windows, copy the <code>analyze-deployment-tooling-3.0.2.tar.gz</code> file to your WSL filesystem. For example: <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;</code></li>
+<li>On Windows, copy the <code>analyze-deployment-tooling-3.0.3.tar.gz</code> file to your WSL filesystem. For example: <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;</code></li>
 <li><p>Extract the <code>tar.gz</code> file (On Windows, run the commands from a WSL terminal. <strong>Start</strong> &gt; <strong>wsl</strong>):</p>
 <pre><code class="lang-sh">cd /home/&lt;user&gt;
-</code></pre><pre><code class="lang-sh">tar -xvzf analyze-deployment-tooling-3.0.2.tar.gz
-</code></pre><pre><code class="lang-sh">mv analyze-deployment-tooling-3.0.2/ analyze-deployment-tooling-302
+</code></pre><pre><code class="lang-sh">tar -xvzf analyze-deployment-tooling-3.0.3.tar.gz
+</code></pre><pre><code class="lang-sh">mv analyze-deployment-tooling-3.0.3/ analyze-deployment-tooling-303
 </code></pre></li>
 </ol>
 </li>
-<li><p>If the version of i2 Analyze has not changed, you can copy the <code>i2analyzeMinimal.tar.gz</code> from your <code>analyze-deployment-tooling</code> directory to the <code>analyze-deployment-tooling-302/pre-reqs</code> directory. To see which version of i2 Analyze is required by each version of analyze-deployment-tooling, see <a href="https://i2group.github.io/analyze-deployment-tooling/guidetoc/index.html#compatibility">compatibility table</a>.</p>
+<li><p>If the version of i2 Analyze has not changed, you can copy the <code>i2analyzeMinimal.tar.gz</code> from your <code>analyze-deployment-tooling</code> directory to the <code>analyze-deployment-tooling-303/pre-reqs</code> directory. To see which version of i2 Analyze is required by each version of analyze-deployment-tooling, see <a href="https://i2group.github.io/analyze-deployment-tooling/guidetoc/index.html#compatibility">compatibility table</a>.</p>
 <ol>
 <li>Download the i2 Analyze V4.4.4 Minimal for Linux.<ul>
 <li>To download i2 Analyze, follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
 <li>Populate the subject of the form with <code>Request for i2 Analyze 4.4.4 minimal toolkit for Linux</code>.</li>
 </ul>
 </li>
-<li>Rename the downloaded file to <code>i2analyzeMinimal.tar.gz</code>, then copy it to the <code>analyze-deployment-tooling-302/pre-reqs</code> directory.</li>
+<li>Rename the downloaded file to <code>i2analyzeMinimal.tar.gz</code>, then copy it to the <code>analyze-deployment-tooling-303/pre-reqs</code> directory.</li>
 </ol>
 </li>
 <li><p>Open a new VS Code window.</p>
 <ol>
 <li>On Windows, press <strong>F1</strong> and type <code>WSL: Connect to WSL</code> and select it.</li>
-<li>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS) and type <code>Dev Containers: Open Folder in Container</code> and select it.<br>In the file explorer, navigate to your newly created <code>analyze-deployment-tooling-302</code> directory.</li>
+<li>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS) and type <code>Dev Containers: Open Folder in Container</code> and select it.<br>In the file explorer, navigate to your newly created <code>analyze-deployment-tooling-303</code> directory.</li>
 <li>You might see a prompt is displayed, this means a new dev environment is available, click rebuild to rebuild the remote dev container.</li>
 </ol>
 </li>
@@ -141,14 +141,14 @@ ACCEPT_EULA=Y
 </code></pre></li>
 </ul>
 </li>
-<li><p>Update the <code>path-configuration.json</code> file inside <code>analyze-deployment-tooling-302</code> directory to reference the path to your previous analyze-deployment-tooling version:</p>
+<li><p>Update the <code>path-configuration.json</code> file inside <code>analyze-deployment-tooling-303</code> directory to reference the path to your previous analyze-deployment-tooling version:</p>
 <ol>
 <li><p>Open a terminal on your host machine.</p>
 <ul>
 <li>On Windows, use a WSL terminal. Press <strong>Start -&gt; wsl</strong></li>
 </ul>
 </li>
-<li><p>Navigate to the <code>analyze-deployment-tooling-302/scripts</code> directory.</p>
+<li><p>Navigate to the <code>analyze-deployment-tooling-303/scripts</code> directory.</p>
 </li>
 <li><p>Run the <code>configure-paths</code> script with the <code>upgrade</code> task.<br> For example:</p>
 <pre><code class="lang-sh">./configure-paths -t upgrade
@@ -238,7 +238,7 @@ ACCEPT_EULA=Y
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>If the upgrade process fails, you can use the following procedure to recover.</p>
 <ol>
-<li>Delete the <code>analyze-deployment-tooling-3.0.2</code> folder.</li>
+<li>Delete the <code>analyze-deployment-tooling-3.0.3</code> folder.</li>
 <li>In the backup from the previous version, ensure that you can deploy the configuration that failed.<br>If you cannot deploy in the previous version, fix the errors before you upgrade or remove the config so that it isn&#39;t upgraded.</li>
 <li>Restart the upgrade process from the beginning.</li>
 </ol>

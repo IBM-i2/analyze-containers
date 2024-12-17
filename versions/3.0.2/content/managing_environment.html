@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Managing the environment </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Managing the environment ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="managing-the-environment">Managing the environment</h1>
+
+<p>The <code>manage-environment</code> command is used to manage the dev environment rather than specific configs. The actions that the script can complete include; backing up and restoring all configs, upgrading configs to a later version, and building connectors.</p>
+<h2 id="i2-analyze-version">i2 Analyze version</h2>
+<p>In a the config dev environment and a containerized deployment, the images that are used for the containers are built for a specific version on i2 Analyze. To identify the version of i2 Analyze that a particular image is built for, inspect the the image.</p>
+<p>To inspect the images, use the Docker extension in VS Code.<br>The <code>liberty_configured_redhat</code> &amp; <code>solr_redhat</code> image includes the version number in the tag. For example: <code>config-development-4.4.0.0</code></p>
+<p>Each config includes a version file that reports the i2 Analyze version for that config. This value does not include the fix pack version number.<br>For example, the version file contains: <code>SUPPORTED_I2ANALYZE_VERSION=4.4.0</code></p>
+<h2 id="the-manage-environment-command">The <code>manage-environment</code> command</h2>
+<p>The <code>manage-environment</code> command is used to manage to development environment rather than specific configs.</p>
+<p>The following usage and help is provided for the <code>manage-environment</code> command:</p>
+<pre><code class="lang-bash">Usage:
+  manage-environment -t backup [-p &lt;path&gt;] [-i &lt;config_name&gt;] [-e &lt;config_name&gt;] [-b &lt;backup_name&gt;] [-y]
+  manage-environment -t copy -p &lt;path&gt; [-i &lt;config_name&gt;] [-e &lt;config_name&gt;] [-y]
+  manage-environment -t upgrade [-y]
+  manage-environment -t update [-y]
+  manage-environment -t link [-y]
+  manage-environment -t stop [-i &lt;component_name&gt;] [-e &lt;component_name&gt;] [-y]
+  manage-environment -t renew-certificates [-y]
+  manage-environment -t renew-secrets [-y]
+  manage-environment -t clean [-i &lt;config_name&gt;] [-e &lt;config_name&gt;] [-y]
+  manage-environment -t connectors [-i &lt;connector_name&gt;] [-e &lt;connector_name&gt;] [-y]
+  manage-environment -t extensions [-i &lt;extension_name&gt;] [-e &lt;extension_name&gt;] [-y]
+  manage-environment -t duplicate-config -c &lt;config_name&gt; -n &lt;new_config_name&gt; [-l] [-y]
+  manage-environment -h
+
+Options:
+  -t {backup}                                                       Backup the database for a config.
+  -t {copy}                                                         Copy the dependencies for a config from the specified path, to the current analyze-deployment-tooling project.
+  -t {upgrade}                                                      Upgrade all configurations from the specified path.
+  -t {update}                                                       Update images.
+  -t {link}                                                         Links shared configurations.
+  -t {stop}                                                         Stops the running containers.
+  -t {clean}                                                        Clean the deployment for a config. Will permanently remove all containers and data.
+  -t {renew-secrets}                                                Renews secrets for the configuration development environment.
+  -t {renew-certificates}                                           Renews certificates for the configuration development environment.
+  -t {connectors}                                                   Build all connector images.
+  -t {extensions}                                                   Build all extensions.
+  -t {duplicate-config}                                             Duplicates a config.
+  -l                                                                Duplicates a config in a shared repository and symlink it to analyze-deployment-tooling project.
+  -i &lt;config_name|extension_name|connector_name|component_name&gt;     Name of the config, connector, extension or component to include for the task. To specify multiple values, add additional -i options.
+  -e &lt;config_name|extension_name|connector_name|component_name&gt;     Name of the config, connector, extension or component to exclude for the task. To specify multiple values, add additional -e options.
+  -b &lt;backup_name&gt;                                                  Name of the backup to create or restore. If not specified, the default backup is used.
+  -p &lt;path&gt;                                                         Path to the root of an analyze-deployment-tooling project. Defaults to the current project path. Or /home/&lt;user_name&gt;/analyze-deployment-tooling in upgrade.
+  -y                                                                Answer &#39;yes&#39; to all prompts.
+  -v                                                                Verbose output.
+  -h                                                                Display the help.
+</code></pre><h2 id="backup-and-restore">Backup and restore</h2>
+<p>The <code>backup</code> and <code>restore</code> tasks allow you to back up and restore a number of configurations by using one command. To back up a single config, use the <code>deploy</code> command that is described in <a href="manage_backup_restore.html">back up and restore</a>.</p>
+<p>To back up all of the configs in your environment, run:</p>
+<pre><code class="lang-bash">manage-environment -t backup -b backup-202206
+</code></pre><p>This creates a backup named <code>backup-202206</code> for all configs in the environment.</p>
+<h2 id="updating-the-docker-images">Updating the Docker images</h2>
+<p>The <code>update</code> task pulls the latest images from Docker Hub and rebuilds the local images. Use this task to update the images in your environments. Images on Docker Hub are updated with security fixes and other updates. For more information, see <a href="manage_update_images.html">Update the Docker images</a>.</p>
+<h2 id="upgrading">Upgrading</h2>
+<p>The <code>upgrade</code> task allows you to upgrade the configs in your environment to a later version of Analyze deployment tooling or i2 Analyze.<br>For more information, see <a href="managing_upgrade_env.html">Upgrading</a>.</p>
+<h2 id="duplicate-a-configuration">Duplicate a configuration</h2>
+<p>The <code>duplicate-config</code> task allows you to duplicate a configuration within the environment. This is useful if you want to create a new configuration that is similar to an existing configuration. The new configuration is created with the same settings as the existing configuration, but with a different name.</p>
+<ol>
+<li><p>Run the following command:</p>
+<pre><code class="lang-sh">manage-environment -t duplicate-config -c &lt;config-name&gt; -n &lt;new_config-name&gt;
+</code></pre><p> Where <code>&lt;config-name&gt;</code> is the name of the config that you want to duplicate and <code>&lt;new-config-name&gt;</code> is the name of the new config.</p>
+</li>
+</ol>
+<p>If the configuration that you are duplicating is from a <a href="managing_shared_configurations.html">shared configuration</a>, specify the <code>-l</code> option to create the new configuration in the shared configuration location. Otherwise, the new configuration is created locally.</p>
+<h2 id="copying-configurations">Copying configurations</h2>
+<p>The <code>copy</code> task allows you to copy configs from one development environment to another.</p>
+<ol>
+<li><p>Update the <code>path-configuration.json</code> file to reference the path where you installed the i2 Analyze toolkit:</p>
+<ol>
+<li><p>Add a name and the path to your i2 Analyze toolkit as the keys and values for the <code>externalDirectories</code> object.</p>
+<p>For example, to add <code>/home/&lt;user-name&gt;/analyze-deployment-tooling-2</code> the <code>path-configuration.json</code> file contains the following:  </p>
+<pre><code class="lang-json">{
+&quot;externalDirectories&quot;: [{
+ &quot;name&quot;: &quot;containers-repo&quot;,
+ &quot;path&quot;: &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling-2&quot;
+}]
+}
+</code></pre></li>
+</ol>
+</li>
+</ol>
+<p>To update your environment to use the root directory, you must run the <code>configure-paths</code> command.</p>
+<ol>
+<li><p>Reopen the analyze-deployment-tooling folder locally.  </p>
+<ul>
+<li>On Windows press <strong>F1</strong>, type <code>Dev Containers: Reopen Folder in WSL</code> and select it.</li>
+<li>On MacOS press <strong>Cmd+Shift+P</strong>, type <code>Dev Containers: Reopen Folder Locally</code> and select it.</li>
+</ul>
+</li>
+<li><p>Open a terminal and run:</p>
+<pre><code class="lang-sh">./scripts/configure-paths
+</code></pre></li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild and Reopen in Container</code> and select it</p>
+</li>
+<li><p>Run the following command:</p>
+<pre><code class="lang-sh">manage-environment -p &lt;path&gt; -t copy
+</code></pre><p> Where <code>&lt;path&gt;</code> is the absolute path to the root of another <code>analyze-deployment-tooling</code> repository that was added to the <code>path-configuration.json</code> file.</p>
+<p> This script copies the following directories:</p>
+<ul>
+<li><code>backups</code></li>
+<li><code>configs</code></li>
+<li><code>connector-images</code></li>
+<li><code>environment-secrets</code></li>
+<li><code>gateway-schemas</code></li>
+<li><code>i2a-data</code></li>
+<li><code>i2a-extensions</code></li>
+<li><code>i2a-plugins</code></li>
+<li><p><code>additional-resources</code></p>
+<p>If you specify to include or exclude any configs by using the <code>-i</code> and <code>-e</code> options, only those config directories are copied but all assets are copied even if not referenced.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="building-connectors">Building connectors</h2>
+<p>The connectors that are referenced by a config are built and deployed when that config is deployed. You can optionally build all connectors or a subset of the connectors by using the <code>manage-environment</code> command with the <code>connectors</code> task.</p>
+<ul>
+<li><p>To build all of the connector images, run:</p>
+<pre><code class="lang-sh">manage-environment -t connectors
+</code></pre></li>
+<li><p>To build a subset of the connector images, you can use of the include (<code>-i</code>) and exclude (<code>-e</code>) options.<br>For example:</p>
+<pre><code class="lang-sh">manage-environment -t connectors -i connector_name_1 -i connector_name_2
+</code></pre><p>This command only builds images for <code>connector_name_1</code> and <code>connector_name_2</code>.</p>
+<pre><code class="lang-sh">manage-environment -t connectors -e &lt;connector_name_1&gt; -e &lt;connector_name_2&gt;
+</code></pre><p>This command builds the images for all connectors except <code>connector_name_1</code> and <code>connector_name_2</code>.</p>
+</li>
+</ul>
+<h2 id="building-extensions">Building extensions</h2>
+<p>The extensions that are referenced by a config are built and deployed when that config is deployed. You can optionally build all extensions or a subset of the extensions by using the <code>manage-environment</code> command with the <code>extensions</code> task.</p>
+<ul>
+<li><p>To build all of the extensions, run:</p>
+<pre><code class="lang-sh">manage-environment -t extensions
+</code></pre></li>
+<li><p>To build a subset of the extensions, you can use the include (<code>-i</code>) and exclude (<code>-e</code>) options.<br>For example:</p>
+<pre><code class="lang-sh">manage-environment -t extensions -i extension_1 -i extension_2
+</code></pre><p>This command only builds <code>extension_1</code> and <code>extension_2</code>.</p>
+<pre><code class="lang-sh">manage-environment -t extensions -e &lt;extension_1&gt; -e &lt;extension_2&gt;
+</code></pre><p>This command builds all of the extensions except <code>extension_1</code> and <code>extension_2</code>.</p>
+</li>
+</ul>
+<h2 id="stopping-the-environment">Stopping the environment</h2>
+<p>The <code>stop</code> task allows you to stop all the running containers in the environment. To start using the environment again, run the <code>deploy</code> command with your chosen config name.</p>
+<p><strong>Note:</strong> The <code>stop</code> task stops all containers in the <code>eia</code> network. Any containers that were created outside of the config dev environment that are connected to the <code>eia</code> network will be stopped. You must manually start these containers.</p>
+<h2 id="cleaning-a-deployment">Cleaning a deployment</h2>
+<p>The <code>clean</code> task allows you to clean all configs by deleting all the containers and volumes. This is a destructive operation.</p>
+<h2 id="linking-shared-configurations">Linking shared configurations</h2>
+<p>The <code>link</code> task allows you to link configurations. For more information, see <a href="managing_shared_configurations.html">Managing shared configurations</a>.</p>
+<h2 id="renewing-certificates">Renewing certificates</h2>
+<p>The <code>renew-certificates</code> task allows you to renew certificates for all configs.</p>
+<h2 id="renewing-secrets">Renewing secrets</h2>
+<p>The <code>renew-secrets</code> task allows you to renew secrets for all configs. Similar to <code>renew-certificates</code> task but also renews passwords.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

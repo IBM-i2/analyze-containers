@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PostgreSQL Client </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="PostgreSQL Client ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="postgresql-client">PostgreSQL Client</h1>
+
+<p>A Postgres Client container is an ephemeral container that is used to run the <code>psql</code> commands to create and configure the database.</p>
+<h2 id="building-an-postgres-client-image">Building an Postgres Client image</h2>
+<p>The Postgres Client is built on top of the <a href="https://hub.docker.com/repository/docker/i2group/i2eng-postgres">Postgres image</a> maintained by i2 Group on Docker Hub.</p>
+<p>The Postgres Client image is built from the Dockerfile in <code>images/postgres_client</code>.</p>
+<h3 id="docker-build-command">Docker build command</h3>
+<p>The following <code>docker build</code> command builds the Postgres Client image:</p>
+<pre><code class="lang-bash">docker build -t &quot;postgres_client_image:4.4.4&quot; images/postgres_client
+</code></pre><h2 id="running-a-postgres-client-container">Running a Postgres Client container</h2>
+<p>A Postgres Client container uses the Postgres Client image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
+<p>The container will run with a default User ID and Group ID of <code>999</code> (this can be changed with the <code>USER_ID</code> and <code>GROUP_ID</code> env variables). All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs a Postgres Client container:</p>
+<pre><code class="lang-bash">docker run \
+    --rm \
+    --network &quot;eia&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/pre-reqs/i2analyze/toolkit:/opt/toolkit&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/examples/pre-prod/database-scripts/generated:/opt/databaseScripts/generated&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/examples/pre-prod/configuration/database-scripts:/opt/customDatabaseScripts&quot; \
+    -e USER_ID=&quot;$(id -u)&quot; -e GROUP_ID=&quot;$(id -g)&quot; \
+    -e SQLCMD=&quot;/usr/lib/postgresql/bin/psql&quot; \
+    -e SQLCMD_FLAGS=&quot;-w -X -q --set=client_min_messages=warning&quot; \
+    -e DB_SERVER=&quot;postgres.eia&quot; \
+    -e DB_PORT=5432 \
+    -e DB_NAME=&quot;ISTORE&quot; \
+    -e GENERATED_DIR=&quot;/opt/databaseScripts/generated&quot; \
+    -e PGUSER=&quot;dba&quot; \
+    -e PGPASSWORD=&quot;DBA_PASSWORD&quot; \
+    -e DB_SSL_CONNECTION=true \
+    -e SSL_CA_CERTIFICATE=&quot;/run/secrets/CA.cer&quot; \
+    -e SSL_ADDITIONAL_TRUST_CERTIFICATES=&quot;/run/secrets/additional_trust_certificates.cer&quot; \
+    &quot;postgres_client_image:4.4.4&quot; &quot;$@&quot;
+</code></pre><p>The local user ID is required so that a user is created in the Docker container with a <code>USER_ID</code> that is the same as the local user. The user is required to ensure that the local user can access any files that are generated on the container. The value of <code>$id</code> comes from your shell.</p>
+<p>For an example of the <code>docker run</code> command, see <code>run_postgres_server_command_as_etl</code> function in <code>client_functions.sh</code> script.
+For an example of how to use <code>run_postgres_server_command_as_etl</code> function, see <a href="../tools-and-functions/client_functions.md#runpostgresservercommandasetl">run_postgres_server_command_as_etl</a>.</p>
+<blockquote><p>Note: you can run Postgres Client container as different users, see <a href="../tools-and-functions/client_functions.md#runpostgresservercommandasdba"><code>run_postgres_server_command_as_dba</code></a>, <a href="../tools-and-functions/client_functions.md#runpostgresservercommandaspostgres"><code>run_postgres_server_command_as_postgres</code></a></p>
+</blockquote>
+<h2 id="bind-mounts">Bind mounts</h2>
+<ul>
+<li><p><strong>Secrets</strong>:<br>A directory that contains all of the secrets that this tool requires. Specifically this includes credentials to access the database and certificates used in SSL.<br>The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>SSL_CA_CERTIFICATE_FILE</code> to locate the secrets.
+In a production environment, the orchestration environment can provide the secrets to the file system or the secrets can be passed in via environment variables. The mechanism that is used here simulates the orchestration system providing the secrets as files. This is achieved by using a bind mount. In production this would not be required.</p>
+</li>
+<li><p><strong>Toolkit</strong>:<br>For the Postgres Client to use the tools in <code>/opt/toolkit/i2-tools/scripts</code>,
+the toolkit must be mounted into the container.<br>In the example scripts, this is defaulted to <code>/opt/toolkit</code>.</p>
+</li>
+<li><p><strong>Generated scripts directory</strong>:<br>Some of the i2 Analyze tools generate scripts to be run against the Information Store database. For the Postgres Client to run these scripts, the directory where they are generated must be mounted into the container.<br>In the example scripts, this is defaulted to <code>database-scripts/generated</code>. The <code>GENERATED_DIR</code> environment variable must specify the location where the generated scripts are mounted.</p>
+</li>
+<li><p><strong>Custom scripts directory</strong>:<br>You can create custom database scripts. For the Postgres Client to run these scripts, the directory where they are created must be mounted into the container.<br>In the example scripts, this is defaulted to <code>configuration/database-scripts</code>.</p>
+</li>
+</ul>
+<h2 id="environment-variables">Environment variables</h2>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_SERVER</code></td>
+<td>The fully qualified domain name of the database server.</td>
+</tr>
+<tr>
+<td><code>DB_PORT</code></td>
+<td>Specifies the port number to connect to the Information Store.</td>
+</tr>
+<tr>
+<td><code>DB_NAME</code></td>
+<td>The name of the Information Store database.</td>
+</tr>
+<tr>
+<td><code>PGUSER</code></td>
+<td>The user.</td>
+</tr>
+<tr>
+<td><code>PGPASSWORD</code></td>
+<td>The password.</td>
+</tr>
+<tr>
+<td><code>GENERATED_DIR</code></td>
+<td>The root location where any generated scripts are created.</td>
+</tr>
+</tbody>
+</table>
+<p>The following environment variables enable you use SSL</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_ADDITIONAL_TRUST_CERTIFICATES</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="command-parsing">Command parsing</h2>
+<p>When commands are passed to the Postgres client by using the <code>&quot;$@&quot;</code> notation, the command that is passed to the container must be escaped correctly. On the container, the command is run using <code>docker exec &quot;$@&quot;</code>. Because the command is passed to the <code>docker run</code> command using <code>bash -c</code>, the command must be maintained as a double quoted string.</p>
+<p>For example:</p>
+<pre><code class="lang-bash">    run_postgres_server_command_as_etl 
+    bash -c 
+    &quot;/usr/lib/postgresql/bin/psql -w -X -q --set=client_min_messages=warning -h \${DB_SERVER} -p ${DB_PORT} -d \${DB_NAME} 
+    -c \&quot;COPY ${STAGING_SCHEMA}.${table_name} ($(
+      IFS=&#39;,&#39;
+      echo &quot;${csv_header[*]}&quot;
+    )) FROM &#39;/var/i2a-data/${BASE_DATA}/${csv_and_format_file_name}.csv&#39; CSV HEADER ENCODING &#39;UTF8&#39; NULL AS &#39;&#39;\&quot;&quot;
+</code></pre><p>Different parts of the command must be escaped in different ways:</p>
+<ul>
+<li><code>\${DB_SERVER}</code> and <code>\${DB_NAME}</code><br> Because the command uses the container&#39;s local environment variables to obtain the values of these variables, the <code>$</code> is escaped by a <code>\</code>.<br> <code>${DB_PORT}</code> is not escaped because this is an environment variable available to the script calling the client function.</li>
+<li><code>\&quot;COPY ${STAGING_SCHEMA}.${table_name} ... CSV HEADER ENCODING &#39;UTF8&#39; NULL AS &#39;&#39;\&quot;</code><br> The string value for the <code>-c</code> argument must be surrounded by <code>&quot;</code> when it is run on the container. The surrounding <code>&quot;</code> are escaped with <code>\</code>.
+ The variables that are not escaped in the string are evaluated outside of the container when the function is called.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

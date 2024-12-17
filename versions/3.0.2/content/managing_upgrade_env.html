@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Upgrading </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Upgrading ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="upgrading">Upgrading</h1>
+
+<p>Upgrade your config development environment to use the latest version of the analyze-deployment-tooling repository, or i2 Analyze update the images, secrets, and deploy your configs.</p>
+<p>The process of upgrading the config development environment is completed in a different directory from your current environment.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Make a copy of your existing <code>analyze-deployment-tooling</code> directory as a backup.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol>
+<li>Download the <code>tar.gz</code> from <a href="https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2">https://github.com/i2group/analyze-deployment-tooling/releases/tag/v3.0.2</a>.</li>
+<li><p>Extract the <code>tar.gz</code> file by using the following steps:</p>
+<ol>
+<li>On Windows, copy the <code>analyze-deployment-tooling-3.0.2.tar.gz</code> file to your WSL filesystem. For example: <code>\\wsl.localhost\Ubuntu\home\&lt;user&gt;</code></li>
+<li><p>Extract the <code>tar.gz</code> file (On Windows, run the commands from a WSL terminal. <strong>Start</strong> &gt; <strong>wsl</strong>):</p>
+<pre><code class="lang-sh">cd /home/&lt;user&gt;
+</code></pre><pre><code class="lang-sh">tar -xvzf analyze-deployment-tooling-3.0.2.tar.gz
+</code></pre><pre><code class="lang-sh">mv analyze-deployment-tooling-3.0.2/ analyze-deployment-tooling-302
+</code></pre></li>
+</ol>
+</li>
+<li><p>If the version of i2 Analyze has not changed, you can copy the <code>i2analyzeMinimal.tar.gz</code> from your <code>analyze-deployment-tooling</code> directory to the <code>analyze-deployment-tooling-302/pre-reqs</code> directory. To see which version of i2 Analyze is required by each version of analyze-deployment-tooling, see <a href="https://i2group.github.io/analyze-deployment-tooling/guidetoc/index.html#compatibility">compatibility table</a>.</p>
+<ol>
+<li>Download the i2 Analyze V4.4.4 Minimal for Linux.<ul>
+<li>To download i2 Analyze, follow the procedure described in <a href="https://support.i2group.com/s/article/2290">Where can I download the latest i2 Products?</a></li>
+<li>Populate the subject of the form with <code>Request for i2 Analyze 4.4.4 minimal toolkit for Linux</code>.</li>
+</ul>
+</li>
+<li>Rename the downloaded file to <code>i2analyzeMinimal.tar.gz</code>, then copy it to the <code>analyze-deployment-tooling-302/pre-reqs</code> directory.</li>
+</ol>
+</li>
+<li><p>Open a new VS Code window.</p>
+<ol>
+<li>On Windows, press <strong>F1</strong> and type <code>WSL: Connect to WSL</code> and select it.</li>
+<li>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS) and type <code>Dev Containers: Open Folder in Container</code> and select it.<br>In the file explorer, navigate to your newly created <code>analyze-deployment-tooling-302</code> directory.</li>
+<li>You might see a prompt is displayed, this means a new dev environment is available, click rebuild to rebuild the remote dev container.</li>
+</ol>
+</li>
+<li><p>To create the configuration development environment open a terminal and run:</p>
+<pre><code class="lang-sh">./bootstrap
+</code></pre><p> The script performs the following actions:</p>
+<ul>
+<li>Extracts the required files from the i2 Analyze deployment toolkit</li>
+<li>Builds the required Docker images for the development environment</li>
+<li>Generates the secrets that are used in the environment</li>
+<li>Creates the configuration template  <ul>
+<li>The configuration template is located in <code>/templates/config-development</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Before you can use i2 Analyze and the tools, you must read the license agreement and copyright notices then accept them.</p>
+<ol>
+<li>To accept the license agreement, change the value of the <code>LIC_AGREEMENT</code> variable to <code>ACCEPT</code> in the <code>licenses.conf</code> file.<br>To read the license, open the file in the <code>pre-reqs/i2analyze/license</code> directory.</li>
+</ol>
+</li>
+<li><p>Before you can use Microsoft SQL Server, you must accept the license agreement and the EULA. For more information about using the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables, see <a href="https://docs.microsoft.com/sql/linux/sql-server-linux-configure-environment-variables?view=sql-server-ver15#environment-variables">Configure SQL Server settings with environment variables on Linux</a>  </p>
+<ul>
+<li><p>To accept the license in this environment, change the value of the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables. The variables are in the <code>licenses.conf</code> file.</p>
+<p>  For example:</p>
+<pre><code class="lang-sh">LIC_AGREEMENT=ACCEPT
+MSSQL_PID=Developer
+ACCEPT_EULA=Y
+</code></pre></li>
+</ul>
+</li>
+<li><p>Update the <code>path-configuration.json</code> file inside <code>analyze-deployment-tooling-302</code> directory to reference the path to your previous analyze-deployment-tooling version:</p>
+<ol>
+<li><p>Open a terminal on your host machine.</p>
+<ul>
+<li>On Windows, use a WSL terminal. Press <strong>Start -&gt; wsl</strong></li>
+</ul>
+</li>
+<li><p>Navigate to the <code>analyze-deployment-tooling-302/scripts</code> directory.</p>
+</li>
+<li><p>Run the <code>configure-paths</code> script with the <code>upgrade</code> task.<br> For example:</p>
+<pre><code class="lang-sh">./configure-paths -t upgrade
+</code></pre><p> By default, the script assumes that your previous version of Analyze deployment tooling is in the <code>/home/&lt;user-name&gt;/analyze-deployment-tooling</code> directory. If your previous version is in another directory, use the <code>-p &lt;path&gt;</code> argument to specify the path.</p>
+</li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild and Reopen in Container</code> and select it</p>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p>There are 2 options that you can choose from when you upgrade your config development environment.</p>
+<ul>
+<li><a href="#option-1">Option 1</a>: Upgrade all of your configs to use the latest version of analyze-deployment-tooling and the latest version of i2 Analyze if it has changed. You must use this option if you are using shared configurations.</li>
+<li><a href="#option-2">Option 2</a>: Upgrade a subset of your configs to use the latest version of i2 Analyze, and keep the remaining configs using the previous version of i2 Analyze.</li>
+</ul>
+<p>If the version of i2 Analyze has not changed, you must use option 1 to upgrade your deployment. To see which version of i2 Analyze a version of analyze-deployment-tooling requires, see <a href="https://i2group.github.io/analyze-deployment-tooling/guidetoc/index.html#compatibility">compatibility table</a>.</p>
+<h2 id="option-1">Option 1</h2>
+<ol>
+<li><p>If you want to upgrade all of the configs in your environment to use the latest version, run the following command:</p>
+<pre><code class="lang-sh">manage-environment -t upgrade
+</code></pre><p> During the upgrade process the system will ask you to respond to the following prompts:</p>
+<ul>
+<li>To confirm you want to upgrade each config.</li>
+<li>To confirm you want to upgrade all database backups for a config.</li>
+<li><p>If you want to overwrite the previous version of analyze-deployment-tooling and continue working in your previous directory. Respond <code>y</code> to complete an in-place upgrade.</p>
+<p>If you want to answer yes to these questions for all your configs, you can run the command with the <code>-y</code> flag. This means that you can leave the script running without having to monitor it to respond to prompts.</p>
+<p>This script completes the following actions:</p>
+</li>
+<li><p>Creates a backup of the ISTORE database for each config that contains one</p>
+</li>
+<li>Copies the following directories from the previous project to the current project:<ul>
+<li><code>additional-resources</code></li>
+<li><code>backups</code></li>
+<li><code>configs</code></li>
+<li><code>connector-images</code></li>
+<li><code>environment-secrets</code></li>
+<li><code>gateway-schemas</code></li>
+<li><code>i2a-data</code></li>
+<li><code>i2a-extensions</code></li>
+<li><code>i2a-plugins</code></li>
+</ul>
+</li>
+<li>Upgrades the configs to the latest version of i2 Analyze and analyze-deployment-tooling</li>
+</ul>
+</li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild and Reopen in Container</code> and select it</p>
+</li>
+<li><p>To start the deployment at the latest version with a config, run:</p>
+<pre><code class="lang-sh">deploy -c &lt;config-name&gt; 
+</code></pre></li>
+</ol>
+<hr>
+<h2 id="option-2">Option 2</h2>
+<ol>
+<li><p>If you want to upgrade a subset of configs to use the latest version of i2 Analyze, run the following commands:</p>
+<ol>
+<li><p>Backup the database for the configs you want to upgrade:</p>
+<pre><code class="lang-sh">manage-environment -p &lt;path-to-previous-project&gt; -i &lt;config-name&gt; -b global-upgrade -t backup
+</code></pre><p> Where:</p>
+<ul>
+<li><code>&lt;path-to-previous-project&gt;</code> is the absolute path to your previous <code>analyze-deployment-tooling</code> repository</li>
+<li><code>&lt;config-name&gt;</code> is the name of a config to backup. You can provide multiple <code>-i</code> options for each config you want to upgrade.</li>
+</ul>
+</li>
+<li><p>Copy the configs and dependencies from the previous project to the current project:</p>
+<pre><code class="lang-sh">manage-environment -p &lt;path-to-previous-project&gt; -i &lt;config-name&gt; -t copy
+</code></pre><p> Where:</p>
+<ul>
+<li><code>&lt;path-to-previous-project&gt;</code> is the absolute path to your previous <code>analyze-deployment-tooling</code> repository</li>
+<li><code>&lt;config-name&gt;</code> is the name of a config to copy. You can provide multiple <code>-i</code> options for each config you want to upgrade.</li>
+</ul>
+</li>
+<li><p>Run the <code>create-dev-environment</code> command to create the images for i2 Analyze 4.4.4.</p>
+<pre><code class="lang-sh">create-dev-environment
+</code></pre></li>
+<li><p>Upgrades your configs to the latest version. For each config that you want to upgrade, run:</p>
+<pre><code class="lang-sh">deploy -c &lt;config-name&gt; 
+</code></pre><p> Where:</p>
+<ul>
+<li><code>&lt;config-name&gt;</code> is the name of the config to upgrade.</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If the upgrade process fails, you can use the following procedure to recover.</p>
+<ol>
+<li>Delete the <code>analyze-deployment-tooling-3.0.2</code> folder.</li>
+<li>In the backup from the previous version, ensure that you can deploy the configuration that failed.<br>If you cannot deploy in the previous version, fix the errors before you upgrade or remove the config so that it isn&#39;t upgraded.</li>
+<li>Restart the upgrade process from the beginning.</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

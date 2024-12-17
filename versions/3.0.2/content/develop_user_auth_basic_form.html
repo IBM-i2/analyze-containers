@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring user authentication </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring user authentication ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-user-authentication">Configuring user authentication</h1>
+
+<p>i2 Analyze supports multiple authentication methods, including form-based, basic, and claims-based authentication.</p>
+<h2 id="config-development-environment-admin-user">Config development environment admin user</h2>
+<p>The config dev environment requires an administrator user name <code>adt-admin</code> to be available to the deployment. When using Form-Based or Basic Authentication this user is automatically provided. If you are using Claims-Based Authentication, or another external user registry, you must ensure this user is in the identity provider or external user registry.</p>
+<p>The user must be a member of a group named <code>Administrator</code>. The password for the user is in the <code>environment-secrets/generated-secrets/application/admin_PASSWORD</code> file.</p>
+<p>This page describes how to configure form-based and basic authentication. For information about configuring claims-based authentication, see <a href="develop_user_auth.html">Configuring claims-based authentication</a>.</p>
+<h2 id="configuring-form-based-or-basic-authentication">Configuring Form-Based or Basic Authentication</h2>
+<p><code>Form-based</code> authentication is a common method used to authenticate users based on their input in a login form. This is the default authentication that is used.<br><code>Basic</code> authentication is a simple method where the client sends the username and password in the HTTP headers.</p>
+<p>To specify the authentication method:</p>
+<ol>
+<li><p>Specify the authentication method in the <code>&lt;config-name&gt;/configuration/server.extensions.xml</code> file:</p>
+<ul>
+<li><p>Form-Based Authentication:</p>
+<pre><code class="lang-xml">&lt;webAppSecurity overrideHttpAuthMethod=&quot;FORM&quot; allowAuthenticationFailOverToAuthMethod=&quot;FORM&quot; loginFormURL=&quot;opal/login.html&quot; loginErrorURL=&quot;opal/login.html?failed&quot;/&gt;
+</code></pre></li>
+<li><p>Basic Authentication:</p>
+<pre><code class="lang-xml">&lt;webAppSecurity overrideHttpAuthMethod=&quot;BASIC&quot; allowAuthenticationFailOverToAuthMethod=&quot;BASIC&quot; loginFormURL=&quot;opal/login.html&quot; loginErrorURL=&quot;opal/login.html?failed&quot;/&gt;
+</code></pre><p>For more information about configuring authentication in Liberty, see the <a href="https://openliberty.io/docs/latest/reference/config/webAppSecurity.html">Open Liberty documentation</a>.</p>
+</li>
+</ul>
+</li>
+<li><p>After you update the <code>server.extensions.xml</code> file, redeploy your config by running the following command:</p>
+<pre><code class="lang-sh">deploy
+</code></pre><p> If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

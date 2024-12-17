@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Database scripts and configuration </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Database scripts and configuration ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="database-scripts-and-configuration">Database scripts and configuration</h1>
+
+<p>The ISTORE database is created by using a number of database scripts. These scripts are created based on your configuration and the type of action being completed against the database.</p>
+<hr>
+<h2 id="change-sets">Change sets</h2>
+<p>When the database is created for the first time in a config, a change set is created that contains all of the
+scripts required to create the database for that configuration. The change set is in the following location: <code>&lt;config-name&gt;/change-sets</code>.</p>
+<p>Each change set is built up in the following way: <code>&lt;number&gt;-&lt;action&gt;-&lt;date&gt;-&lt;time&gt;</code>. For example: <code>0-initial-2022.07.12-16.45</code>.</p>
+<p>Change sets are created for:</p>
+<ul>
+<li>Initial deployment - <code>initial</code></li>
+<li>Additive updates - <code>additive</code></li>
+<li>Destructive updates - <code>destructive</code></li>
+<li>Upgrade - <code>upgrade-release</code></li>
+<li>Release - <code>release</code></li>
+</ul>
+<p>A change set contains the database scripts that are required to create the database or make additive updates,
+some also contain configuration changes that caused the change in database scripts.</p>
+<hr>
+<h2 id="releasing-database-scripts">Releasing database scripts</h2>
+<p>You can create a <code>release</code> change set that contains the database scripts required to create or update a database
+with the same changes as in your development environment.</p>
+<p>For example, if you use the config development environment to develop a schema you will complete an iterative
+process that results in a number of changes to the database. When you are happy with the current database,
+you can create a release change set. You can use the database scripts in this change set to create a database
+for that schema in any environment. The first time you run this command, the release change set named
+<code>1-release-&lt;date&gt;-&lt;time&gt;</code> is created. All other change sets that were present are removed.</p>
+<p>To create a release change set, run:</p>
+<pre><code class="lang-bash">deploy -r
+</code></pre><p>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+<p>When you run this command, a database backup is also created with the name of the change set. E.g. <code>1-release-&lt;date&gt;-&lt;time&gt;</code>.</p>
+<p>After you create the first release change set, you can continue to develop your configuration further with
+additive changes. You can create other release change sets that contain the scripts required to update the
+database from a previous release to the next one.</p>
+<p>For example, if you run <code>deploy -r</code> for a second time you will have the following change-sets available:</p>
+<pre><code class="lang-bash">- 1-release-&lt;date&gt;-&lt;time&gt;
+- 2-release-&lt;date&gt;-&lt;time&gt;
+</code></pre><p>You can use the scripts in the <code>2-release</code> change set to update a database created with the <code>1-release</code> change set.</p>
+<h3 id="destructive-changes">Destructive changes</h3>
+<p>A destructive action requires you to recreate the database. You cannot update an existing database with the
+changes from a destructive change set. If you make a destructive change, you have 2 options:</p>
+<ul>
+<li>Revert back to a release from before you made the destructive change.<ul>
+<li>Run <code>deploy -r &lt;release-change-set-number&gt;</code>.<br>This will restore the database to the version at the specified release. All later change sets are removed.</li>
+</ul>
+</li>
+<li>Make the destructive change set the new first release.<ul>
+<li>Run <code>deploy -r</code>.<br>If the system detects a destructive change set between now and the last release, you are prompted if you want
+to make the new release the 1st release change set. All other change sets are removed.</li>
+</ul>
+</li>
+</ul>
+<h3 id="upgrading">Upgrading</h3>
+<p>When an upgrade requires changes to the database, the scripts to complete these changes are captured in a change set.
+Any change sets that were created between the last release change set and the upgrade are removed. The upgrade
+change set is named <code>&lt;number&gt;-upgrade-release-&lt;date&gt;-&lt;time&gt;</code>.</p>
+<hr>
+<h2 id="using-change-sets">Using change sets</h2>
+<p>If you want to use the change sets to recreate or update the Information Store database in another environment,
+you can run the database scripts from your release change sets. Each release change set contains a <code>run-database-scripts.sh</code>
+script that you can use to create or update your Information Store database. This script runs all of the <code>.sql</code>
+scripts in the changeset in the correct order.</p>
+<p><strong>Note:</strong> On Windows, you must run the shell script from WSL.</p>
+<p>To run the scripts for a release, run the <code>run-database-scripts.sh</code> script for the change set:</p>
+<pre><code class="lang-sh">  ./run-database-scripts.sh -s &lt;db-server&gt; -p &lt;db-port&gt; [-U &lt;db-username&gt; -P &lt;db-password&gt;]
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-s &lt;db-server&gt;</code> is the host name of the server running the database management system.</li>
+<li><code>-p &lt;db-port&gt;</code> is the port number for the database management system.</li>
+<li><code>-U &lt;db-username&gt;</code> is the user name of the user that can create or modify databases in your database management system.<br>For information about the required credentials for the database in an on-prem deployment, see
+<a href="https://docs.i2group.com/analyze/t_specifying_credentials.html">Specifying the deployment credentials</a>.</li>
+<li><code>-P &lt;db-password&gt;</code> is the password for the user.</li>
+</ul>
+<p>When you update the database in a system using the deployment toolkit, you must run the toolkit tasks that are
+used to update the Liberty server with the changes:</p>
+<ul>
+<li>If the schema has been modified, follow the instructions in <a href="https://docs.i2group.com/analyze/modifying_i2analyze_schema.html">Modifying a deployed Information Store schema</a>
+to update the deployment.</li>
+<li>If the security schema has been modified, follow the instructions in <a href="https://docs.i2group.com/analyze/security_schema_modify.html">Modifying security dimensions</a>
+to update the deployment.</li>
+</ul>
+<p>Allowed environment variables:</p>
+<table>
+<thead>
+<tr>
+<th>Variable name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB_USERNAME</td>
+<td>The username for the DBA of the database</td>
+</tr>
+<tr>
+<td>DB_PASSWORD</td>
+<td>The password for the DBA user of the database</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>-U</code> and <code>-P</code> flags, or the equivalent environment variables, are required for SQL Server.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Pre-production example environment </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Pre-production example environment ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="pre-production-example-environment">Pre-production example environment</h1>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before you create an example pre-production environment, you must configure the analyze-deployment-tooling repository.<br>For more information, see <a href="../getting_started.html">Getting started with the analyze-deployment-tooling repository</a>.</p>
+<hr>
+<h2 id="creating-a-containerized-deployment">Creating a containerized deployment</h2>
+<p>After you have all of the prerequisites in place, you can create the reference pre-production containerized deployment.</p>
+<h3 id="install-pre-prod-example">Install pre-prod example</h3>
+<ol>
+<li><p>Run the command:</p>
+<pre><code class="lang-sh">install-analyze-deployment-tooling -e pre-prod
+</code></pre></li>
+</ol>
+<h3 id="creating-the-environment-and-configuration">Creating the environment and configuration</h3>
+<p>The <code>create-pre-prod-environment</code> script performs a number of actions that ensure all of the artifacts for a deployment are created and in the correct locations. These actions include:</p>
+<ul>
+<li>Extracting the i2 Analyze minimal toolkit to the <code>pre-reqs/i2analyze</code> directory.</li>
+<li>Creating the i2 Analyze Liberty application</li>
+<li>Creating and populating the configuration directory structure</li>
+</ul>
+<p>For more information about the what the script does, see:</p>
+<ul>
+<li><a href="../tools-and-functions/create_environment.html">Create environment</a></li>
+</ul>
+<p>To create the environment and configuration:</p>
+<ol>
+<li>Navigate to the <code>examples/pre-prod</code> directory.</li>
+<li><p>Run the following script:</p>
+<pre><code class="lang-sh">./create-pre-prod-environment
+</code></pre></li>
+</ol>
+<p>The <code>configuration</code> directory is created in the <code>examples/pre-prod</code> directory.</p>
+<p>By default, the environment is created for an Information Store and i2 Connect gateway deployment for SQL Server.</p>
+<h3 id="accepting-the-licenses">Accepting the licenses</h3>
+<ul>
+<li><p>Before you can use i2 Analyze and the tools, you must read and accept the license agreement and copyright notices. The license agreement and copyright notices can be found in the <code>pre-reqs/i2analyze/license</code> directory.
+  To accept the license agreement, change the value of the <code>LIC_AGREEMENT</code> variable to <code>ACCEPT</code>. The variable is in the <code>licenses.conf</code> file in the root directory.</p>
+</li>
+<li><p>Before you can use Microsoft SQL Server, you must accept the license agreement and the EULA. For more information about using the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables, see <a href="https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-environment-variables?view=sql-server-ver15#environment-variables">Configure SQL Server settings with environment variables on Linux</a>
+  To accept the license in this environment, change the value of the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables. The variable is in the <code>licenses.conf</code> file in the root directory.</p>
+</li>
+</ul>
+<h3 id="running-the-containers-and-start-i2-analyze">Running the containers and start i2 Analyze</h3>
+<p>To deploy and start i2 Analyze:</p>
+<ol>
+<li>Navigate to the <code>examples/pre-prod</code> directory.</li>
+<li><p>Run the following script:</p>
+<pre><code class="lang-sh">./deploy-pre-prod
+</code></pre></li>
+</ol>
+<p>For more information about the actions that are completed, see <a href="../tools-and-functions/deploy.html">Deploying i2 Analyze</a>.</p>
+<hr>
+<h2 id="installing-certificate">Installing Certificate</h2>
+<p>To access the system, the server that you are connecting from must trust the certificate that it receives from the deployment. To enable trust, install the <code>/environment-secrets/generated-secrets/certificates/externalCA/CA.cer</code> certificate as a trusted root certificate authority in your browser and operating system&#39;s certificate store.</p>
+<p>For information about installing the certificate, see:</p>
+<ul>
+<li><a href="https://windowsreport.com/install-windows-10-root-certificates/#2">Install Certificates with the Microsoft Management Console</a></li>
+<li><a href="https://support.mozilla.org/en-US/kb/setting-certificate-authorities-firefox">Setting up certificate authorities in Firefox</a></li>
+<li><a href="https://support.google.com/chrome/a/answer/6342302?hl=en">Set up an HTTPS certificate authority in Chrome</a></li>
+</ul>
+<h2 id="accessing-the-system">Accessing the system</h2>
+<p>To connect to the deployment, the URL to use is: <code>https://i2analyze.eia:9046/opal/</code></p>
+<h2 id="what-to-do-next">What to do next</h2>
+<p>To understand how the environment is created, you can review the documentation that explains the images, containers, tools, and functions:</p>
+<ul>
+<li><a href="../images-and-containers/images.html">Images and containers</a></li>
+<li><a href="../tools-and-functions/tools.html">Tools and functions</a></li>
+</ul>
+<p>To learn how to configure and administer i2 Analyze in a containerized environment, you can complete the walkthroughs that are included in the repository:</p>
+<ul>
+<li><a href="../walkthroughs/walkthroughs.html">Walkthroughs</a></li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

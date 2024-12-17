@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Upgrading i2 Analyze Pre-prod Environment </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Upgrading i2 Analyze Pre-prod Environment ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="upgrading-i2-analyze-pre-prod-environment">Upgrading i2 Analyze Pre-prod Environment</h1>
+
+<p>This section describes an example of the process to upgrade i2 Analyze in a containerized environment.
+Updating the configuration includes the following high-level steps:</p>
+<ul>
+<li>Rebuilding the Docker images for the new version of i2 Analyze</li>
+<li>Regenerating secrets</li>
+<li>Create the upgrade change set</li>
+<li>Remove the previous containers and volumes</li>
+<li>Upgrading Solr, the database, the example connector, the Liberty application, Prometheus and Grafana</li>
+<li>Restoring Solr and the database</li>
+</ul>
+<blockquote><p><strong>Note:</strong> Before you complete this walkthrough:</p>
+<ul>
+<li>Upgrade your environment using the instructions in <a href="../managing_upgrade_env.html">Upgrading your environment</a>.<ul>
+<li>You must run <code>examples/pre-prod/walkthroughs/backup-restore/backup.sh</code> walkthrough.</li>
+<li>You must run the <code>manage-environment -t upgrade</code> command.</li>
+<li>You must run the <code>install-analyze-deployment-tooling -e pre-prod</code> command.</li>
+</ul>
+</li>
+<li>Reset your environment to the base configuration. For more information, see <a href="../walkthroughs/reset_walkthroughs.html">Resetting your environment</a>.</li>
+</ul>
+</blockquote>
+<p>The <code>examples/pre-prod/walkthroughs/upgrade/upgradeWalkthrough.sh</code> script is a worked example that demonstrates how to upgrade a deployment in a containerized environment.</p>
+<h2 id="rebuilding-the-images">Rebuilding the images</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Rebuilding images</code> section demonstrates running the <code>build-images</code> script to build images with for the new version of i2 Analyze.</p>
+<h2 id="regenerating-secrets">Regenerating secrets</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Regenerating secrets</code> section demonstrates running the <code>generate-secrets</code> script to regenerate the secrets for the new version of i2 Analyze.</p>
+<h2 id="creating-the-change-set">Creating the change set</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Create change set</code> section demonstrates running the <code>create-change-set</code> script that creates the upgrade change set. The change set is created in <code>examples/pre-prod/change-sets</code> and contains the database scripts that are required to upgrade the Information Store database.</p>
+<p>When using the pre-prod environment the <code>manage-environment</code> command adds the following file to the configuration from the <code>pre-reqs/i2analyze/toolkit/examples/configuration</code> directory if they do not already exist:</p>
+<pre><code>* `fragments/common/privacyagreement.html`
+* `fragments/opal-services-is/WEB-INF/classes/InfoStoreNamesPostgres.properties`
+* `fragments/common/WEB-INF/classes/server.extensions.xml`
+</code></pre><p>If you are upgrading a containerized deployment, add this file to your configuration before your upgrade.</p>
+<h2 id="removing-the-previous-containers">Removing the previous containers</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Removing the previous containers</code> section demonstrates the commands to delete the previous containers and remove any Docker volumes.</p>
+<h2 id="upgrading-solr">Upgrading Solr</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading Solr</code> section demonstrates the commands that are used to run the new Solr and ZooKeeper containers.</p>
+<p>The 3 ZooKeeper containers and 2 Solr containers are started. The Solr collections are configured, including the new <code>recordshare_index</code> collection.</p>
+<h2 id="restoring-the-solr-collections">Restoring the Solr collections</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Restore Solr</code> section demonstrates the commands that are used to restore the Solr Collections.</p>
+<p>For more information about restoring Solr, see [Restoring Solr](../backup and restore/restore.md#RestoreSolr).</p>
+<h2 id="restoring-the-information-store-database">Restoring the Information Store database</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Restoring the Information Store database</code> section demonstrates the commands that are used to restore the database to a new SQL Server container.</p>
+<h2 id="upgrading-the-information-store-database">Upgrading the Information Store database</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading Information Store</code> section demonstrates the commands that are used to run the generated database scripts that upgrade the Information Store database.</p>
+<h2 id="upgrading-example-connector">Upgrading example connector</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading example connector</code> section demonstrates the commands that are used to run the example connector.</p>
+<h2 id="upgrading-liberty">Upgrading Liberty</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading Liberty</code> section demonstrates the commands that are used to build the new Liberty configured image. Two Liberty containers are started using the new configured image. Then, the load balancer container is started.</p>
+<h2 id="upgrading-prometheus">Upgrading Prometheus</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading Prometheus</code> section demonstrates the commands that are used to run Prometheus.</p>
+<h2 id="upgrading-grafana">Upgrading Grafana</h2>
+<p>In the <code>upgradeWalkthrough.sh</code> script, the <code>Upgrading Grafana</code> section demonstrates the commands that are used to run Grafana.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>
