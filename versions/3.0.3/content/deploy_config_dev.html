@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuration development environment </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuration development environment ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuration-development-environment">Configuration development environment</h1>
+
+<p>To create a production deployment of i2 Analyze, you must develop the i2 Analyze configuration. The production deployment process describes a process of using different development environments to produce your i2 Analyze configuration. For more information about the environments, see <a href="https://docs.i2group.com/analyze/4.4.4/c_plan_deploy.html">Deployment phases and environments</a>.</p>
+<p>The analyze-deployment-tooling repository enables you to create a development environment that comprises a containerized deployment of i2 Analyze. The containerized deployment enables you to switch between deployment patterns easily and redeploy changes in a consistent manner.</p>
+<p>Process overview:</p>
+<ul>
+<li>Accept the licenses</li>
+<li>Install the CA certificate</li>
+<li>Create a config template</li>
+<li>Create a custom config that you can deploy into a development environment</li>
+<li>Use the environment to develop the i2 Analyze configuration</li>
+</ul>
+<p>If you have already deployed a config and you want to create a new custom config from the template, go to <a href="#creating-a-config">Creating a development config</a>.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><p>Before you create the configuration development environment, you must configure the analyze-deployment-tooling repository.<br>For more information, see <a href="getting_started.html">Getting started with the analyze-deployment-tooling repository</a>.</p>
+</li>
+<li><p>To edit files and run commands, use VS Code. If you have not already got it open, follow the steps in <a href="getting_started.html#set-up-development-environment">Set up development environment</a> to do so.</p>
+</li>
+</ul>
+<hr>
+<h3 id="accepting-the-licenses">Accepting the licenses</h3>
+<ol>
+<li><p>Before you can use i2 Analyze and the tools, you must read the license agreement and copyright notices then accept them.</p>
+<ol>
+<li>To accept the license agreement, change the value of the <code>LIC_AGREEMENT</code> variable to <code>ACCEPT</code> in the <code>licenses.conf</code> file.<br>To read the license, open the file in the <code>pre-reqs/i2analyze/license</code> directory.</li>
+</ol>
+</li>
+<li><p>Before you can use Microsoft SQL Server, you must accept the license agreement and the EULA. For more information about using the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables, see <a href="https://docs.microsoft.com/sql/linux/sql-server-linux-configure-environment-variables?view=sql-server-ver15#environment-variables">Configure SQL Server settings with environment variables on Linux</a>  </p>
+<ol>
+<li>To accept the license in this environment, change the value of the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables. The variables are in the <code>licenses.conf</code> file.</li>
+</ol>
+</li>
+</ol>
+<p>For example, update the <code>licenses.conf</code> file to match:</p>
+<pre><code class="lang-bash">LIC_AGREEMENT=ACCEPT
+MSSQL_PID=Developer
+ACCEPT_EULA=Y
+</code></pre><h3 id="installing-the-certificate">Installing the certificate</h3>
+<p>To access the system, the machine that you are connecting from must trust the certificate that it receives from the Liberty container.</p>
+<ol>
+<li><p>To enable trust, install the <code>/environment-secrets/generated-secrets/certificates/externalCA/CA.cer</code> certificate as a trusted root certificate authority in your browser and operating system&#39;s certificate store.</p>
+<p> For information about installing the certificate, see:</p>
+<ul>
+<li>Windows: <a href="https://windowsreport.com/install-windows-10-root-certificates/#2">Install Certificates with the Microsoft Management Console</a></li>
+<li>MacOS:  <ul>
+<li><a href="https://support.apple.com/guide/keychain-access/kyca2431/mac">Add certificates to a keychain using Keychain Access on Mac</a></li>
+<li><a href="https://support.apple.com/en-gb/guide/keychain-access/kyca11871/mac">Change the trust settings to Always Trust</a></li>
+</ul>
+</li>
+<li><p>FireFox:</p>
+<ul>
+<li>In the settings menu, type <strong>View Certificates</strong> and open it. Then, click <strong>Import</strong> and locate the <code>CA.cer</code> file.</li>
+</ul>
+<p><strong>Note:</strong> If you are using a Mac and want to access the deployment from a Windows VM, you must install the certificate in your Windows VM.</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="creating-a-config">Creating a config</h2>
+<p>Before you can deploy the environment, create a config from the template:</p>
+<ol>
+<li><p>Copy the <code>config-development</code> directory (including the sub-directories) from <code>/templates</code> to the <code>/configs</code> directory.<br> You can rename the <code>config-development</code> folder to a custom config name or use the default value. The name of the directory is used to determine which config to deploy, it is recommended to use a short name with no spaces, special characters, or capital letters.<br> The directory structure is:</p>
+<pre><code class="lang-bash">- configs
+    - &lt;config_name&gt;
+        - configuration
+        - database-scripts
+        - utils
+</code></pre></li>
+<li><p>The <code>/configs/&lt;config_name&gt;/utils/variables.conf</code> file contains variables that are used when you deploy the environment with this config. You can specify values for the following variables:  </p>
+<ul>
+<li><p>The <code>DEPLOYMENT_PATTERN</code> variable specifies the deployment pattern for the deployment of i2 Analyze in the environment. You can specify:</p>
+<ul>
+<li><code>schema_dev</code> - An i2 Connect gateway only deployment that you can use to develop your data and security models</li>
+<li><code>istore</code> - Information Store</li>
+<li><code>i2c</code> - i2 Connect gateway only</li>
+<li><code>cstore</code> - Chart Store</li>
+<li><code>i2c_istore</code> - i2 Connect gateway and Information Store</li>
+<li><p><code>i2c_cstore</code> - i2 Connect gateway and Chart Store  </p>
+<p>For more information about the i2 Analyze deployment patterns, see: <a href="https://docs.i2group.com/analyze/4.4.4/components.html">Components</a>.</p>
+</li>
+</ul>
+</li>
+<li><p>The following variables specify the database dialect and port used to connect from the host machine:</p>
+<ul>
+<li><code>DB_DIALECT</code> specifies the database management system to use. The possible values are <code>sqlserver</code> or <code>postgres</code>. The default value is <code>postgres</code>.</li>
+<li><code>HOST_PORT_DB</code> specifies the port that you use to connect to the database from the host machine. For <code>sqlserver</code> use <code>1433</code>. For <code>postgres</code> use <code>5432</code>. The default value is <code>5432</code>.</li>
+</ul>
+</li>
+<li><p>The following variables specify the ports that are exposed to the host machine for each component of i2 Analyze. Each variable has a default value:</p>
+<ul>
+<li><code>HOST_PORT_SOLR</code> specifies the port that you use to connect to the Solr Web UI from the host machine. By default, <code>8983</code>.</li>
+<li><code>HOST_PORT_I2ANALYZE_SERVICE</code> specifies the port that you use to connect to the deployment from the host machine. By default, <code>9443</code>.</li>
+<li><code>HOST_PORT_PROMETHEUS</code> specifies the port that you use to connect to the Prometheus UI from the host machine. By default, <code>9090</code>.</li>
+<li><code>HOST_PORT_GRAFANA</code> specifies the port that you use to connect to the Grafana UI from the host machine. By default, <code>3500</code>.</li>
+</ul>
+<p>For example, to deploy with the i2 Connect gateway only for schema development and to use the default ports:</p>
+<pre><code class="lang-sh">DEPLOYMENT_PATTERN=&quot;schema_dev&quot;
+DB_DIALECT=&quot;postgres&quot;
+HOST_PORT_DB=5432
+HOST_PORT_SOLR=8983
+HOST_PORT_I2ANALYZE_SERVICE=9443
+HOST_PORT_PROMETHEUS=9090
+HOST_PORT_GRAFANA=3500
+</code></pre></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="specifying-the-schema-and-charting-schemes-files">Specifying the schema and charting schemes files</h2>
+<p>To deploy i2 Analyze, you must provide a schema and charting scheme.
+The i2 Analyze toolkit includes example files that you can use as a starting point, or you can use existing files.</p>
+<p>For more information about the example schemas, see <a href="https://docs.i2group.com/analyze/4.4.4/example_schemes.html">Example schemas</a>.</p>
+<ol>
+<li>Choose an example schema and associated charting scheme as your starting point from the <code>pre-reqs/i2analyze/toolkit/examples/schemas/&lt;locale&gt;</code> directory.</li>
+<li>Copy the chosen schema and charting scheme to your <code>configs/&lt;config_name&gt;/configuration</code> directory.</li>
+<li>Remove the existing <code>schema.xml</code> and <code>schema-charting-schemes.xml</code> files. Then, rename your chosen schema file to <code>schema.xml</code> and your charting scheme to <code>schema-charting-schemes.xml</code>.</li>
+</ol>
+<h2 id="specifying-the-security-schema-user-registry-and-command-access-control-files">Specifying the security schema, user registry, and command access control files</h2>
+<p>To connect to an i2 Analyze deployment, you must provide a security schema and user registry. To control access to features and enable to use of the administrator endpoints, provide a command access control file.</p>
+<p>The i2 Analyze toolkit includes example files that you can use as a starting point.</p>
+<p>For more information about the example files, see <a href="https://docs.i2group.com/analyze/4.4.4/example_schemes.html">Example schemas</a>.</p>
+<ol>
+<li>Copy and overwrite the example <code>security-schema.xml</code>, <code>user.registry.xml</code>, and <code>command-access-control.xml</code> files from the <code>pre-reqs/i2analyze/toolkit/examples/security</code> directory to your <code>configs/&lt;config_name&gt;/configuration</code> directory.</li>
+</ol>
+<hr>
+<h2 id="deploying-your-config-in-the-environment">Deploying your config in the environment</h2>
+<ol>
+<li><p>Run the <code>deploy</code> command to deploy and start your environment:</p>
+<pre><code class="lang-bash">deploy
+</code></pre></li>
+</ol>
+<p>After a successful deployment, a success message is displayed that includes the URL to use to connect to the deployment.</p>
+<p>You can run only one config at a time. When you run the <code>deploy</code> command, it stops any containers on the Docker network. If you are deploying with the same config, it update the images and recreates the containers to update the environment with any configuration changes.<br>If you have more than one config, you must provide the name of the config to deploy by using the <code>-c</code> parameter and specify the name of the config directory. For example to deploy the <code>config-development</code> config, <code>deploy -c config-development</code>.  For more information, see <a href="managing_config_dev.html">Managing configs</a>.</p>
+<h2 id="accessing-the-system">Accessing the system</h2>
+<p>To connect to the deployment, the URL to use is: <code>https://i2analyze.eia:9443/opal</code></p>
+<p><strong>Note:</strong> If you are using the <code>schema_dev</code> or <code>i2c</code> deployment patterns, you must connect using Analyst&#39;s Notebook.</p>
+<p>Log in as a user that is specified in the user registry file. If you are using the example user registry, the example user has the following credentials:</p>
+<ul>
+<li>The user name is <code>Jenny</code></li>
+<li>The password is <code>Jenny</code></li>
+</ul>
+<hr>
+<h2 id="what-to-do-next">What to do next?</h2>
+<p>After you deploy your environment, you can start to develop the i2 Analyze configuration.</p>
+<p>Using your environment for configuration development:  </p>
+<ol>
+<li><a href="develop_schemas.html">Developing schemas in your configuration development environment</a><br>After you develop your schema files, you can develop the rest of the i2 Analyze configuration.  </li>
+<li><a href="develop_config_dev.html">Developing the rest of the configuration</a></li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

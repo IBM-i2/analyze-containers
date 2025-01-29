@@ -98,7 +98,7 @@
   -e WORKDIR=&quot;${PATH_TO_DIR}&quot; \
   -e HOST_HOME=&quot;${HOME}&quot; \
   -e USER_ID=&quot;$(id -u)&quot; -e GROUP_ID=&quot;$(id -g)&quot; \
-  &quot;i2eng-analyze-containers-client:3.0.3&quot; &quot;$@&quot;
+  &quot;i2eng-analyze-containers-client:3.0.4&quot; &quot;$@&quot;
 </code></pre><p>The local user ID is required so that a user is created in the Docker container with a <code>USER_ID</code> that is the same as the local user. The user is required to ensure that the local user can access any files that are generated on the container. The value of <code>$id</code> comes from your shell.</p>
 <h2 id="bind-mounts">Bind mounts</h2>
 <p>The value for <code>BIND_MOUNTS</code> is the paths that are specified as the <code>rootDirectory</code> and <code>upgradeDirectory</code> in the <code>path-configuration.json</code> file. For more information about the <code>path-configuration.json</code> file, see <a href="../managing_shared_configurations.html">Managing shared configurations</a>.</p>

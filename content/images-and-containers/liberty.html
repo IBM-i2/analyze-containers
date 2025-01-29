@@ -79,9 +79,9 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="open-liberty">Open Liberty</h1>
 
-<p>In a containerized deployment, you configure the i2 Analyze application and Open Liberty in an image that is layered on top of the <code>liberty_ubi_base</code> image. The <code>liberty_ubi_base</code> contains static configuration and application jars that are required by i2 Analyze and should not be changed. The <code>liberty_ubi_base</code> image is built on top a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-liberty">Open Liberty image</a> maintained by i2 Group on Docker Hub.</p>
+<p>In a containerized deployment, you configure the i2 Analyze application and Open Liberty in an image that is layered on top of the <code>liberty_ubi_base</code> image. The <code>liberty_ubi_base</code> contains static configuration and application jars that are required by i2 Analyze and should not be changed. The <code>liberty_ubi_base</code> image is built on top a <a href="https://hub.docker.com/r/i2group/i2eng-liberty">Open Liberty image</a> maintained by i2 Group on Docker Hub.</p>
 <h2 id="building-a-liberty-base-image">Building a Liberty base image</h2>
-<p>The Liberty base image for i2 Analyze is built on top of a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-liberty">Liberty image</a> maintained by i2 Group on Docker Hub.</p>
+<p>The Liberty base image for i2 Analyze is built on top of a <a href="https://hub.docker.com/r/i2group/i2eng-liberty">Liberty image</a> maintained by i2 Group on Docker Hub.</p>
 <h3 id="docker-build-command">Docker build command</h3>
 <p>The <em>base image</em> is built from the Dockerfile in <code>images/liberty_ubi_base</code>.
 The following <code>docker build</code> command builds the Liberty base image:</p>

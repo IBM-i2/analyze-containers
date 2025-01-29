@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Configuring Prometheus and Grafana </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Configuring Prometheus and Grafana ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="configuring-prometheus-and-grafana">Configuring Prometheus and Grafana</h1>
+
+<p>The config dev environment includes Prometheus and Grafana containers that are configured to monitor the deployment of i2 Analyze. You can use the config dev environment to configure the general Prometheus and Grafana configuration. For example you can modify the alerts that can be sent from Prometheus or modify the dashboards in Grafana.</p>
+<hr>
+<h2 id="configuring-prometheus">Configuring Prometheus</h2>
+<p>The scrape configurations for i2 Analyze and Liberty are configured for you in the config dev environment. This allows you to focus on configuring the behavior of Prometheus.</p>
+<p>For more information about what you can configure, see <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/">Prometheus Docs</a>.</p>
+<p>To modify the Prometheus configuration, edit the <code>configs/&lt;config-name&gt;/configuration/prometheus/prometheus.yml</code> file.</p>
+<p>To update the deployment with the configuration, run the <code>deploy</code> command:</p>
+<pre><code class="lang-bash">deploy
+</code></pre><p>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+<h2 id="configuring-grafana-dashboards">Configuring Grafana dashboards</h2>
+<p>In the config dev environment, Prometheus is already configured as a data source in Grafana. This allows you to focus on configuring the Grafana dashboards.</p>
+<p>To view the Grafana UI, connect to <code>https://i2analyze.eia:9443/grafana/dashboards</code>. Log in using the user name <code>grafana</code> and the password from the <code>environment-secrets/generated-secrets/grafana/admin_PASSWORD</code> file.</p>
+<p>In the UI you can create or modify dashboards. For more information about Grafana dashboards, see <a href="https://grafana.com/docs/grafana/latest/dashboards/">About Grafana dashboards</a>.</p>
+<p>After you create or modify a dashboard, export it and copy the JSON file into the <code>configs/&lt;config-name&gt;/configuration/grafana/dashboards</code> folder. For more information, see <a href="https://grafana.com/docs/grafana/latest/dashboards/export-import/#exporting-a-dashboard">Exporting a dashboard</a></p>
+<p>To update the deployment with the modified dashboards, run the <code>deploy</code> command:</p>
+<pre><code class="lang-bash">deploy
+</code></pre><p>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

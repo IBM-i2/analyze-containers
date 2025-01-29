@@ -79,7 +79,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="zookeeper">ZooKeeper</h1>
 
-<p>In a containerized deployment, ZooKeeper is configured and run from a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-zookeeper">ZooKeeper image</a> maintained by i2 Group on Docker Hub.</p>
+<p>In a containerized deployment, ZooKeeper is configured and run from a <a href="https://hub.docker.com/r/i2group/i2eng-zookeeper">ZooKeeper image</a> maintained by i2 Group on Docker Hub.</p>
 <h2 id="running-a-zookeeper-container">Running a ZooKeeper container</h2>
 <p>A ZooKeeper container uses the ZooKeeper image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to ZooKeeper on the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
 <p>The container will run with a User ID and Group ID of <code>1000</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>

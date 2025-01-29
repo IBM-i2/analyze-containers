@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Updating to the latest version of the analyze-deployment-tooling repository </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Updating to the latest version of the analyze-deployment-tooling repository ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="updating-to-the-latest-version-of-the-analyze-deployment-tooling-repository">Updating to the latest version of the analyze-deployment-tooling repository</h1>
+
+<p>To update your config development environment to use the latest version of the analyze-deployment-tooling repository, update the images, secrets, and deploy your configs.</p>
+<ol>
+<li>Before you update your environment:  <ol>
+<li>Back up any databases that are associated with your configs. For more information, see <a href="manage_backup_restore.html">Back up and restore a development database</a>.</li>
+<li>Back up the following directories from your existing copy of the repository:<ul>
+<li><code>backups</code></li>
+<li><code>configs</code></li>
+<li><code>connector-images</code></li>
+<li><code>environment-secrets</code></li>
+<li><code>gateway-schemas</code></li>
+<li><code>i2a-data</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>Download the <code>tar.gz</code> or pull the latest version of the analyze-deployment-tooling repository from <a href="https://github.com/i2group/analyze-deployment-tooling">https://github.com/i2group/analyze-deployment-tooling</a>.</p>
+<ol>
+<li>If you download the <code>tar.gz</code>, extract the contents and overwrite your existing copy of the analyze-deployment-tooling repository. Then, copy your backed up directories from step 1.1 over the new version of the repository.</li>
+</ol>
+</li>
+<li><p>To update the images and secrets, run the <code>create-dev-environment</code> command.</p>
+</li>
+<li><p>Before you can use i2 Analyze and the tools, you must read the license agreement and copyright notices. The license file is in the <code>pre-reqs/i2analyze/license</code> directory.  </p>
+<ol>
+<li>To accept the license agreement, change the value of the <code>LIC_AGREEMENT</code> variable to <code>ACCEPT</code>. The variable is in the <code>licenses.conf</code> file.</li>
+</ol>
+</li>
+<li><p>Before you can use Microsoft SQL Server, you must accept the license agreement and the EULA. For more information about using the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables, see <a href="https://docs.microsoft.com/sql/linux/sql-server-linux-configure-environment-variables?view=sql-server-ver15#environment-variables">Configure SQL Server settings with environment variables on Linux</a>  </p>
+<ol>
+<li>To accept the license in this environment, change the value of the <code>MSSQL_PID</code> and <code>ACCEPT_EULA</code> environment variables. The variables are in the <code>licenses.conf</code> file.</li>
+</ol>
+</li>
+</ol>
+<p>For example:</p>
+<pre><code class="lang-sh">LIC_AGREEMENT=ACCEPT
+MSSQL_PID=Developer
+ACCEPT_EULA=Y
+</code></pre><ol>
+<li><p>To update any deployed configs, run the <code>deploy</code> command with your config name. You must run the script twice, once with the <code>clean</code> task.<br> For example:</p>
+<pre><code class="lang-sh">deploy -c &lt;config_name&gt; -t clean
+deploy -c &lt;config_name&gt;
+</code></pre></li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

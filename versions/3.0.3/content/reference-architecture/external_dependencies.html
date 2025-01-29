@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>External dependencies </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="External dependencies ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="external-dependencies">External dependencies</h1>
+
+<p>The system requires access to the internet to download Docker images, Maven artifacts, and JDBC drivers. In an air-gapped environment the required images and artifacts have to be made available.</p>
+<p>To make the images and artifacts available, you must first run the <code>bootstrap</code> command in an online environment to install analyze-deployment-tooling and then copy the installation to your air-gapped environment and make the required Docker images available.</p>
+<p><strong>Note:</strong> You can only deploy the configuration development environment in an air-gapped environment.</p>
+<h2 id="docker">Docker</h2>
+<h3 id="public-images">Public images</h3>
+<p>To create a Docker registry for use in production, there are a large number of configuration options that you need to implement.</p>
+<p>The general concept requires you to be in an online environment. When you install analyze-deployment-tooling the Docker images are pulled from DockerHub. Then you must tag the images and push them to your registry. This registry might be a central server that is located within your air-gapped environment or local to the machine where you are deploying analyze-deployment-tooling.</p>
+<p>For example, to create a local registry at <code>localhost:5000</code> and add the <code>i2group/i2eng-analyze-containers-dev:1.2</code> image to your registry:</p>
+<pre><code class="lang-sh">docker run -d -p 5000:5000 --restart=always --name registry registry:2
+docker tag i2group/i2eng-analyze-containers-dev:1.2 localhost:5000/i2group/i2eng-analyze-containers-dev:1.2
+docker push localhost:5000/i2group/i2eng-analyze-containers-dev:1.2
+</code></pre><p>For information about deploying a Docker registry, see <a href="https://distribution.github.io/distribution/about/deploying/">Deploy a registry server</a>.</p>
+<p>The system requires access to the following images. Complete the same steps as above tag, and push each image to your registry:</p>
+<ul>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-analyze-containers-dev">i2group/i2eng-analyze-containers-dev:1.2</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-analyze-containers-client">i2group/i2eng-analyze-containers-client:2.9.2</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-analyze-containers-base">i2group/i2eng-analyze-containers-base:ubi-jdk17</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-analyze-containers-connectors-base">i2group/i2eng-analyze-containers-connectors-base:</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-analyze-containers-connectors-base-minimal">i2group/i2eng-analyze-containers-connectors-base-minimal:</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-liberty">i2group/i2eng-liberty:ubi-jdk17</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-solr">i2group/i2eng-solr:9.6</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-postgres">i2group/i2eng-postgres:16</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-sqlserver">i2group/i2eng-sqlserver:2022-1</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-grafana">i2group/i2eng-grafana:11</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-prometheus">i2group/i2eng-prometheus:2.53</a></li>
+<li><a href="https://hub.docker.com/r/i2group/i2eng-haproxy">i2group/i2eng-haproxy:2.9</a></li>
+<li><a href="https://hub.docker.com/r/docker/dockerfile">docker/dockerfile:1.3</a></li>
+</ul>
+<h3 id="built-images">Built images</h3>
+<p>When you run the <code>boostrap</code> command, the local images that are built by this script must also be provided to your registry.</p>
+<p>The process requires you to save the images to a <code>.tar</code> archive, move the archive files to server where your registry is located, and load the images.</p>
+<ol>
+<li><p>To save an image, run:</p>
+<pre><code class="lang-sh">docker save &lt;image_name&gt;:&lt;tag&gt; &gt; &lt;image_name&gt;.tar
+</code></pre></li>
+<li><p>Copy the <code>.tar</code> file to the server where your registry is located.</p>
+</li>
+<li><p>To load an image, run:</p>
+<pre><code class="lang-sh">docker load &lt; &lt;image_name&gt;.tar
+</code></pre></li>
+</ol>
+<p>The system requires access to the following images. Complete the same steps as above to save, copy, and load each image to your registry:</p>
+<ul>
+<li><code>etlclient_redhat:4.4.4.0</code></li>
+<li><code>ac_tools:4.4.4.0</code></li>
+<li><code>i2a_tools_redhat:4.4.4.0</code></li>
+<li><code>postgres_client_image:4.4.4.0</code></li>
+<li><code>sqlserver_client_redhat:4.4.4.0</code></li>
+<li><code>solr_client_redhat:4.4.4.0</code></li>
+<li><code>solr_redhat:4.4.4.0</code></li>
+<li><code>liberty_redhat:4.4.4.0</code></li>
+</ul>
+<h2 id="analyze-deployment-tooling">Analyze-deployment-tooling</h2>
+<p>After you installed analyze-deployment-tooling on a machine with internet access, you can copy the <code>analyze-deployment-tooling</code> directory to your air-gapped machine that can communicate with your registry server.</p>
+<ol>
+<li><p>Configure Docker Desktop on your air-gapped machine to use your registry. To make your system use your registry, update your Docker daemon configuration. In Docker desktop, go to <strong>Settings &gt; Docker Engine</strong> and add the following lines to the JSON file and restart Docker:</p>
+<pre><code class="lang-json">  &quot;registry-mirrors&quot;: [
+    &quot;http://localhost:5000&quot;
+  ]
+</code></pre></li>
+</ol>
+<p>Where <code>localhost:5000</code> is the hostname and port of your registry server.</p>
+<p>With the public and built images available in the registry, you can open analyze-deployment-tooling in VS Code and deploy a config.</p>
+<h2 id="maven">Maven</h2>
+<p>The following Maven requirements are built into the images when the system is installed online.</p>
+<p>For information about deploying a Maven repository, see <a href="https://maven.apache.org/guides/introduction/introduction-to-repositories.html#internal-repositories">Internal Repositories</a>.</p>
+<p>The system requires access to the following artifacts:</p>
+<ul>
+<li><a href="https://central.sonatype.com/artifact/aopalliance/aopalliance">aopalliance</a></li>
+<li><a href="https://central.sonatype.com/artifact/commons-collections/commons-collections">commons-collections</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.apache.commons/commons-csv">commons-csv</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.apache.commons/commons-exec">commons-exec</a></li>
+<li><a href="https://central.sonatype.com/artifact/commons-io/commons-io">commons-io</a></li>
+<li><a href="https://central.sonatype.com/artifact/commons-lang/commons-lang">commons-lang</a></li>
+<li><a href="https://central.sonatype.com/artifact/commons-validator/commons-validator">commons-validator</a></li>
+<li><a href="https://central.sonatype.com/artifact/it.sauronsoftware.cron4j/cron4j">cron4j</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.guava/guava">guava</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.inject.extensions/guice-assistedinject">guice-assistedinject</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.inject.extensions/guice-multibindings">guice-multibindings</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.inject.extensions/guice-servlet">guice-servlet</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.inject.extensions/guice-throwingproviders">guice-throwingproviders</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.google.inject/guice">guice</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-annotations">jackson-annotations</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core">jackson-core</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind">jackson-databind</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310">jackson-datatype-jsr310</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-base">jackson-jaxrs-base</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider">jackson-jaxrs-json-provider</a></li>
+<li><a href="https://central.sonatype.com/artifact/javax.inject/javax.inject">javax.inject</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.esotericsoftware/kryo">kryo</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.mapdb/mapdb">mapdb</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.esotericsoftware/minlog">minlog</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.objenesis/objenesis">objenesis</a></li>
+<li><a href="https://central.sonatype.com/artifact/com.esotericsoftware/reflectasm">reflectasm</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.slf4j/slf4j-api">slf4j-api</a></li>
+<li><a href="https://central.sonatype.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api">jakarta.xml.bind-api</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.apache.solr/solr-core">solr-core</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.apache.httpcomponents/httpclient">httpclient</a></li>
+<li><a href="https://central.sonatype.com/artifact/org.apache.httpcomponents/httpcore">httpcore</a></li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

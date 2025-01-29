@@ -79,7 +79,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="load-balancer">Load balancer</h1>
 
-<p>In a containerized deployment, you can use a load balancer to distribute incoming requests to the containers in the deployment. This environment uses HA Proxy as the load balancer. The <a href="https://hub.docker.com/repository/docker/i2group/i2eng-haproxy/general"><code>i2eng-haproxy</code></a> image is based off the official <a href="https://hub.docker.com/_/haproxy/">haproxy</a> image.</p>
+<p>In a containerized deployment, you can use a load balancer to distribute incoming requests to the containers in the deployment. This environment uses HA Proxy as the load balancer. The <a href="https://hub.docker.com/r/i2group/i2eng-haproxy"><code>i2eng-haproxy</code></a> image is based off the official <a href="https://hub.docker.com/_/haproxy/">haproxy</a> image.</p>
 <h2 id="running-a-haproxy-container">Running a ha_proxy container</h2>
 <p>A ha_proxy container uses the ha_proxy image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to ha_proxy on the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
 <p>The container will run with a User ID and Group ID of <code>1000</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>

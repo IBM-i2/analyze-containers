@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Database roles, users, and logins </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Database roles, users, and logins ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="database-roles-users-and-logins">Database roles, users, and logins</h1>
+
+<p>During the deployment, administration, and use of i2 Analyze, a number of different actions are completed against the Information Store database. These actions can be separated into different categories that are usually completed by users with differing permissions.</p>
+<p>The database roles described below are high-level concepts. In the example deployment, a number of different roles and users are used to demonstrate the types of roles that might complete each action. The way these users and roles are implements depends on the database dialect that is used.</p>
+<h2 id="database-roles">Database roles</h2>
+<p>In the example, the following roles are used:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DBA_Role</td>
+<td>The <code>DBA_Role</code> is used to perform database administrative tasks.</td>
+</tr>
+<tr>
+<td>External_ETL_Role</td>
+<td>The <code>External_ETL_Role</code> is used to move data from an external system into the staging tables in the Information Store database.</td>
+</tr>
+<tr>
+<td>i2_ETL_Role</td>
+<td>The <code>i2_ETL_Role</code> is used to read data from the staging tables and ingest it into - and delete it from - the Information Store database.</td>
+</tr>
+<tr>
+<td>i2analyze_Role</td>
+<td>The <code>i2analyze_Role</code> is used to complete actions required by the Liberty application. For example, returning results for Visual Queries.</td>
+</tr>
+<tr>
+<td>i2_Public_Role</td>
+<td>The <code>i2_Public_Role</code> is used to complete actions against database objects in the Information Store public schema.</td>
+</tr>
+<tr>
+<td>Deletion_By_Rule</td>
+<td>The <code>Deletion_By_Rule</code> is used to access and run all of the views and procedures in the Information Store public schema.</td>
+</tr>
+</tbody>
+</table>
+<p>To understand how these roles are implemented in each database dialect, see:</p>
+<ul>
+<li><a href="db_users_sqlserver.html">SQL Server database users</a></li>
+<li><a href="db_users_postgres.html">Postgres database users</a></li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

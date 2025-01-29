@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ETL Client </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="ETL Client ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="etl-client">ETL Client</h1>
+
+<p>An ETL Client container is an ephemeral container that is used to run ETL tasks.</p>
+<h2 id="building-an-etl-client-image">Building an ETL Client image</h2>
+<p>The ETL Client image is built from the Dockerfile in <code>images/etl_client</code>. It uses the i2 Analyze Tools image as the base image.</p>
+<h3 id="docker-build-command">Docker build command</h3>
+<p>The following <code>docker build</code> command builds the ETL Client image:</p>
+<pre><code class="lang-bash">docker build -t &quot;etlclient_redhat:4.4.4&quot; &quot;images/etl_client&quot; \
+    --build-arg BASE_IMAGE=&quot;i2a_tools_redhat:4.4.4&quot;
+</code></pre><h2 id="running-an-etl-client-container">Running an ETL Client container</h2>
+<p>A ETL Client container uses the ETL Client image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
+<p>The container will run with a default User ID and Group ID of <code>1000</code> (this can be changed with the <code>USER_ID</code> and <code>GROUP_ID</code> env variables). All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs the ETL Client container:</p>
+<pre><code class="lang-bash">docker run --rm \
+    --network &quot;eia&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/examples/pre-prod/configuration/logs:/opt/configuration/logs&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/prereqs/i2analyze/toolkit/examples/data:/var/i2a-data&quot; \
+    -e USER_ID=&quot;$(id -u)&quot; -e GROUP_ID=&quot;$(id -g)&quot; \
+    -e DB_SERVER=&quot;sqlserver.eia&quot; \
+    -e DB_PORT=&quot;1433&quot; \
+    -e DB_NAME=&quot;ISTORE&quot; \
+    -e DB_DIALECT=&quot;sqlserver&quot; \
+    -e DB_OS_TYPE=&quot;UNIX&quot; \
+    -e DB_INSTALL_DIR=&quot;/opt/mssql-tools&quot; \
+    -e DB_LOCATION_DIR=&quot;/var/opt/mssql/data&quot; \
+    -e ETL_TOOLKIT_JAVA_HOME=&quot;/opt/java/openjdk/bin&quot; \
+    -e DB_USERNAME=&quot;i2etl&quot; \
+    -e DB_PASSWORD=&quot;DB_PASSWORD&quot; \
+    -e DB_SSL_CONNECTION=&quot;true&quot; \
+    -e SSL_CA_CERTIFICATE=&quot;SSL_CA_CERTIFICATE&quot; \
+    &quot;etlclient_redhat:4.4.4&quot; &quot;$@&quot;
+</code></pre><p>The local user ID is required so that a user is created in the Docker container with a <code>USER_ID</code> that is the same as the local user. The user is required to ensure that the local user can access any files that are generated on the container. The value of <code>$id</code> comes from your shell.</p>
+<p>For an example of the <code>docker run</code> command, see <code>run_etl_toolkit_tool_as_i2_etl</code> function in the <code>utils/client_functions.sh</code> script.
+For an example of how to use <code>run_etl_toolkit_tool_as_i2_etl</code> function, see <a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_i2_etl">run_etl_toolkit_tool_as_i2_etl</a>.</p>
+<h3 id="bind-mounts">Bind mounts</h3>
+<ul>
+<li><p><strong>Logs</strong>:<br>The ETL Client container generates logs when running ingestion commands. To make these logs easily accessible, the directory where they are generated must be mounted into the container. In the example, the logs can be accessed in the <code>examples/pre-prod/configuration/logs</code> directory.</p>
+</li>
+<li><p><strong>Data</strong>:<br>The ETL Client container requires access to the data directory to run the ingestion scripts. To access the data, the <code>data</code> directory must be mounted into the container.</p>
+</li>
+</ul>
+<h2 id="environment-variables">Environment variables</h2>
+<p>The ETl Client is built on top of the SQL Client. Any environment variables referenced in the <a href="sql_client.html#environment-variables">SQL Client</a> can be used in the ETL Client.</p>
+<h3 id="additional-environment-variables">Additional Environment variables</h3>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DB_DIALECT</code></td>
+<td>The database dialect. Currently <code>sqlserver</code> and <code>postgres</code> are supported</td>
+</tr>
+<tr>
+<td><code>DB_OS_TYPE</code></td>
+<td>The Operating System that the database is on. Can be <code>UNIX</code>, <code>WIN</code>, or <code>AIX</code>.</td>
+</tr>
+<tr>
+<td><code>DB_INSTALL_DIR</code></td>
+<td>Specifies the database CMD location.</td>
+</tr>
+<tr>
+<td><code>DB_LOCATION_DIR</code></td>
+<td>Specifies the location of the database.</td>
+</tr>
+<tr>
+<td><code>ETL_TOOLKIT_JAVA_HOME</code></td>
+<td>Specifies the location of Java bin directory.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="useful-links">Useful links</h2>
+<ul>
+<li><a href="https://docs.i2group.com/analyze/4.4.4/define_ingestion_source.html">Defining an ingestion source</a></li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

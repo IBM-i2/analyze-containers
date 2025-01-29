@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Adding a new Connector </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Adding a new Connector ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="adding-a-new-connector">Adding a new Connector</h1>
+
+<p>This section describes an example of the process of adding a new Connector.</p>
+<p>You can use the <code>examples/pre-prod/walkthroughs/change-management/addExampleConnectorWalkthrough.sh</code> script to add a new second example connector to the example deployment.</p>
+<blockquote><p>Note: Before you complete this walkthrough, reset your environment to the base configuration. For more information, see <a href="reset_walkthroughs.html">Resetting your environment</a>.</p>
+</blockquote>
+<h2 id="updating-connectorsjson">Updating Connectors.json</h2>
+<p>To make liberty aware of the new connector, you need to add a new connector definition to the connectors.json. See <code>Add example Connector to connectors.json</code> section of the walkthrough script.</p>
+<h2 id="running-a-new-connector-container">Running a new Connector container</h2>
+<p>To add a connector in the Docker environment, you need to run a new Connector container.
+See the <code>Add example Connector</code> section of the walkthrough script.</p>
+<p>The <code>run_example_connector</code> server function in the <code>server_functions.sh</code> is used to run a new Example connector container.</p>
+<h2 id="updating-your-configuration">Updating your configuration</h2>
+<p>After the connectors.json has been updated and the example connector has been run, build a new configured liberty image with the updated configuration.</p>
+<p>The <code>build_liberty_configured_image_for_pre_prod</code> server function builds the configured Liberty image.  For more information, see <a href="../images-and-containers/liberty.html#building-a-configured-liberty-image">Building a configured Liberty image</a>.</p>
+<p>The <code>run_liberty</code> server function runs a Liberty container. For more information about running a Liberty container, see <a href="../images-and-containers/liberty.html">Liberty</a>.<br>See the <code>Running the Liberty containers</code> section of the walkthrough script.</p>
+<blockquote><p>Note: You must run both Liberty containers.</p>
+</blockquote>
+<p>The <code>wait_for_i2_analyze_service_to_be_live</code> common function ensures that Liberty is running.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

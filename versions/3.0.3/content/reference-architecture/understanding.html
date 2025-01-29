@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Understanding the reference architecture </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Understanding the reference architecture ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="understanding-the-reference-architecture">Understanding the reference architecture</h1>
+
+<p>The analyze-deployment-tooling repository includes Dockerfiles and example scripts that provide a reference architecture for creating a containerized deployment of i2 Analyze. The scripts demonstrate how to build Docker images and enable you to deploy, configure, and run i2 Analyze on Docker containers.</p>
+<h2 id="how-to-use-the-reference-architecture">How to use the reference architecture?</h2>
+<p>The repository is designed to be used with the i2 Analyze minimal toolkit. The minimal toolkit is similar to the standard i2 Analyze deployment toolkit, except that it only includes the minimum amount of application and configuration files.
+The i2 Analyze minimal toolkit is used to provide the artifacts that are required to build the images and provide the configuration for the deployment. Bash scripts are then used to build the images and run the containers.</p>
+<p>To demonstrate creating an example containerized deployment, complete the actions described in <a href="deploy_pre_prod.html">Pre-production example environment</a>.</p>
+<p>The minimal toolkit also contains the tools that are used by the bash scripts to deploy, configure, and administer your deployment of i2 Analyze. The tools are in the form of JAR files that are called from shell scripts. For more information about the tools that are available and their usage, see <a href="../tools-and-functions/i2analyze_tools.html">i2 Analyze tools</a>.</p>
+<h3 id="dockerfiles-and-images">Dockerfiles and images</h3>
+<p>A deployment of i2 Analyze consists of the following components:</p>
+<ul>
+<li>Open Liberty</li>
+<li>Solr</li>
+<li>ZooKeeper</li>
+<li>Prometheus</li>
+<li>Grafana</li>
+<li>Optionally a database management system</li>
+</ul>
+<p>The analyze-deployment-tooling repository contains the Dockerfiles that are used to build the images for each component. For Open Liberty, SQL Server, Prometheus and Grafana the image provided by each vendor is used.</p>
+<p>For Solr and ZooKeeper, the repository contains custom Dockerfiles that were created from the ones provided by Solr and ZooKeeper.</p>
+<p>For more information about the images and containers, see <a href="../images-and-containers/images.html">images and containers</a>.</p>
+<h3 id="scripts">Scripts</h3>
+<p>The analyze-deployment-tooling repository provides example scripts that you can use and leverage for your own deployment use cases. The analyze-deployment-tooling repository contains a number of scripts that are designed to be used at various stages when working towards creating a containerized deployment.</p>
+<p>The repository also includes example artifacts that are used with the scripts. These artifacts include an example certificate authority and certificates, secrets and keys to be used with i2 Analyze, and utilities that are used by the example scripts.</p>
+<h3 id="walkthroughs">Walkthroughs</h3>
+<p>A number of walkthroughs are provided that demonstrate how to complete configuration and administration tasks in a containerized deployment. The walkthroughs consist of a reference script that demonstrates how to complete the action, and a document that explain the process in more detail.</p>
+<h2 id="what-is-deployed">What is deployed?</h2>
+<p>When you run the provided scripts to create the example deployment, i2 Analyze is deployed in the following topology:
+<img src="../../images/topology.svg" alt="image"></p>
+<p>The deployment includes:</p>
+<ul>
+<li>A load balancer container, using HAProxy</li>
+<li>Two Open Liberty containers configured for high availability</li>
+<li>A Solr cluster with two Solr containers</li>
+<li>A ZooKeeper ensemble with three ZooKeeper containers</li>
+<li>A SQL Server container</li>
+<li>A Prometheus container</li>
+<li>A Grafana container</li>
+</ul>
+<p>A number of &quot;client&quot; ephemeral containers are used to complete a single actions.</p>
+<p>The following client containers are used:</p>
+<ul>
+<li>SQL Server client</li>
+<li>Solr client</li>
+</ul>
+<p>For more information about the images and containers, see <a href="../images-and-containers/images.html">images and containers</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Frequently asked questions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Frequently asked questions ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="frequently-asked-questions">Frequently asked questions</h1>
+
+<h2 id="how-do-i-stop-my-containers">How do I stop my containers?</h2>
+<p>To stop the containers used by analyze-deployment-tooling, run:</p>
+<pre><code class="lang-sh">manage-environment -t stop
+</code></pre><p><strong>Note:</strong> This will stop the VS Code Dev Container where you run the command. You can close VS Code without reloading the window.</p>
+<p>For more information, see <a href="managing_environment.html#stopping-the-environment">Stopping the environment</a>.</p>
+<h2 id="how-do-i-restart-my-containers">How do I restart my containers?</h2>
+<p>To restart the environment, run the deploy command with the name of the config that you want to start. For example:</p>
+<pre><code class="lang-sh">deploy
+</code></pre><p>If you have multiple configs, specify the config name with <code>-c &lt;config-name&gt;</code>.</p>
+<p>For more information, see <a href="deploy_config_dev.html#deploying-your-config-in-the-environment">Deploying your config in the environment</a>.</p>
+<h2 id="how-do-i-access-the-system">How do I access the system?</h2>
+<p>To connect to the deployment, the URL to use is: <code>https://i2analyze.eia:9443/opal</code></p>
+<p><strong>Note:</strong> If you are using the <code>schema_dev</code> or <code>i2c</code> deployment patterns, you must connect using Analyst&#39;s Notebook.</p>
+<p>If you are using a VM to connect to your deployment, you might need to ensure that your hosts file is still configured correctly. For more information, see <a href="getting_started.html#set-up-development-environment">Set up development environment</a>.</p>
+<h2 id="how-do-i-log-in-to-i2-analyze">How do I log in to i2 Analyze?</h2>
+<p>Log in as a user that is specified in the user registry file. If you are using the example user registry, the example user has the following credentials:</p>
+<ul>
+<li>The user name is <code>Jenny</code></li>
+<li>The password is <code>Jenny</code></li>
+</ul>
+<h2 id="how-do-i-recover-disk-space">How do I recover disk space?</h2>
+<p>As you develop configurations and upgrade your system this can cause Docker to use a large amount of disk space on your server for now unused images and containers.</p>
+<ol>
+<li><p>Before you clear any data from your system, perform a back up of any databases in your configs. To backup the databases in all of your configs, run:</p>
+<pre><code class="lang-bash">manage-environment -t backup -b &lt;backup-name&gt;
+</code></pre><p> For more information about backing up your data, see <a href="managing_environment.html#backup-and-restore">Backup and restore</a>.</p>
+</li>
+<li><p>Docker provides commands to remove any unused containers, networks, and images from your system.</p>
+<p> <strong>Warning:</strong> This will remove all unused Docker artifacts, not just the ones associated with analyze-deployment-tooling. Alternatively you can use Docker Desktop to manually delete the analyze-deployment-tooling artifacts.</p>
+<pre><code class="lang-bash">docker system prune
+</code></pre><p> For more information, see <a href="https://docs.docker.com/engine/reference/commandline/system_prune/">docker system prune</a>.</p>
+</li>
+</ol>
+<h2 id="how-do-i-uninstall-analyze-deployment-tooling">How do I uninstall analyze-deployment-tooling?</h2>
+<p>To completely remove analyze-deployment-tooling from your system, stop and remove all Docker artifacts then delete the analyze-deployment-tooling data from your disk. Additionally you can uninstall VS Code and Docker Desktop.</p>
+<ol>
+<li><p>To stop the containers used by analyze-deployment-tooling, run:</p>
+<pre><code class="lang-sh">manage-environment -t stop
+</code></pre><p> For more information, see <a href="managing_environment.html#stopping-the-environment">Stopping the environment</a>.</p>
+</li>
+<li><p>Docker provides commands to remove any unused containers, networks, images, and volumes from your system.</p>
+<p> <strong>Warning:</strong> This will remove all unused Docker artifacts, not just the ones associated with analyze-deployment-tooling. Alternatively you can use Docker Desktop to manually delete the analyze-deployment-tooling artifacts.</p>
+<p> From your local terminal, run:</p>
+<pre><code class="lang-bash">docker system prune --all --volumes
+</code></pre><p> For more information, see <a href="https://docs.docker.com/engine/reference/commandline/system_prune/">docker system prune</a>.</p>
+</li>
+<li><p>Delete your <code>analyze-deployment-tooling</code> folder and its contents.</p>
+</li>
+<li><p>To uninstall VS Code, see <a href="https://code.visualstudio.com/docs/setup/uninstall">Uninstall Visual Studio Code</a>.</p>
+</li>
+<li><p>To uninstall Docker Desktop, see <a href="https://docs.docker.com/desktop/uninstall/">Uninstall Docker Desktop</a>.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Prometheus </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Prometheus ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="prometheus">Prometheus</h1>
+
+<p>In a containerized deployment, Prometheus is configured and run from a Prometheus image.</p>
+<h2 id="configuring-prometheus">Configuring Prometheus</h2>
+<p>Prometheus is configured by the <code>prometheus.yml</code> file. A <code>prometheus.yml</code> template is shipped with the product.</p>
+<p>To modify the <code>prometheus.yml</code>, you can modify the template inside your configuration folder.</p>
+<p>For more information about the file, see <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file">Configuration file</a>.</p>
+<h2 id="running-a-prometheus-container">Running a Prometheus container</h2>
+<p>A Prometheus container uses a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-prometheus">Prometheus image</a> maintained by i2 Group on Docker Hub.</p>
+<p>The container will run with a User ID and Group ID of <code>1000</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<p>For more information about the command, see <a href="https://docs.docker.com/reference/cli/docker/container/run/">docker run reference</a>.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs a Prometheus container:</p>
+<pre><code class="lang-bash">docker run -d \
+   --name &quot;prometheus&quot; \
+   --net &quot;eia&quot; \
+   --net-alias &quot;prometheus.eia&quot; \
+    -p &quot;9090:9090&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/examples/pre-prod/prometheus/web-config.yml:/etc/prometheus/web-config.yml&quot; \
+    -v &quot;/home/&lt;user-name&gt;/analyze-deployment-tooling/examples/pre-prod/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml&quot; \
+    -v &quot;prometheus_data:/prometheus&quot; \
+    -v &quot;/environment-secrets/simulated-secret-store/prometheus:/run/secrets&quot; \
+    &quot;i2group/i2eng-prometheus:2.53&quot;
+</code></pre><p>For an example of the <code>docker run</code> command, see <code>utils/server_functions.sh</code> script. The <code>run_prometheus</code> function does not take any arguments.</p>
+<h3 id="storage">Storage</h3>
+<p>A named volume or a bind mount can be used to persist data and logs that are generated and used in the Prometheus container.</p>
+<p>To configure the Prometheus container to use the volume, specify the <code>-v</code> option with the name of the volume and the path where the directory is mounted in the container. By setting <code>-v</code> option in the docker run command, a named volume is created. For Prometheus, the directory that must be mounted is <code>/prometheus</code>.
+For example:</p>
+<pre><code class="lang-sh">-v prometheus_data:/prometheus \
+-v /environment-secrets/simulated-secret-store/prometheus:/run/secrets
+</code></pre><p>For more information, see <a href="https://prometheus.io/docs/prometheus/latest/installation/#volumes-bind-mount">Volumes &amp; bind mount</a>.</p>
+<p><strong>Secrets</strong>:<br>A directory that contains all of the secrets that this tool requires. Specifically this includes credentials to access liberty and certificates used in SSL.<br>The directory is mounted to <code>/run/secrets</code> inside the container. In a production environment, the orchestration environment needs to provide the secrets to the file system. The mechanism that is used here simulates the orchestration system providing the secrets as files.</p>
+<h3 id="liberty-authentication">Liberty authentication</h3>
+<p>The <code>prometheus.yml</code> file contains a scrape config section with the user, password and certificates to communicate with Liberty. In our example the job name is <code>liberty</code> and the user <code>Jenny</code> is the administrator.</p>
+<p>For more information about configuring Prometheus to scrape targets, see <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config">&lt;scrape_config&gt;</a></p>
+<h3 id="prometheus-ssl">Prometheus SSL</h3>
+<p>The <code>web-config.yml</code> file contains the configuration to secure Prometheus.</p>
+<p>For more information about configuring HTTPS and authentication in Prometheus, see <a href="https://prometheus.io/docs/prometheus/latest/configuration/https/#https-and-authentication">HTTPS and authentication</a>.</p>
+<h3 id="environment-variables">Environment variables</h3>
+<p>The following table describes the supported environment variables that you can use:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMETHEUS_USERNAME</code></td>
+<td>The Prometheus username.</td>
+</tr>
+<tr>
+<td><code>PROMETHEUS_PASSWORD</code></td>
+<td>The password used by the Prometheus user.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_ADMIN_USERNAME</code></td>
+<td>The user that is used to access Liberty.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_ADMIN_PASSWORD</code></td>
+<td>The password for the Liberty user.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_SCHEME</code></td>
+<td>The URL scheme used to connect to Liberty. E.g. <code>http</code> or <code>https</code>.</td>
+</tr>
+<tr>
+<td><code>PROMETHEUS_SCHEME</code></td>
+<td>The URL scheme used to connect to Prometheus. E.g. <code>http</code> or <code>https</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Security environment variables:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SSL_PRIVATE_KEY</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Deploy and start i2 Analyze </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Deploy and start i2 Analyze ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="deploy-and-start-i2-analyze">Deploy and start i2 Analyze</h1>
+
+<p>This topic describes how to deploy and start i2 Analyze in a containerized environment.</p>
+<p>For an example of the activities described, see the <code>examples/pre-prod/deploy-pre-prod</code> script.</p>
+<h2 id="running-solr-and-zookeeper">Running Solr and ZooKeeper</h2>
+<p>The running Solr and ZooKeeper section runs the required containers and creates the Solr cluster and ZooKeeper ensemble.</p>
+<ol>
+<li><p>The <code>deploy_zk_cluster</code> function creates the secure Zookeeper cluster for the deployment. The function includes a number of calls:</p>
+<ol>
+<li>The <code>run_zk</code> server function runs the ZooKeeper containers that make up the ZooKeeper ensemble. For more information about running a ZooKeeper container, see <a href="../images-and-containers/zookeeper.html">ZooKeeper</a>.
+In <code>deploy-pre-prod</code>, 3 ZooKeeper containers are used.</li>
+</ol>
+</li>
+<li><p>The <code>configure_zk_for_solr_cluster</code> function creates the Zookeeper configuration for the secure Solr cluster for the deployment. The function includes a number of calls:</p>
+<ol>
+<li><p>The <code>run_solr_client_command</code> client function is used a number of times to complete the following actions:</p>
+<ol>
+<li>Create the <code>znode</code> for the cluster.<br>i2 Analyze uses a ZooKeeper connection string with a chroot. To use a chroot connection string, a <em>znode</em> with that name must exist. For more information, see <a href="https://solr.apache.org/guide/solr/latest/deployment-guide/solr-control-script-reference.html#solrcloud-mode">SolrCloud Mode</a>.</li>
+<li>Set the <code>urlScheme</code> to be <code>https</code>.</li>
+<li><p>Configure the Solr authentication by uploading the <code>security.json</code> file to ZooKeeper.</p>
+<p>For more information about the function, see <a href="./client_functions.md#run-solr-client-command">run_solr_client_command</a>.</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>The <code>deploy_solr_cluster</code> function creates the secure Solr cluster for the deployment. The function includes a number of calls:</p>
+<ol>
+<li><p>The <code>run_solr</code> server function runs the Solr containers for the Solr cluster. For more information about running a Solr container, see <a href="../images-and-containers/solr.html">Solr</a>.<br>In <code>deploy-pre-prod</code>, 2 Solr containers are used.</p>
+<p>At this point, your ZooKeepers are running in an ensemble, and your Solr containers are running in SolrCloud Mode managed by ZooKeeper.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="initializing-the-information-store-database">Initializing the Information Store database</h2>
+<p>The initializing the Information Store database section creates a persistent database backup volume and runs the database container and configures the database management system. You can either deploy the Information Store on Microsoft SQL Server or PostgreSQL.</p>
+<ul>
+<li><a href="#sql-server">SQL Server</a></li>
+<li><a href="#postgresql">PostgreSQL</a></li>
+</ul>
+<h3 id="sql-server">SQL Server</h3>
+<ol>
+<li><p>The <code>deploy_secure_sql_server</code> function creates a persistent database backup volume and runs the database container. The function includes a number of calls that complete the following actions:</p>
+<ol>
+<li><p>The database backup volume is created first with the Docker command:</p>
+<pre><code class="lang-bash">docker volume create &quot;${SQL_SERVER_BACKUP_VOLUME_NAME}&quot;
+</code></pre><p> The volume will not be automatically deleted when the SQL Server container is removed. This helps maintain any backups created while running a SQL server container.
+ For more information about docker storage, see <a href="https://docs.docker.com/storage/">Docker Storage</a>.</p>
+</li>
+<li><p>The <code>run_sql_server</code> server function creates the secure SQL Server container for the deployment.For more information about building the SQL Server image and running a container, see <a href="../images-and-containers/sql_server.html">Microsoft SQL Server</a>.</p>
+</li>
+<li><p>Before continuing, <code>deploy-pre-prod</code> uses the <code>wait_for_sql_server_to_be_live</code> common function to ensure that SQL Server is running.</p>
+</li>
+<li><p>The <code>change_sa_password</code> client function is used to change the <code>sa</code> user&#39;s password. For more information, see <a href="../security-and-users/db_users_sqlserver.html#changing-sa-password">change_sa_password</a></p>
+</li>
+</ol>
+</li>
+<li><p>The <code>initialize_istore_database</code> function generates the ISTORE scripts and creates database roles, logins and users. The function includes a number of calls that complete the following actions:</p>
+<ol>
+<li><p>Generate the Information Store scripts.</p>
+<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateInfoStoreToolScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="i2analyze_tools.html#generate-information-store-scripts">Generate Information Store scripts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Generate the static Information Store database scripts.</p>
+<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateStaticInfoStoreCreationScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="i2analyze_tools.html#generate-static-database-scripts-tool">Generate static database scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Create the Information Store database and schemas.</p>
+<ul>
+<li>The <code>run_sql_server_command_as_sa</code> client function is used to run the <code>runDatabaseCreationScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-sql-server-command-as-sa">run_sql_server_command_as_sa</a></li>
+<li><a href="i2analyze_tools.html#run-database-creation-scripts-tool">Run database creation scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Create the database roles, logins, and users.  </p>
+<ul>
+<li>The <code>run_sql_server_command_as_sa</code> client function runs the <code>create_db_roles.sh</code> script.</li>
+<li>The <code>create_db_login_and_user</code> client function creates the logins and users.</li>
+<li>The <code>run_sql_server_command_as_sa</code> client function runs the <code>grant_permissions_to_roles.sh</code> script.
+For more information about the database users and their permissions, see <a href="../security-and-users/db_users.html">Database users</a>.</li>
+</ul>
+</li>
+<li><p>Grant the <code>dba</code> user the required permissions in the <code>msdb</code> and <code>master</code> databases, this grants the correct permissions for the Deletion by Rule feature of i2Analyze.</p>
+<ul>
+<li>The <code>run_sql_server_command_as_sa</code> client function runs the <code>configure_dba_roles_and_permissions.sh</code> script.</li>
+</ul>
+</li>
+<li><p>Make the <code>etl</code> user a member of the SQL server <code>sysadmin</code> group to allow this user to perform bulk inserts into the external staging tables.</p>
+<ul>
+<li>The <code>run_sql_server_command_as_sa</code> client function runs the <code>add_etl_user_to_sys_admin_role.sh</code> script.</li>
+</ul>
+</li>
+<li><p>Run the static scripts that create the Information Store database objects.</p>
+<ul>
+<li>The <code>run_sql_server_command_as_dba</code> client function is used to run the <code>runStaticScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-sql-server-command-as-dba">run_sql_server_command_as_dba</a></li>
+<li><a href="i2analyze_tools.html#run-static-database-scripts-tool">Run static database scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="postgresql">PostgreSQL</h3>
+<ol>
+<li><p>The <code>run_postgres_server</code> server function creates the secure Postgres container for the deployment. For more information about building the Postgres image and running a container, see <a href="../images-and-containers/postgres_server.html">PostgreSQL Server</a>.</p>
+</li>
+<li><p>The <code>wait_for_postgres_server_to_be_live</code> common function is used to ensure that Postgres is running.</p>
+</li>
+<li><p>The <code>change_postgres_password</code> client function is used to change the <code>postgres</code> user&#39;s password. For more information, see <a href="../security-and-users/db_users_postgres.html">Postgres</a></p>
+</li>
+<li><p>You can implement a <code>initialize_istore_database</code> function that generates the ISTORE scripts and creates database roles, logins and users. The function must include a number of calls that complete the following actions:</p>
+<ol>
+<li><p>Generate the Information Store scripts.</p>
+<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateInfoStoreToolScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="i2analyze_tools.html#generate-information-store-scripts">Generate Information Store scripts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Generate the static Information Store database scripts.</p>
+<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateStaticInfoStoreCreationScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="i2analyze_tools.html#generate-static-database-scripts-tool">Generate static database scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Create the Information Store database and schemas.</p>
+<ul>
+<li>The <code>run_postgres_server_command_as_postgres</code> client function is used to run the <code>runDatabaseCreationScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run_postgres_server_command_as_postgres">run_postgres_server_command_as_postgres</a></li>
+<li><a href="i2analyze_tools.html#run-database-creation-scripts-tool">Run database creation scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Create the database roles.  </p>
+<ul>
+<li>The <code>run_postgres_server_command_as_postgres</code> client function runs the <code>create_db_roles.sh</code> script.</li>
+</ul>
+</li>
+<li><p>Create the PG Cron extension.  </p>
+<ul>
+<li>The <code>run_postgres_server_command_as_postgres</code> client function is used to run the <code>create_pg_cron_extension.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run_postgres_server_command_as_postgres">run_postgres_server_command_as_postgres</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Create the database DBA login and user.  </p>
+<ul>
+<li>The <code>create_db_login_and_user</code> client function creates the DBA login and user.</li>
+<li>The <code>run_postgres_server_command_as_dba</code> client function runs the <code>grant_permissions_to_roles.sh</code> script.
+For more information about the database users and their permissions, see <a href="../security-and-users/db_users.html">Database users</a>.</li>
+</ul>
+</li>
+<li><p>Create the database logins and users.  </p>
+<ul>
+<li>The <code>create_db_login_and_user</code> client function creates the logins and roles.
+For more information about the database users and their permissions, see <a href="../security-and-users/db_users.html">Database users</a>.</li>
+</ul>
+</li>
+<li><p>Run the static scripts that create the Information Store database objects.</p>
+<ul>
+<li>The <code>run_postgres_server_command_as_dba</code> client function is used to run the <code>runStaticScripts.sh</code> tool.  <ul>
+<li><a href="./client_functions.md#run_postgres_server_command_as_dba">run_postgres_server_command_as_dba</a></li>
+<li><a href="i2analyze_tools.html#run-static-database-scripts-tool">Run static database scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="configuring-solr-and-zookeeper">Configuring Solr and ZooKeeper</h2>
+<p>The configuring Solr and ZooKeeper sections creates Solr configuration and then configures the Solr cluster and creates the Solr collections.</p>
+<ol>
+<li><p>Before continuing, <code>deploy-pre-prod</code> uses the <code>wait_for_solr_to_be_live</code> common function to ensure that Solr is running.</p>
+</li>
+<li><p>The <code>configure_solr_collections</code> function generates and uploads the Solr collections to Zookeeper.</p>
+<ul>
+<li><p>The <code>generateSolrSchemas.sh</code> i2-tool creates the <code>solr</code> directory in <code>examples/pre-prod/configuration/solr/generated_config</code>. This directory contains the managed-schema, Solr synonyms file and Solr config files for each index.</p>
+</li>
+<li><p>The <code>run_solr_client_command</code> client function is used to upload the <code>managed-schema</code>, <code>solr.xml</code>, and synonyms file for each collection to ZooKeeper.<br>For example:</p>
+<pre><code class="lang-bash">run_solr_client_command solr zk upconfig -v -z &quot;${ZK_HOST}&quot; -n daod_index -d /conf/solr_config/daod_index
+</code></pre></li>
+</ul>
+</li>
+<li><p>The <code>create_solr_cluster_policy</code> function uses the <code>run_solr_client_command</code> client function to set a cluster policy.</p>
+<ul>
+<li><p>The <code>create_solr_cluster_policy</code> is using Solr&#39;s built-in replica placement plugin with the default configuration that defines each host has 1 replica of each shard.
+For example:</p>
+<pre><code class="lang-bash">run_solr_client_command bash -c &quot;curl -u \&quot;\${SOLR_ADMIN_DIGEST_USERNAME}:\${SOLR_ADMIN_DIGEST_PASSWORD}\&quot; --cacert ${CONTAINER_CERTS_DIR}/CA.cer -X POST -H &#39;Content-Type: application/json&#39; -d &#39;{\&quot;add\&quot;:{ \&quot;name\&quot;: \&quot;.placement-plugin\&quot;, \&quot;class\&quot;: \&quot;org.apache.solr.cluster.placement.plugins.AffinityPlacementFactory\&quot;}}&#39; \&quot;${SOLR1_BASE_URL}/api/cluster/plugin\&quot;&quot;
+</code></pre><p>For more information about Solr&#39;s Replica Placement Plugin, see <a href="https://solr.apache.org/guide/solr/latest/configuration-guide/replica-placement-plugins.html">Replica Placement Plugins</a>.</p>
+</li>
+</ul>
+</li>
+<li><p>The <code>create_solr_collections</code> function creates the Solr Collections.</p>
+<ul>
+<li><p>The <code>run_solr_client_command</code> client function is used to create each Solr collection. For example:</p>
+<pre><code class="lang-bash">run_solr_client_command bash -c &quot;curl -u \&quot;\${SOLR_ADMIN_DIGEST_USERNAME}:\${SOLR_ADMIN_DIGEST_PASSWORD}\&quot;
+--cacert /run/secrets/CA.cer 
+\&quot;${SOLR1_BASE_URL}/solr/admin/collections?action=CREATE&amp;name=main_index&amp;collection.configName=main_index&amp;numShards=1&amp;rule=replica:&lt;2,host:*\&quot;&quot;
+</code></pre><p>For more information about the Solr collection API call, see <a href="https://solr.apache.org/guide/solr/latest/deployment-guide/collection-management.html#create">CREATE: Create a Collection</a>.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="configuring-the-information-store-database">Configuring the Information Store database</h2>
+<p>The configuring the Information Store database section creates objects within the database.</p>
+<ol>
+<li>The <code>configure_istore_database</code> function generates and runs the dynamic database scripts that create the schema specific database objects within the database.<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>generateDynamicInfoStoreCreationScripts.sh</code> tool.<ul>
+<li><a href="./client_functions.md#run-i2-analyze-tool">run_i2_analyze_tool</a></li>
+<li><a href="i2analyze_tools.html#generate-dynamic-information-store-creation-scripts-tool">Generate dynamic Information Store creation scripts tool</a></li>
+</ul>
+</li>
+<li>The <code>run_sql_server_command_as_dba</code> client function is used to run the <code>runDynamicScripts.sh</code> tool.<ul>
+<li><a href="./client_functions.md#run-sql-server-command-as-dba">run_sql_server_command_as_dba</a></li>
+<li><a href="i2analyze_tools.html#run-dynamic-information-store-creation-scripts-tool">Run dynamic Information Store creation scripts tool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="configuring-the-example-connector">Configuring the Example Connector</h2>
+<p>The configuring example connector section runs the example connector used by the i2 Analyze application.</p>
+<ol>
+<li>The <code>configure_example_connector</code> function runs and waits for the example connector to be live.<ul>
+<li>The <code>run_example_connector</code> server function runs the example connector application.</li>
+<li>The <code>wait_for_connector_to_be_live</code> client function checks the connector is live before allowing the script to proceed.</li>
+</ul>
+</li>
+</ol>
+<h2 id="configuring-i2-analyze">Configuring i2 Analyze</h2>
+<p>The configuring i2 Analyze section runs the Liberty containers that run the i2 Analyze application.</p>
+<ol>
+<li><p>The <code>build_liberty_configured_image_for_pre_prod</code> server function builds the configured Liberty image.  For more information, see <a href="../images-and-containers/liberty.html#building-a-configured-liberty-image">Building a configured Liberty image</a>.</p>
+</li>
+<li><p>The <code>deploy_liberty</code> function runs 2 liberty containers and the load balancer.</p>
+<ul>
+<li><p>The <code>run_liberty</code> server function runs a Liberty container from the configured image.</p>
+<p>For more information, see <a href="../images-and-containers/liberty.html#running-a-liberty-container">Running a Liberty container</a></p>
+</li>
+<li><p>The <code>run_load_balancer</code> function in <code>server_functions.sh</code> runs HAProxy as a load balancer in a Docker container.</p>
+<p>The load balancer configuration we use can be found in <code>haproxy.cfg</code> file and the variables are passed as environment variables to the Docker container.</p>
+<p>The load balancer routes requests to the application to both Liberty servers that are running. The configuration that used is a simplified configuration for example purposes and is not to be used in production.</p>
+<p>For more information about configuring a load balancer with i2 Analyze, see <a href="https://docs.i2group.com/analyze/4.4.4/hadr_loadbalancer.html">Load balancer</a>.</p>
+</li>
+</ul>
+</li>
+<li><p>Before continuing, <code>deploy-pre-prod</code> uses the <code>wait_for_i2_analyze_service_to_be_live</code> common function to ensure that Liberty is running.</p>
+</li>
+<li><p>The <code>update_match_rules</code> function updates the system match rules.</p>
+<ul>
+<li>The <code>run_i2_analyze_tool</code> client function is used to run the <code>runIndexCommand.sh</code> tool. The tool is run twice, once to update the match rules file and once to switch the match indexes.<br>For more information, see <a href="i2analyze_tools.html#manage-solr-indexes-tool">Manage Solr indexes tool</a>.</li>
+</ul>
+</li>
+</ol>
+<h2 id="running-prometheus-and-grafana">Running Prometheus and Grafana</h2>
+<p>The running Prometheus and Grafana section runs the Prometheus and Grafana containers.</p>
+<ol>
+<li><p>The <code>configure_prometheus_for_pre_prod</code> common function creates the Prometheus configuration.</p>
+</li>
+<li><p>The <code>run_prometheus</code> server function creates the Prometheus container.
+For more information about running a Prometheus container, see <a href="../images-and-containers/prometheus.html">Prometheus</a>.</p>
+</li>
+<li><p>Before continuing, <code>deploy-pre-prod</code> uses the <code>wait_for_prometheus_server_to_be_live</code> common function to ensure that Prometheus is running.</p>
+</li>
+<li><p>The <code>run_grafana</code> server function creates the Grafana container.
+For more information about running a Grafana container, see <a href="../images-and-containers/grafana.html">Grafana</a>.</p>
+</li>
+<li><p>Before continuing, <code>deploy-pre-prod</code> uses the <code>wait_for_grafana_server_to_be_live</code> common function to ensure that Grafana is running.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

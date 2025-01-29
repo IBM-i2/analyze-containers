@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Failure of the leader Liberty container </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Failure of the leader Liberty container ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="failure-of-the-leader-liberty-container">Failure of the leader Liberty container</h1>
+
+<p>This section demonstrates how a deployment of i2 Analyze responds to the failure and recovery of the Liberty server that hosts the leader Liberty instance. This section also describes the messages that you should monitor to detect the failure and ensure that the recovery was successful.</p>
+<p>Before you begin the walkthrough, there are a number of concepts that it is useful to understand:</p>
+<ul>
+<li>How Liberty is deployed for high availability and the role of the Liberty leader. For more information about Liberty configuration, see <a href="https://docs.i2group.com/analyze/4.4.4/liberty_co.html">Liberty</a>.</li>
+<li>How a load balancer is used and configured in a deployment of i2 Analyze. For more information about the load balancer configuration, see <a href="https://docs.i2group.com/analyze/4.4.4/hadr_loadbalancer.html">Deploying a load balancer</a>.</li>
+<li>That the load balancer is used to monitor the status of the i2 Analyze service.</li>
+<li>In a containerized deployment, all log messages are also displayed in the console. You can use the <code>docker logs</code> command to view the console log.</li>
+</ul>
+<p>The <code>examples/pre-prod/walkthroughs/ha/libertyHadrFailureWalkthrough.sh</code> script simulates the Liberty leader failure.</p>
+<h2 id="identifying-the-liberty-leader">Identifying the Liberty leader</h2>
+<p>To simulate a failure of the leader Liberty, first identify which server hosts the leader instance.</p>
+<p>To identify which container is running the leader Liberty, check the logs of the Liberty servers for the message: <code>We are the Liberty leader</code>.</p>
+<p>In the walkthrough script, this is done with the following <code>grep</code> command:</p>
+<pre><code class="lang-sh">grep -q &quot;We are the Liberty leader&quot;
+</code></pre><p>See the <code>Identifying the leader Liberty</code> section of the walkthrough script.</p>
+<h2 id="simulating-leader-liberty-failure">Simulating leader Liberty failure</h2>
+<p>To simulate leader Liberty failure, stop the leader Liberty. For example, if <code>liberty1</code> is the leader, run:</p>
+<pre><code class="lang-sh">docker stop liberty1
+</code></pre><p>See the <code>Simulating leader Liberty failure</code> section of the walkthrough script.</p>
+<h2 id="detecting-failure">Detecting failure</h2>
+<p>The load balancer is used to monitor and determine the status of the i2 Analyze service. The load balancer is configured to report the status of the deployment. The status can be either <code>ACTIVE</code>, <code>DEGRADED</code>, or <code>DOWN</code>.</p>
+<p>When the leader is taken offline, the other Liberty server must restart to become the new leader. During this time, both servers are down and the i2 Analyze service is <code>DOWN</code>. When the new leader Liberty starts and only 1 of the servers is down, the status of the i2 Analyze services is <code>DEGRADED</code>.</p>
+<p>In the walkthrough, the <code>wait_for_i2_analyze_service_status</code> function is used to run a while loop around the <code>get_i2_analyze_service_status</code> function to wait until the i2 Analyze service is in the <code>DEGRADED</code> state. The <code>get_i2_analyze_service_status</code> function is an example of how to return the i2 Analyze service status from a load balancer.</p>
+<p>See the <code>Detecting failure</code> section of the walkthrough script.</p>
+<h2 id="fail-over">Fail over</h2>
+<p>When the Liberty leader fails, one of the remaining Liberty servers is elected as the leader. To identify the new Liberty leader, check the logs of the remaining Liberty servers for the message: <code>We are the Liberty leader</code>.</p>
+<p>See the <code>Fail over</code> section of the walkthrough script.</p>
+<h2 id="reinstating-high-availability">Reinstating high availability</h2>
+<p>To reinstate high availability to the deployment, restart the failed Liberty server. In this example, that restart the Liberty container by running the following command:</p>
+<pre><code class="lang-sh">docker start liberty1
+</code></pre><p>When both Liberty servers are up, the status of the i2 Analyze services is <code>ACTIVE</code>.</p>
+<p>In the walkthrough, the <code>wait_for_i2_analyze_service_status</code> function is used to run a while loop around the <code>get_i2_analyze_service_status</code> function to wait until the i2 Analyze service is in the <code>ACTIVE</code> state. The <code>get_i2_analyze_service_status</code> function is an example of how to return the i2 Analyze service status from a load balancer.</p>
+<p>The recovered Liberty server is in the non-leader mode when it starts because the new leader has already been elected while the server was unavailable. To determine it is in the non-leader mode, the following message is displayed in the logs: <code>We are not the Liberty leader</code>.</p>
+<p>See the <code>Reinstating high availability</code> section of the walkthrough script.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Synchronize configurations </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Synchronize configurations ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="synchronize-configurations">Synchronize configurations</h1>
+
+<p>You can synchronize configurations between the i2 Analyze deployment toolkit and the configuration development
+environment. This enables you to develop the i2 Analyze configuration by using the config development environment,
+and deploy with it as part of the i2 Analyze deployment toolkit. This can be useful in the following situations:</p>
+<ul>
+<li>You want to create a new deployment that uses the i2 Analyze deployment toolkit and you want to use the
+config development environment to develop the configuration for it.</li>
+<li>You have an existing deployment that uses the i2 Analyze deployment toolkit and you want to use the config
+development environment to further develop the configuration.</li>
+</ul>
+<p>When you synchronize a configuration, you must do so with a complete i2 Analyze deployment toolkit. You can
+synchronize from an existing deployment toolkit configuration (import) or from an existing configuration
+development config (export).</p>
+<p>The configuration from the i2 Analyze deployment toolkit is the source of truth. When you have an existing
+deployment toolkit, the instructions direct you to back up the configuration before you synchronize it with
+the config development environment.</p>
+<p>You complete the synchronization by using the <a href="#manage-toolkit-configuration-command">manage-toolkit-configuration</a> script.</p>
+<h2 id="examples">Examples</h2>
+<p>The following use cases demonstrate the process of synchronizing configurations between the config development
+environment and an i2 Analyze deployment toolkit:</p>
+<ul>
+<li><strong>New deployment</strong>: You want to create a new deployment that uses the i2 Analyze deployment toolkit and you
+want to use the config development environment to develop the configuration for it.</li>
+<li><strong>Existing deployment</strong>: You have an existing deployment that uses the i2 Analyze deployment toolkit and you
+want to convert to use the config development environment to further develop the configuration. After you develop
+the configuration, you will still deploy i2 Analyze using the deployment toolkit.</li>
+</ul>
+<h2 id="new-deployment">New deployment</h2>
+<p>This section describes the process of exporting a configuration from the config development environment to an
+i2 Analyze deployment toolkit.</p>
+<ol>
+<li>Use the config development environment to create and develop a config.<br>For more information, see <a href="deploy_config_dev.html">Configuration development environment</a>.
+When you are happy with the developed configuration, you can complete the process that enables you to use
+it with the i2 Analyze deployment toolkit.</li>
+<li>Install the i2 Analyze deployment toolkit.<br>For more information, see <a href="https://docs.i2group.com/analyze/4.4.4/analyze_install.html">Installing i2 Analyze</a>.</li>
+<li><p>Update the <code>path-configuration.json</code> file inside the <code>analyze-deployment-tooling</code> directory to reference the path
+where you installed the i2 Analyze toolkit:</p>
+</li>
+<li><p>Open a terminal on your host machine.</p>
+<ul>
+<li>On Windows, use a WSL terminal. Press <strong>Start -&gt; wsl</strong></li>
+</ul>
+</li>
+<li><p>Navigate to the <code>analyze-deployment-tooling/scripts</code> directory.</p>
+</li>
+<li><p>Run the <code>configure-paths</code> script with the <code>external</code> task.<br> For example:</p>
+<pre><code class="lang-sh">configure-paths -t external -n &lt;name&gt; -p &lt;path&gt;
+</code></pre><p> Where <code>&lt;name&gt;</code> is a name used to reference the external toolkit and <code>&lt;path&gt;</code> is the path where you installed
+ the toolkit.</p>
+</li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild and Reopen in Container</code> and select it</p>
+</li>
+<li><p>Export the configuration from the config development environment to the i2 Analyze deployment toolkit.</p>
+<ol>
+<li><p>Run the <code>manage-toolkit-configuration</code> command with the <code>create</code> task to create a base configuration in
+the i2 Analyze deployment toolkit.</p>
+<pre><code class="lang-sh">manage-toolkit-configuration -c config-development -n toolkit -t create
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-c</code> is the name of the config.</li>
+<li><code>-n</code> is the name of the i2 Analyze deployment toolkit that was added to the <code>path-configuration.json</code> file.  </li>
+</ul>
+<p><strong>Note:</strong> The base configuration that is created is suitable for the deployment pattern that is specified
+in the <code>variables.conf</code> file of the specified config.</p>
+</li>
+<li><p>Run the <code>manage-toolkit-configuration</code> command with the <code>export</code> task to export the config dev configuration
+into the deployment toolkit.</p>
+<pre><code class="lang-sh">manage-toolkit-configuration -c config-development -n toolkit -t export
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-c</code> is the name of the config to export.</li>
+<li><code>-p</code> is the absolute path to the root of the i2 Analyze deployment toolkit that was added to the <code>path-configuration.json</code> file.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>You can then deploy your i2 Analyze deployment toolkit configuration. For more information about deploying
+i2 Analyze, see <a href="https://docs.i2group.com/analyze/4.4.4/t_create_config.html">Deploying i2 Analyze</a>.
+Start at step 3 from the linked documentation. There are a number of environment specific configuration files
+that are not populated in the config development environment.</p>
+</li>
+</ol>
+<h2 id="existing-deployment">Existing deployment</h2>
+<p>This section assumes that you are starting with a configuration from an i2 Analyze deployment toolkit. For more
+information about deploying i2 Analyze, see <a href="https://docs.i2group.com/analyze/4.4.4/analyze_deployment.html">Deploying i2 Analyze</a>.</p>
+<p>The config development environment uses fixed names for schemas and configuration files. Before you can import
+your deployment toolkit configuration into the config development environment, your configuration must be updated
+to use the expected file names. The <code>manage-toolkit-configuration</code> command can rename the files for you and
+update any references to them.</p>
+<p>You can also decide whether or not to use the config development environment configuration set in your deployment
+toolkit configuration.
+If you decide to use the new config set, all settings for the deployment must be specified in the <code>analyze-settings.properties</code> file.
+If you choose not to use the new configuration set, any additions that you make to the <code>analyze-settings</code> file
+in the config development environment are not exported.</p>
+<ol>
+<li>Back up your i2 Analyze deployment toolkit configuration.<br>Fore more information about backing up your configuration, see
+<a href="https://docs.i2group.com/analyze/4.4.4/backup-restore-config.html">Back up and restore the configuration</a>.</li>
+<li><p>Use the config development environment to create an empty config to import your configuration in to.<br>For more information, see <a href="deploy_config_dev.html">Configuration development environment</a>. You do not need
+to specify any schema files or deploy the config.</p>
+</li>
+<li><p>Update the <code>path-configuration.json</code> file inside <code>analyze-deployment-tooling</code> directory to reference the path where
+you installed the i2 Analyze toolkit:</p>
+</li>
+<li><p>Open a terminal on your host machine.</p>
+<ul>
+<li>On Windows, use a WSL terminal. Press <strong>Start -&gt; wsl</strong></li>
+</ul>
+</li>
+<li><p>Navigate to the <code>analyze-deployment-tooling/scripts</code> directory.</p>
+</li>
+<li><p>Run the <code>configure-paths</code> script with the <code>external</code> task.<br> For example:</p>
+<pre><code class="lang-sh">configure-paths -t external -n &lt;name&gt; -p &lt;path&gt;
+</code></pre><p> Where <code>&lt;name&gt;</code> is a name used to reference the external toolkit and <code>&lt;path&gt;</code> is the path where you installed
+ the toolkit.</p>
+</li>
+<li><p>Reopen the analyze-deployment-tooling folder in a dev container.<br>Press <strong>F1</strong> (or <strong>Cmd+Shift+P</strong> in MacOS), type <code>Dev Containers: Rebuild and Reopen in Container</code> and select it</p>
+</li>
+<li><p>Run the <code>manage-toolkit-configuration</code> command with the <code>prepare</code> task to rename the schema and configuration
+files and update the references:</p>
+<pre><code class="lang-sh">manage-toolkit-configuration -c config-development -n toolkit -t prepare
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-c</code> is the config name you are working with.</li>
+<li><code>-n</code> is the name of the toolkit to act on.</li>
+</ul>
+</li>
+<li><p>To use the config development environment configuration set, complete the following 2 steps.
+Otherwise, move to the next step.</p>
+<ol>
+<li>Copy the contents of <code>templates/toolkit-config-mod</code> directory to the <code>/toolkit/configuration/fragments/common/WEB-INF/classes</code>
+directory of the i2 Analyze deployment toolkit.</li>
+<li>Review the settings that are used in the <code>DiscoClientSettings</code>, <code>DiscoServerSettingsCommon</code>, and <code>ApolloServerSettingsMandatory</code>
+properties files of i2 Analyze deployment toolkit and move any settings that you want to continue using into the
+<code>/toolkit/configuration/fragments/common/WEB-INF/classes/analyze-settings.properties</code> file.<br><strong>Note</strong>: You do not need to move any of the <code>Resource</code> settings from the <code>ApolloServerSettingsMandatory</code> file
+that specify the names of XML files.
+You can remove the <code>DiscoClientSettings</code> and <code>DiscoServerSettingsCommon</code> properties files after you move any settings.</li>
+</ol>
+</li>
+<li><p>Run the <code>manage-toolkit-configuration</code> command with the <code>import</code> task to import the configuration into the
+config development environment:</p>
+<pre><code class="lang-sh">manage-toolkit-configuration -c config-development -n toolkit -t import
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-c</code> is the config name to import the configuration into.</li>
+<li><code>-n</code> is the name of the toolkit to act on.</li>
+</ul>
+</li>
+<li><p>Use the config development environment to develop the configuration.<br>For more information, see <a href="develop_config_dev.html">Developing the configuration</a>.</p>
+<ol>
+<li>In the config development environment, a <code>user.registry.xml</code> is required. You can start from the example
+provided in <code>pre-reqs/i2analyze/toolkit/examples/security</code> and align it to your security schema or copy in
+an existing one.</li>
+</ol>
+</li>
+<li><p>If you want to use your developed configuration in your i2 Analyze deployment toolkit, you can use the <code>export</code>
+task to export the configuration into your toolkit. Otherwise, continue to use the config development environment.<br>Run the <code>manage-toolkit-configuration</code> command with the <code>export</code> task. For example:</p>
+<pre><code class="lang-sh">manage-toolkit-configuration -c config-development -n toolkit -t export
+</code></pre><p>Where:</p>
+<ul>
+<li><code>-c</code> is the config name you have created to synchronize the configuration to.</li>
+<li><code>-n</code> is the name of the toolkit to act on.</li>
+</ul>
+</li>
+<li><p>You must update the i2 Analyze deployment toolkit deployment with the changes to the configuration.</p>
+</li>
+</ol>
+<h2 id="connectors">Connectors</h2>
+<p>In the config development environment, i2 Connect connectors are run on Docker images and can only be access
+from within the Docker network. This means that the connectors and URL references to the connectors cannot be
+synchronized between configurations.</p>
+<p>The connector IDs are displayed when you run the <code>import</code> and <code>export</code> tasks to enable you to provide the
+connectors in each environment. For more information about deploying connectors, see:</p>
+<ul>
+<li><a href="connector_config_dev.html">Adding connectors to your config development environment</a></li>
+<li><a href="https://docs.i2group.com/analyze/4.4.4/i2_connect_topology.html">Adding connectors to your i2 Analyze deployment toolkit configuration</a></li>
+</ul>
+<h2 id="extensions">Extensions</h2>
+<p>In the config development environment, i2 Analyze extensions are built and deployed using Maven.</p>
+<p>To add an extension to your i2 Analyze deployment toolkit, copy the JAR from <code>i2a-extensions/&lt;extension-name&gt;/target/&lt;extension-name&gt;-&lt;version&gt;.jar</code>
+and follow the <a href="https://github.com/i2group/analyze/tree/master/documentation/java-api">Developer Essentials</a> deployment steps.</p>
+<p>Note: You must also copy the JAR files from any extensions that the extension depends on to your deployment toolkit.</p>
+<p>To import extensions into the config dev environment, complete the instructions in <a href="develop_extensions.html">Developing extensions</a>.</p>
+<h2 id="plugins">Plugins</h2>
+<p>Plugins can be synchronized between analyze-deployment-tooling configurations and deployment toolkit configurations.</p>
+<p>When you import a configuration that contains plugins, those plugins are imported to the <code>i2a-plugins</code> directory
+in the config dev environment and referenced in the <code>plugin-references.json</code> file of the configuration.</p>
+<p>When you export a configuration that references plugins, the referenced plugins are added to the exported configuration
+from the <code>i2a-plugins</code> directory.</p>
+<p>If a plugin with the same name already exists in the <code>i2a-plugins</code> directory, it is not overwritten or added to
+the <code>plugin-references.json</code> file.</p>
+<h2 id="prometheus-and-grafana">Prometheus and Grafana</h2>
+<p>In the config development environment, Prometheus and Grafana are run on Docker images. You can modify the
+<code>configs/&lt;config-name&gt;/configuration/prometheus/prometheus.yml</code> file and the Grafana dashboards in
+<code>configs/&lt;config-name&gt;/configuration/grafana/dashboards</code> folder to further develop your metrics configuration
+and once finished this can be copied to the locations that are required by Prometheus and Grafana. For more
+information, see <a href="https://docs.i2group.com/analyze/4.4.4/configure_monitoring.html">Configure server monitoring</a>.</p>
+<hr>
+<h2 id="manage-toolkit-configuration-command">manage-toolkit-configuration command</h2>
+<pre><code class="lang-sh">Usage:
+  manage-toolkit-configuration -c &lt;config_name&gt; -n &lt;toolkit_path_name&gt; -t { create | prepare | import | export } [-v]
+
+Options:
+  -c &lt;config_name&gt;             Name of the config to use.
+  -n &lt;toolkit_path_name&gt;       The name of the path to the root of an i2 Analyze deployment toolkit as shown in the path-configuration.json file.
+  -t {create}                  Creates a configuration in the i2 Analyze deployment toolkit that can be imported into the config development environment.
+  -t {prepare}                 Prepares an existing i2 Analyze deployment toolkit configuration to be imported into the config development environment.
+  -t {export}                  Export a config development environment configuration to an i2 Analyze deployment toolkit configuration.
+  -t {import}                  Import an i2 Analyze deployment toolkit configuration to a config development environment configuration.
+  -v                           Verbose output.
+  -h                           Display the help.
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

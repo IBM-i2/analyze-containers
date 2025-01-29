@@ -79,7 +79,7 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="postgresql">PostgreSQL</h1>
 
-<p>In a containerized deployment, the database is located on a Postgres container which is run from a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-postgres">Postgres image</a> maintained by i2 Group on Docker Hub.</p>
+<p>In a containerized deployment, the database is located on a Postgres container which is run from a <a href="https://hub.docker.com/r/i2group/i2eng-postgres">Postgres image</a> maintained by i2 Group on Docker Hub.</p>
 <h2 id="running-a-postgres-container">Running a Postgres container</h2>
 <p>A Postgres container uses the Postgres image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to Postgres on the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
 <p>The container will run with a User ID and Group ID of <code>999</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>

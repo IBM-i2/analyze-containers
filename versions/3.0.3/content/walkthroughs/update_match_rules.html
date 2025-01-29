@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Updating the system match rules </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Updating the system match rules ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="updating-the-system-match-rules">Updating the system match rules</h1>
+
+<p>This section describes an example of the process to update the system match rules of a deployment with the Information Store.
+Updating your match rules in your deployment includes the following high-level steps after you modify your system match rules file:</p>
+<ul>
+<li>Removing the Liberty containers</li>
+<li>Update the match rules file</li>
+<li>Rebuilding the configured Liberty image with the modified match rules file</li>
+<li>Running the Liberty containers</li>
+<li>Upload the updated system match rules file to ZooKeeper</li>
+<li>Create a standby match index with the new system match rules, and wait for a response from the server to say that the standby match index is ready</li>
+<li>Switch your standby match index to live</li>
+</ul>
+<p>The <code>examples/pre-prod/walkthroughs/change-management/updateMatchRulesWalkthrough.sh</code> script is a worked example that demonstrates how to update the system match rules in a containerized environment.</p>
+<blockquote><p>Note: Before you complete this walkthrough, reset your environment to the base configuration. For more information, see <a href="reset_walkthroughs.html">Resetting your environment</a>.</p>
+</blockquote>
+<h2 id="removing-the-liberty-containers">Removing the Liberty containers</h2>
+<p>Before you update the match rules file, you remove the Liberty containers. To remove the containers, run the following docker commands:</p>
+<pre><code class="lang-bash">docker stop liberty1 liberty2
+docker rm liberty1 liberty2
+</code></pre><p>See the <code>Removing the Liberty containers</code> section of the walkthrough script.</p>
+<h2 id="updating-your-system-match-rules-file">Updating your system match rules file</h2>
+<p>In the <code>updateMatchRulesWalkthrough.sh</code> script, the modified <code>system-match-rules.xml</code> is copied from the <code>examples/pre-prod/walkthroughs/configuration-changes</code> directory to the <code>configuration/live/</code> directory.
+See the <code>Updating system-match-rules.xml</code> section of the walkthrough script.</p>
+<p>For more information about modifying the system match rules file, see <a href="https://docs.i2group.com/analyze/4.4.4/creating_smr_is.html">Deploying system match rules</a>.</p>
+<p>After you modify the match rules file, build a new configured liberty image with the updated match rules file.</p>
+<p>The <code>build_liberty_configured_image_for_pre_prod</code> server function builds the configured Liberty image.  For more information, see <a href="../images-and-containers/liberty.html#building-a-configured-liberty-image">Building a configured Liberty image</a>.</p>
+<h3 id="running-the-liberty-containers">Running the Liberty containers</h3>
+<p>The <code>run_liberty</code> server function runs a Liberty container. For more information about running a Liberty container, see <a href="../images-and-containers/liberty.html">Liberty</a>.<br>See the <code>Running the Liberty containers</code> section of the walkthrough script.</p>
+<blockquote><p>Note: You must run both Liberty containers.</p>
+</blockquote>
+<p>The <code>wait_for_i2_analyze_service_to_be_live</code> common function ensures that Liberty is running.</p>
+<h2 id="uploading-system-match-rules-to-zookeeper">Uploading system match rules to ZooKeeper</h2>
+<p>After you modify the system match rules file, use the <code>update_match_rules</code> function of the <code>runIndexCommand.sh</code> script to upload the match rules to ZooKeeper.
+For more information, see <a href="../tools-and-functions/i2analyze_tools.html#manage-solr-indexes-tool">Manage Solr indexes tool</a>.</p>
+<p>The <code>runIndexCommand</code> function with the <code>update_match_rules</code> argument in the <code>updateMatchRulesWalkthrough.sh</code> script contains the <code>docker run</code> command that uses an ephemeral Solr client container to upload the match rules.</p>
+<p>To use the tool in a Docker environment, the following prerequisites must be present:</p>
+<ul>
+<li><p><strong>The Docker toolkit and your configuration must be available in the container.</strong></p>
+<ul>
+<li><p>In the example, the toolkit and configuration are volume mounted in the <code>docker run</code> command. For example:</p>
+<pre><code class="lang-bash">      -v &quot;pre-reqs/i2analyze/toolkit:/opt/toolkit&quot; \
+      -v &quot;examples/pre-prod/configuration:/opt/&quot;
+</code></pre></li>
+</ul>
+</li>
+<li><p><strong>Environment variables</strong></p>
+<ul>
+<li>The tool requires a number of environment variables to be set. For the list of environment variables that you can set, see <a href="../tools-and-functions/i2analyze_tools.html#manage-solr-indexes-tool">Manage Solr indexes tool</a>.</li>
+</ul>
+</li>
+<li><p><strong>Java</strong></p>
+<ul>
+<li><p>The container must be able to run Java executables. In the example, the container uses the <code>eclipse-temurin</code> image from DockerHub.</p>
+<pre><code class="lang-bash">  eclipse-temurin:11-ubi9-minimal
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h2 id="checking-the-standby-match-index-status">Checking the standby match index status</h2>
+<p>When uploading match rules, the <code>runIndexCommand.sh</code> will wait for 5 minutes for a response from the server. If however, it takes longer to create the new match index a curl command can be run against liberty.</p>
+<p>The <code>wait_for_indexes_to_be_built</code> client function makes a request to the <code>api/v1/admin/indexes/status</code> endpoint and inspects the JSON response to see if the match index is built.</p>
+<h2 id="switching-the-standby-match-index-to-live">Switching the standby match index to live</h2>
+<p>After the standby index is ready, you can switch the standby index to live for resolving matches. Use the <code>switch_standby_match_index_to_live</code> function of the <code>runIndexCommand.sh</code> script to switch the indexes.</p>
+<p>The <code>runIndexCommand</code> function with the <code>switch_standby_match_index_to_live</code> argument in the <code>updateMatchRulesWalkthrough.sh</code> script contains the <code>docker run</code> command that uses an ephemeral Solr client container to switch the match indexes.</p>
+<p>The tool outputs a message when the action is completed successfully and exit code <code>0</code> is returned. For example:</p>
+<pre><code class="lang-log">&gt; INFO  [IndexControlHelper] - The server processed the command successfully:
+&gt; Switched the live Match index from &#39;match_index1&#39; to &#39;match_index2&#39;.
+</code></pre><p>If there are any errors, the error is displayed in the console.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

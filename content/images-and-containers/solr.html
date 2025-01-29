@@ -85,7 +85,7 @@
 <p>To modify the <code>solr.xml</code>, you can modify the Dockerfile to build an image with your <code>solr.xml</code> file. The Dockerfile in <code>images/solr_server</code> contains a commented out example <code>COPY</code> command that copies a <code>solr.xml</code> into the image. By copying a <code>solr.xml</code> file into the image, the container does not generate a default <code>solr.xml</code>.</p>
 <p>For more information about the file, see <a href="https://solr.apache.org/guide/solr/latest/configuration-guide/configuring-solr-xml.html">Configuring solr.xml</a>.</p>
 <h2 id="building-a-solr-image">Building a Solr image</h2>
-<p>The Solr image for i2 Analyze is built on top of a <a href="https://hub.docker.com/repository/docker/i2group/i2eng-solr">Solr image</a> maintained by i2 Group on Docker Hub. The Dockerfile is modified to configure Solr for use with i2 Analyze.</p>
+<p>The Solr image for i2 Analyze is built on top of a <a href="https://hub.docker.com/r/i2group/i2eng-solr">Solr image</a> maintained by i2 Group on Docker Hub. The Dockerfile is modified to configure Solr for use with i2 Analyze.</p>
 <h3 id="docker-build-command">Docker build command</h3>
 <p>The Solr image is built from the Dockerfile in <code>images/solr_server</code>.
 The following <code>docker build</code> command builds the Solr image:</p>

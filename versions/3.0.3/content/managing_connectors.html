@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Managing connectors </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Managing connectors ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="managing-connectors">Managing connectors</h1>
+
+<p>The <code>/connector-images</code> directory contains the files that are required to build each connector image in your config dev environment.</p>
+<p>The complete contents of each connector directory depends on the template that you used to create it. All the templates include a folder that you use to place the connector source code, the files used to build the Docker images and run the Docker containers, and JSON files that you use to provide information about the connector.</p>
+<p>For instructions about how to add connectors to your environment, see <a href="connector_config_dev.html">Adding connectors to your development environment</a>.</p>
+<h2 id="connector-versioning">Connector versioning</h2>
+<p>You specify the version and tag of a connector in the <code>connector-version.json</code> file of each connector.</p>
+<ul>
+<li><code>version</code><ul>
+<li>The <code>version</code> value is used as a version for your connector. If you are deploying an i2 Connect server connector, the version value has more requirements. For more information, see <a href="#i2-connect-server-connectors">i2 Connect server connector versioning</a>.</li>
+</ul>
+</li>
+<li><code>tag</code><ul>
+<li>The <code>tag</code> value is used in the image name, host name, and secrets for your connector container.</li>
+</ul>
+</li>
+</ul>
+<p>For example:</p>
+<pre><code class="lang-json">{
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;tag&quot;: &quot;1&quot;
+}
+</code></pre><p>As a best practice, you should increment the version of a connector when you make changes to the connector, this usually corresponds to the version of the connector in the <code>package.json</code> file or <code>pom.xml</code> (depending on your connector type).
+The tag doesn&#39;t follow the same rules, you can use any value that you want. We recommend that you use the major version of the connector as the tag. If you change the tag, you must regenerate the secrets for that connector, see <a href="#connector-secrets">Connector secrets</a> for more information.</p>
+<h2 id="building-connectors">Building connectors</h2>
+<p>Use the <code>deploy</code> command to generate secrets and build the images for connectors referenced in that config.</p>
+<p>For example, to build and run all of the connectors referenced in the <code>&lt;config-name&gt;</code> config, run:</p>
+<pre><code class="lang-bash">deploy -c &lt;config_name&gt;
+</code></pre><p>To build the images for all connectors in your environment, see <a href="managing_environment.html">Managing the environment</a>.</p>
+<h2 id="connector-secrets">Connector secrets</h2>
+<p>Before you can use a connector, you must generate secrets for it. For more information about the secrets used in the environment, see <a href="security-and-users/security.html">Managing container security</a>.</p>
+<p>The secrets that are generated for a particular connector are tied to the tag, if you change the tag you must to regenerate the secrets for that connector.  </p>
+<p>To regenerate the secrets for a connector after you change the tag, complete the following steps:</p>
+<ol>
+<li>Remove the <code>environment-secrets/generated-secrets/certificates/&lt;connector_name&gt;</code> and <code>environment-secrets/simulated-secret-store/&lt;connector_name&gt;</code> directories for the connector that you changed the tag of.</li>
+<li><p>Run the <code>deploy</code> command with a config that references the connector.</p>
+<pre><code class="lang-bash">deploy -c &lt;config_name&gt;
+</code></pre></li>
+</ol>
+<p><strong>Note:</strong> For external connectors, you must add <code>environment-secrets/generated-secrets/certificates/externalCA/CA.cer</code> to the trust store of the connector.</p>
+<h2 id="i2-connect-server-connectors">i2 Connect server connectors</h2>
+<p>If you are deploying one or more connectors that were developed using the i2 Connect SDK. There are two versions that you must consider; the version of a connector and the version of the i2 Connect server that the connectors depends on.</p>
+<h3 id="connector-version">Connector version</h3>
+<p>In the <code>connector-version.json</code> file, the <code>version</code> specifies the range of supported versions for the connector. This enables you to have more control of the version of a connector that is used in your deployment.  </p>
+<p>You can specify the range of versions at the major, minor, or patch level. For example, if you specify a major version <code>1</code> in the <code>connector-version.json</code> file, any connector that has a major version of <code>1</code> is compatible.  </p>
+<p>When the connector is developed, the version of the connector is provided in the <code>package.json</code> file by the developer. If the version of the connector specified in <code>package.json</code> does not match the version, or range of versions, that you specify in <code>connector-version.json</code> a warning is displayed when you deploy your environment.  </p>
+<p>The following table demonstrates how you can specify the version ranges and their compatibility with connector versions:</p>
+<table>
+<thead>
+<tr>
+<th><code>package.json</code> version</th>
+<th><code>connector-version.json</code> version</th>
+<th>Compatible? (Y/N)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1.0.0</code></td>
+<td><code>1</code></td>
+<td><strong>Y</strong></td>
+</tr>
+<tr>
+<td><code>1.3.0</code></td>
+<td><code>1</code></td>
+<td><strong>Y</strong></td>
+</tr>
+<tr>
+<td><code>1.4.0</code></td>
+<td><code>1.3</code></td>
+<td><strong>N</strong></td>
+</tr>
+<tr>
+<td><code>1.4.6</code></td>
+<td><code>1.4</code></td>
+<td><strong>Y</strong></td>
+</tr>
+<tr>
+<td><code>1.4.8</code></td>
+<td><code>1.4.7</code></td>
+<td><strong>N</strong></td>
+</tr>
+<tr>
+<td><code>2.0.0</code></td>
+<td><code>1</code></td>
+<td><strong>N</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="i2-connect-server-version">i2 Connect server version</h3>
+<p>i2 Connect server connectors depend on the i2 Connect server. When the connector is developed, the version of the i2 Connect server that the connector depends on is provided in the <code>package.json</code> file by the developer.</p>
+<p>In the <code>connector-images/i2connect-server-version.json</code> file, you specify the range of versions of the i2 Connect server that you want all i2 Connect server connectors to depend on.</p>
+<p>The versions in these files are specified in the npm semantic versioning syntax. For more information about the syntax, see <a href="https://docs.npmjs.com/cli/v6/using-npm/semver#ranges"><code>semver</code> - the semantic versioning for npm</a>.</p>
+<p>If the version of the i2 Connect server that a connector depends on specified in <code>package.json</code> does not match the version, or range of versions, that you specify in <code>i2connect-server-version.json</code> a warning is displayed when you deploy your environment.  </p>
+<p>The following table demonstrates how you can specify the version ranges and their compatibility with i2 Connect server versions:</p>
+<table>
+<thead>
+<tr>
+<th><code>package.json</code> version</th>
+<th><code>connector-version.json</code> version</th>
+<th>Compatible? (Y/N)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>^1.0.0</code></td>
+<td><code>^1.0.0</code></td>
+<td><strong>Y</strong></td>
+</tr>
+<tr>
+<td><code>1.3.2</code></td>
+<td><code>^1.0.0</code></td>
+<td><strong>Y</strong></td>
+</tr>
+<tr>
+<td><code>1.4.0</code></td>
+<td><code>1.3.0</code></td>
+<td><strong>N</strong></td>
+</tr>
+<tr>
+<td><code>2.0.0</code></td>
+<td><code>^1.0.0</code></td>
+<td><strong>N</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="i2-connect-server-connector-configuration-optional">i2 Connect server connector configuration (Optional)</h3>
+<p>i2 Connect server connectors can have specific connector configuration that is defined in the <code>settings.json</code>file. When the connector is developed, a default file can be provided by the developer. The developer should also provide you with documentation that described the required configuration for the connector.</p>
+<p>After the first deployment of the connector, if a <code>settings.json</code> file is provided, the system extracts it to the <code>connector-images/&lt;connector-name&gt;/app</code> directory.</p>
+<p>The file is in the same directory structure as in the supplied connector. For example, <code>&lt;connector-name&gt;/app/config/settings.json</code>. To change the configuration, modify the <code>settings.json</code> and redeploy the environment.</p>
+<p>You might have to provide secrets, or references to secrets, in the <code>settings.json</code> file. To provide the secrets, you can use a value from the environment. This can either be an environment variable or a value from a <code>.env</code> file in the <code>connector-image/&lt;connector-name&gt;</code> directory.</p>
+<p><strong>Note:</strong> If you use a <code>.env</code> file, it must not be checked in to source control or distributed to prevent compromising your secrets.</p>
+<p>An example <code>settings.json</code> file might look like:</p>
+<pre><code class="lang-json">{
+  &quot;data_source_url&quot;: &quot;https://data-source/data.json&quot;,
+  &quot;data_source_API_key&quot;: &quot;${env.API_KEY}&quot;
+}
+</code></pre><p>Where <code>API_KEY</code> is an environment variable or a key in a <code>.env</code> file with the value of the API Key.</p>
+<p>For more information about populating the <code>settings.json</code> file, see <a href="https://i2group.github.io/analyze-connect-node-sdk/guide/making-a-connector-configurable.html">Making a connector configurable</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>

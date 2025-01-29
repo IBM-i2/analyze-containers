@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Load balancer </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Load balancer ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="load-balancer">Load balancer</h1>
+
+<p>In a containerized deployment, you can use a load balancer to distribute incoming requests to the containers in the deployment. This environment uses HA Proxy as the load balancer. The <a href="https://hub.docker.com/repository/docker/i2group/i2eng-haproxy/general"><code>i2eng-haproxy</code></a> image is based off the official <a href="https://hub.docker.com/_/haproxy/">haproxy</a> image.</p>
+<h2 id="running-a-haproxy-container">Running a ha_proxy container</h2>
+<p>A ha_proxy container uses the ha_proxy image. In the <code>docker run</code> command, you can use <code>-e</code> to pass environment variables to ha_proxy on the container. The environment variables are described in <a href="#environment-variables">environment variables</a>.</p>
+<p>The container will run with a User ID and Group ID of <code>1000</code>. All files in mounted directories will be created with these IDs. If files are manipulated externally these IDs must be retained or the container will not function correctly.</p>
+<h3 id="docker-run-command">Docker run command</h3>
+<p>The following <code>docker run</code> command runs a HA Proxy container:</p>
+<pre><code class="lang-sh">  docker run -d \
+    --name &quot;load_balancer&quot; \
+    --net &quot;eia&quot; \
+    --net-alias &quot;i2analyze.eia&quot; \
+    -p &quot;9046:9046&quot; \
+    -v &quot;ac_load_balancer_config:/usr/local/etc/haproxy&quot; \
+    -v &quot;/environment-secrets/simulated-secret-store/i2analyze:/run/secrets/&quot; \
+    -e LIBERTY1_LB_STANZA=&quot;liberty1.eia:9080&quot; \
+    -e LIBERTY2_LB_STANZA=&quot;liberty2.eia:9080&quot; \
+    -e LIBERTY_SSL_CONNECTION=&quot;true&quot; \
+    -e SERVER_SSL=&quot;true&quot; \
+    -e SSL_PRIVATE_KEY_FILE=&quot;/run/secrets/server.key&quot; \
+    -e SSL_CERTIFICATE_FILE=&quot;/run/secrets/server.cer&quot; \
+    -e SSL_CA_CERTIFICATE_FILE=&quot;/run/secrets/CA.cer&quot; \
+    -e GATEWAY_SSL_CONNECTION=&quot;true&quot; \
+    -e SSL_OUTBOUND_PRIVATE_KEY_FILE=&quot;/run/secrets/gateway_user.key&quot; \
+    -e SSL_OUTBOUND_CERTIFICATE_FILE=&quot;/run/secrets/gateway_user.cer&quot; \
+    -e SSL_OUTBOUND_CA_CERTIFICATE_FILE=&quot;/run/secrets/outbound_CA.cer&quot; \
+    -e SSL_ADDITIONAL_TRUST_CERTIFICATES=&quot;/run/secrets/additional_trust_certificates.cer&quot; \
+    &quot;i2eng-haproxy:2.9&quot;
+</code></pre><p>For an example of the <code>docker run</code> command, see <code>utils/server_functions.sh</code> script. The <code>run_load_balancer</code> function does not take any arguments.</p>
+<h3 id="storage">Storage</h3>
+<p>Named volumes are used to persist configuration files.</p>
+<p>To configure the HA Proxy to use the volume, specify the <code>-v</code> option with the name of the volume and the path where the directory is mounted in the container. By setting <code>-v</code> option in the docker run command, a named volume is created. For HA Proxy, the path to the directory that must be mounted is <code>/usr/local/etc/haproxy</code>.</p>
+<p>For example:</p>
+<pre><code class="lang-sh">-v ac_load_balancer_config:/usr/local/etc/haproxy
+</code></pre><ul>
+<li><strong>Secrets</strong>:</li>
+</ul>
+<p>A directory that contains all of the secrets that this tool requires.<br>The directory is mounted to <code>/run/secrets</code> inside the container. This can then be used by other environment variables such as <code>SSL_PRIVATE_KEY_FILE</code> to locate the secrets.<br>In a production environment, the orchestration environment can provide the secrets to the file system or the secrets can be passed in via environment variables. The mechanism that is used here simulates the orchestration system providing the secrets as files. This is achieved by using a bind mount. In production this would not be required.</p>
+<h2 id="environment-variables">Environment variables</h2>
+<p>To configure the load balancer, you provide environment variables to the Docker container in the <code>docker run</code> command.</p>
+<p>The following table describes the environment variables that you can use to configure the load balancer:</p>
+<table>
+<thead>
+<tr>
+<th>Environment variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LIBERTY1_LB_STANZA</code></td>
+<td>The stanza for the first Liberty server.</td>
+</tr>
+<tr>
+<td><code>LIBERTY2_LB_STANZA</code></td>
+<td>The stanza for the second Liberty server.</td>
+</tr>
+<tr>
+<td><code>LIBERTY_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SERVER_SSL</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>GATEWAY_SSL_CONNECTION</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_PRIVATE_KEY_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_OUTBOUND_CA_CERTIFICATE_FILE</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+<tr>
+<td><code>SSL_ADDITIONAL_TRUST_CERTIFICATES</code></td>
+<td>See <a href="../security-and-users/security.html#secure-environment-variables">Secure Environment variables</a>.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

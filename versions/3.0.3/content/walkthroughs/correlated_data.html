@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Defining the property values of merged records </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Defining the property values of merged records ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="defining-the-property-values-of-merged-records">Defining the property values of merged records</h1>
+
+<p>This section describes an example of the process to define how property values of merged records are calculated in a Docker environment.
+The process includes the following high-level steps:</p>
+<ul>
+<li>Enabling merged property values<ul>
+<li>To define the view, enable and then modify it to meet your correlation requirements</li>
+</ul>
+</li>
+<li>Updating property value definitions</li>
+<li>Ingest data that correlates and review its properties</li>
+</ul>
+<p>The <code>examples/pre-prod/walkthroughs/change-management/mergedPropertyValuesWalkthrough.sh</code> script is a worked example that demonstrates how to enable and modify the views in a containerized environment.</p>
+<blockquote><p>Note: Before you complete this walkthrough, reset your environment to the base configuration. For more information, see <a href="reset_walkthroughs.html">Resetting your environment</a>.</p>
+</blockquote>
+<h2 id="default-merge-property-behavior">Default merge property behavior</h2>
+<ul>
+<li><p>To demonstrate the default behavior, use the <code>examples/pre-prod/walkthroughs/change-management/ingestDataWalkthrough.sh</code> script to ingest some correlated data. For more information about ingesting the data, see <a href="ingestion.html">Ingesting data into the Information Store</a>.</p>
+</li>
+<li><p>During the ingestion walk-through, the default behavior is used to determine the property values of the correlated record. In the default behavior, the property values from the merge contributor with the most recent value for <code>source_last_updated</code> are used.</p>
+</li>
+</ul>
+<p>For more information about the how the property values for merged records are calculated, see <a href="https://docs.i2group.com/analyze/4.4.4/c_merged_properties.html">Define how property values of merged records are calculated</a></p>
+<p>After you ingest the data, in Analyst&#39;s Notebook search for <code>Julie Yochum</code> and add the returned entity to the chart. Keep the chart open for the remainder of the walkthrough script.</p>
+<h2 id="enabling-merged-property-values">Enabling merged property values</h2>
+<p>To inform i2 Analyze that you intend to define the property values of merged records, run the <code>enableMergedPropertyValues.sh</code> tool. You can take control of the property values for records of specific item types, or all item types in the i2 Analyze schema.
+Note that this operation must be performed by the database administrator.</p>
+<p>See the <code>Enabling merged property values</code> section of the walkthrough script.</p>
+<p>The <code>run_etl_toolkit_tool_as_dba</code> client function is used to run the <code>enableMergedPropertyValues.sh</code> tool.</p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run_etl_toolkit_tool_as_dba">run_etl_toolkit_tool_as_dba</a></li>
+<li><a href="../tools-and-functions/etl_tools.html#enable-merge-property-values">enableMergedPropertyValues</a></li>
+<li><a href="https://docs.i2group.com/analyze/4.4.4/c_merged_properties.html">Defining the property values of merged i2 Analyze records</a></li>
+</ul>
+<p>In the <code>mergedPropertyValuesWalkthrough.sh</code>, the views are created for the Person item type. The <code>enableMergedPropertyValues.sh</code> tool is used in the <code>Create the merged property views for the CORRELATED_SCHEMA_TYPE_IDS</code> section.</p>
+<h2 id="updating-property-value-definitions">Updating property value definitions</h2>
+<p>The walkthrough provides an example <code>.sql</code> script that drops the existing <code>IS_Public.E_Person_MPVDV</code> view and replaces it with another. The new view prioritizes property values from merge contributors that come from the ingestion source names <code>EXAMPLE_1</code> over values from <code>EXAMPLE_2</code> and any other sources.<br>The <code>createAlternativeMergedPropertyValuesView.sql</code> script is in <code>examples/pre-prod/walkthroughs/configurationChanges</code>.</p>
+<p>After the views are enabled, the merged property values definition view (<code>Person_MPVDV</code>) is modified to change how the property values of correlated records are calculated.
+Note, this step is also performed by the database administrator.</p>
+<p>See the <code>Updating property value definitions</code> section of the walkthrough script.</p>
+<p>The <code>run_sql_server_command_as_dba</code> client functions in used to run the <code>createAlternativeMergedPropertyValuesView.sql</code> script.</p>
+<ul>
+<li><a href="../tools-and-functions/client_functions.md#run-sql-server-command-as-dba">run_sql_server_command_as_dba</a></li>
+<li><a href="https://docs.i2group.com/analyze/4.4.4/c_view_definition.html">The merged property values definition view</a></li>
+</ul>
+<h2 id="reingesting-the-data">Reingesting the data</h2>
+<p>The property values of merged records do not update when the MPVDV views are modified. To update the values of existing records, you must reingest at least one of the merge contributors to the record.</p>
+<p>To do this, use the <code>ingestDataWalkthrough.sh</code> script to ingest some data the correlates. For more information about ingesting the data, see <a href="ingestion.html">Ingesting data into the Information Store</a>.</p>
+<p>See the <code>Reingesting the data</code> section of the walkthrough script.</p>
+<p>After the data is ingested, in the Analyst&#39;s Notebook chart that you have open, select the <code>Julie Yochum</code> item and click <strong>Get changes</strong>.</p>
+<p>The name of the item changes to <code>Julia Yocham</code>, because the property values that make up the name are now from the merge contributor where the ingestion source name is <code>EXAMPLE_1</code>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../../styles/main.js"></script>
+  </body>
+</html>

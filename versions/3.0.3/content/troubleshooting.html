@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Troubleshooting </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Troubleshooting ">
+    <meta name="generator" content="docfx 2.56.2.0">
+    
+    <link rel="shortcut icon" href="../../../images/favicon.png">
+    <link rel="stylesheet" href="../../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../../styles/docfx.css">
+    <link rel="stylesheet" href="../../../styles/main.css">
+    <meta property="docfx:navrel" content="../../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../../index.html">
+                i2 Analyze Deployment Tooling
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="troubleshooting">Troubleshooting</h1>
+
+<h2 id="error-opening-analyze-deployment-tooling-in-a-dev-container">Error opening analyze-deployment-tooling in a Dev Container</h2>
+<p><strong>Scenario:</strong><br>Opening the folder in a Dev Container fails on Windows.</p>
+<p><strong>Solution:</strong><br>Ensure that you have opened the analyze-deployment-tooling folder in a WSL VS Code window before opening the folder as a Dev Container.</p>
+<p>In the bottom-left of the window, the green bar must say <code>WSL: Ubuntu</code>. For example: <img src="../images/vscode_wsl_green.png" alt="WSL: Ubuntu">.</p>
+<p>If it does not say <code>WSL: Ubuntu</code>, press <strong>F1</strong> and type <code>WSL: Reopen folder in WSL</code> then select it. After the WSL window opens, you can then follow the instructions to open the folder in a Dev Container.</p>
+<h2 id="error-when-reloading-vs-code-window">Error when reloading VS Code window</h2>
+<p><strong>Scenario:</strong><br>When you have multiple versions of analyze-deployment-tooling running in VS Code and run <code>manage-environment -t stop</code> in one of the windows, the other VS Code window displays the message <code>Cannot reconnect. Please reload the window.</code>. When you press <strong>Reload Window</strong>, you might see the following message: <code>An error occurred setting up the container.</code></p>
+<p><strong>Solution:</strong>
+In the error dialogue, press <strong>Retry</strong>.</p>
+<h2 id="error-grafana-not-live">Error: <code>Grafana not live</code></h2>
+<p><strong>Scenario:</strong><br>An error is reported that Grafana is <code>Not Live</code> when running <code>deploy</code> but the system has been running successfully before.</p>
+<p><strong>Solutions:</strong>  </p>
+<ol>
+<li>On Windows, restart WSL and redeploy.<ol>
+<li>In a command prompt enter <code>wsl --shutdown</code>, then <code>wsl</code>.</li>
+<li>In your analyze-deployment-tooling VS Code window, run <code>deploy -c &lt;config-name&gt;</code>.</li>
+</ol>
+</li>
+<li>Deploy with the <code>-t clean</code> option to clear down the system and redeploy<ol>
+<li>In your analyze-deployment-tooling VS Code window, run <code>deploy -c &lt;config-name&gt; -t clean</code> then <code>deploy -c &lt;config-name&gt;</code>.</li>
+</ol>
+</li>
+<li>Remove the Grafana secrets from the environment and recreate them, then redeploy.<ol>
+<li>Remove the <code>environment-secrets/generated-secrets/grafana</code> and <code>environment-secrets/simulated-secret-store/grafana</code> directories.</li>
+<li>In your analyze-deployment-tooling VS Code window, run <code>create-dev-environment</code>, <code>deploy -c &lt;config-name&gt; -t clean</code>, then <code>deploy -c &lt;config-name&gt;</code>.</li>
+</ol>
+</li>
+</ol>
+<h2 id="error-no-space-left-on-device">Error: <code>No space left on device</code></h2>
+<p><strong>Scenario:</strong><br>When you run <code>create-dev-environment</code>, the following error message is displayed:</p>
+<pre><code class="lang-log">[82631 ms] mkdir: cannot create directory &#39;/home/vscode/.vscode-server&#39;: No space left on device 
+[82631 ms] Exit code 1 
+[82636 ms] Command in container failed: mkdir -p &#39;/home/vscode/.vscode-server/bin&#39; &amp;&amp; ln -snf &#39;/vscode/vscode-server/bin/linux-x64/d045a5eda657f4d7b676dedbfa7aab8207f8a075&#39; &#39;/home/vscode/.vscode-server/bin/d045a5eda657f4d7b676dedbfa7aab8207f8a075&#39; 
+[82636 ms] mkdir: cannot create directory &#39;/home/vscode/.vscode-server&#39;: No space left on device 
+[82636 ms] Exit code 1 
+</code></pre><p><strong>Solutions:</strong>  </p>
+<ol>
+<li>Run <code>docker system prune</code> to remove dangling images and containers that are no longer in use to free up already allocated Docker disk space.</li>
+<li>Allocate more disk space to Docker via Docker Desktop (on MacOS) or <code>.wslconfig</code> (on Windows).</li>
+</ol>
+<h2 id="error-container-stops-running-unexpectedly">Error: Container stops running unexpectedly</h2>
+<p><strong>Scenario:</strong><br>When your system has been running for an extended period of time, one or more of the containers stop running unexpectedly.</p>
+<p><strong>Solutions:</strong>  </p>
+<ol>
+<li><p>Increase the memory allocated to Docker.</p>
+<p> For more information about modifying the resources allocated to Docker, see:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows/wsl/wsl-config#example-wslconfig-file">Editing the wslconfig file on Windows</a></li>
+<li><a href="https://docs.docker.com/desktop/settings/mac/#resources">Docker Desktop for Mac</a></li>
+</ul>
+</li>
+</ol>
+<h2 id="error-ingestionscriptscreate-ingestion-sourcessh-doesnt-exist">Error: <code>ingestion/scripts/create-ingestion-sources.sh doesn&#39;t exist</code></h2>
+<p><strong>Scenario:</strong><br>When you attempt to use any of the example ingestion scripts, the scripts cannot be found.</p>
+<p>This happens when you have upgraded from a previous version where the scripts had different names.</p>
+<p><strong>Solutions:</strong>  </p>
+<ol>
+<li>If you have not modified the contents of the ingestion scripts:<ol>
+<li>Delete the following scripts:<ul>
+<li><code>&lt;config-name&gt;/ingestion/scripts</code>:<ul>
+<li><code>createIngestionSources.sh</code></li>
+</ul>
+</li>
+<li><code>i2a-data/law-enforcement-data-set-1/scripts</code>:<ul>
+<li><code>createIngestionSources.sh</code></li>
+<li><code>createStagingTables.sh</code></li>
+<li><code>deleteStagingTables.sh</code></li>
+<li><code>ingestLawEnforcementDataSet1.sh</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Replace the deleted files with the ones in <code>examples/ingestion/scripts</code> with similar name.<br> For example, <code>createIngestionSources.sh</code> is now <code>create-ingestion-sources.sh</code>.</li>
+<li>Re-run the initial command that failed.</li>
+</ol>
+</li>
+<li>If you have modified the contents of the ingestion scripts:<ol>
+<li>You can run the ingestion command and reference the previous script names.</li>
+<li>You can rename the scripts in the <code>&lt;config-name&gt;/ingestion/scripts</code> and <code>i2a-data/law-enforcement-data-set-1/scripts</code> directories to match the names in <code>examples/ingestion/scripts</code>.<br> For example, <code>createIngestionSources.sh</code> is now <code>create-ingestion-sources.sh</code>.</li>
+</ol>
+</li>
+</ol>
+<h2 id="error-msgremote-error-tls-bad-certificate">Error: <code>msg=&quot;remote error: tls: bad certificate&quot;</code></h2>
+<p><strong>Scenario:</strong>
+When you deploy, the system fails to start due to bad certificates.</p>
+<p>This can happen if your certificates have expired.</p>
+<p><strong>Solution:</strong></p>
+<p>Recreate the secrets for your environment to generate new certificates.</p>
+<ol>
+<li>Run <code>manage-environment -t renew-certificates</code> to recreate certificates.</li>
+<li>Run <code>deploy -c &lt;config-name&gt;</code> to redeploy with the new certificates.</li>
+<li>Reinstall the certificates in your operating system and browser.</li>
+</ol>
+<h2 id="error-unable-to-open-vs-code-dev-container">Error: Unable to open VS Code dev container</h2>
+<p><strong>Scenario:</strong>
+If you are unable to open the VS Code development container and you have already tried to rebuild it, you can use the following procedure to remove the dev container image.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>In Docker Desktop, locate the Docker image.
+In the <strong>Images</strong> pane, find the image name that begins with <code>vsc</code> followed by the folder name for the upgrade. For example: <code>vsc-analyze-deployment-tooling-303</code>. The rest of the image name is a GUID.</li>
+<li>Select the image by using the checkbox and click <strong>Delete</strong>.</li>
+<li>Try and reopen the VS Code development environment.</li>
+</ol>
+<h2 id="error-unable-to-find-image-locally">Error: unable to find image locally</h2>
+<p><strong>Scenario:</strong>
+If you are unable to deploy because the system cannot find an image locally, you can use the following procedure to rebuild the images.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Run the <code>create-dev-environment</code> command.</li>
+<li>Run <code>deploy -c &lt;config-name&gt;</code> to deploy the config.</li>
+</ol>
+<h2 id="error-your-cache-folder-contains-root-owned-files-due-to-a-bug-in-npm-previous-versions-of-npm-which-has-since-been-addressed">Error: Your cache folder contains root-owned files, due to a bug in npm previous versions of npm which has since been addressed</h2>
+<p><strong>Scenario:</strong>
+If you are unable to deploy due to the following error, your connectors are using an unsupported version of Node.</p>
+<!--- /* cSpell:disable */ -->
+<pre><code class="lang-msg">npm ERR! code EACCES
+npm ERR! syscall open
+npm ERR! path /opt/app-root/src/.npm/_cacache/tmp/a0042286
+npm ERR! errno -13
+npm ERR! 
+npm ERR! Your cache folder contains root-owned files, due to a bug in
+npm ERR! previous versions of npm which has since been addressed.
+npm ERR! 
+npm ERR! To permanently fix this problem, please run:
+npm ERR!   sudo chown -R 1001:0 &quot;/opt/app-root/src/.npm&quot;
+</code></pre><!--- /* cSpell:enable */ -->
+<p><strong>Solution:</strong>
+Update the Dockerfile for your i2 Connect server connectors.</p>
+<ol>
+<li>Copy the <code>templates/i2connect-server-connector-image/Dockerfile</code> and replace the existing Dockerfiles for your i2 Connect server connectors.<br>For example, replace the <code>connector-images/&lt;connector-name&gt;/Dockerfile</code> with the one from the templates directory.</li>
+</ol>
+<h2 id="tar-child-optanalyze-deployment-toolingpre-reqsi2analyzeminimaltargz-cannot-open-no-such-file-or-directory">tar (child): /opt/analyze-deployment-tooling/pre-reqs/i2analyzeMinimal.tar.gz: Cannot open: No such file or directory</h2>
+<p><strong>Scenario:</strong>
+The following error might be displayed when you run <code>bootstrap</code> and you are using an older version of Docker Desktop.</p>
+<pre><code class="lang-msg">#----------------------------------------------------------------------
+# Setting up i2 Analyze Minimal Toolkit
+#----------------------------------------------------------------------
+tar (child): /opt/analyze-deployment-tooling/pre-reqs/i2analyzeMinimal.tar.gz: Cannot open: No such file or directory
+tar (child): Error is not recoverable: exiting now
+tar: Child returned status 2
+tar: Error is not recoverable: exiting now
+</code></pre><p><strong>Solution:</strong>
+Update Docker Desktop to the latest version.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../../styles/main.js"></script>
+  </body>
+</html>
